@@ -1,0 +1,1179 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="虚拟化,云计算,hadoop,spark,大数据,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="一、学什么？Hadoop、Spark(Scala编程语言)1、重要：原理—-&amp;gt; 画图 2、安装和配置 3、操作：命令行、Java API、Web Console（控制台）">
+<meta name="keywords" content="虚拟化,云计算,hadoop,spark,大数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hadoop学习笔记第一天">
+<meta property="og:url" content="http://yoursite.com/2018/12/30/blog/hadoop学习笔记第一天/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="一、学什么？Hadoop、Spark(Scala编程语言)1、重要：原理—-&amp;gt; 画图 2、安装和配置 3、操作：命令行、Java API、Web Console（控制台）">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/0ebno">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/zDEjQ">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/4s30M">
+<meta property="og:updated_time" content="2017-05-12T09:03:39.167Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hadoop学习笔记第一天">
+<meta name="twitter:description" content="一、学什么？Hadoop、Spark(Scala编程语言)1、重要：原理—-&amp;gt; 画图 2、安装和配置 3、操作：命令行、Java API、Web Console（控制台）">
+<meta name="twitter:image" content="http://ooj9cf5vc.bkt.clouddn.com/0ebno">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/30/blog/hadoop学习笔记第一天/">
+
+
+
+
+
+  <title> hadoop学习笔记第一天 | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/blog/hadoop学习笔记第一天/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                hadoop学习笔记第一天
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T15:10:10+08:00">
+                2018-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/30/blog/hadoop学习笔记第一天/" class="leancloud_visitors" data-flag-title="hadoop学习笔记第一天">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、学什么？Hadoop、Spark-Scala编程语言"><a href="#一、学什么？Hadoop、Spark-Scala编程语言" class="headerlink" title="一、学什么？Hadoop、Spark(Scala编程语言)"></a>一、学什么？Hadoop、Spark(Scala编程语言)</h2><p>1、重要：原理—-&gt; 画图</p>
+<p>2、安装和配置</p>
+<p>3、操作：命令行、Java API、Web Console（控制台）<br><a id="more"></a></p>
+<h2 id="二、搭建Linux环境"><a href="#二、搭建Linux环境" class="headerlink" title="二、搭建Linux环境:"></a>二、搭建Linux环境:</h2><p>一定要关闭防火墙 </p>
+<p> service iptables status</p>
+<p> service iptables stop</p>
+<h3 id="1、vi编辑器"><a href="#1、vi编辑器" class="headerlink" title="1、vi编辑器:"></a>1、vi编辑器:</h3><p>:set number 显示行号</p>
+<p>:set wrap   换行</p>
+<p>:set nowrap 不换行</p>
+<p>搜索：/</p>
+<pre><code>### 2、配置文件：/etc/hosts  配置IP地址和主机名的关系
+      增加：192.168.137.111 hadoop111
+
+### 3、安装JDK
+    (*)tar -zxvf jdk-7u75-linux-i586.tar.gz -C ~/training/
+    (*)设置环境变量：~/.bash_profile
+            JAVA_HOME=/root/training/jdk1.7.0_75
+            export JAVA_HOME
+
+            PATH=$JAVA_HOME/bin:$PATH
+            export PATH
+
+    (*) 使环境变量生效
+           source ~/.bash_profile
+
+### 4、安装Tomcat
+     tail -f localhost_access_log.2017-04-12.txt
+</code></pre><h2 id="三、各章概述"><a href="#三、各章概述" class="headerlink" title="三、各章概述"></a>三、各章概述</h2><h3 id="一-、Hadoop的起源与背景知识"><a href="#一-、Hadoop的起源与背景知识" class="headerlink" title="(一)、Hadoop的起源与背景知识"></a>(一)、Hadoop的起源与背景知识</h3><pre><code>#### 1、什么是大数据？举例：
+    （1）商品推荐   问题1：大量的订单如何存储？如何找到订单？---&gt; 大数据的存储
+                    问题2：如何计算订单？   -----&gt; 大数据的计算
+    （2）天气预报   问题1：大量的天气数据存储？如何找到？   ---&gt; 大数据的存储
+                    问题2：如何计算？       -----&gt; 大数据的计算
+
+    核心：（1） 数据的存储
+          （2） 数据的计算
+#### 2、传统的解决大数据问题的方式：数据仓库(Oracle、MySQL)
+      Hadoop是数据仓库的一种实现方式
+
+#### 3、概念：OLTP和OLAP
+      Hadoop是数据仓库的一种实现方式,数据仓库是一个OLAP的应用
+    (*) OLTP: online transaction process 联机事务处理
+    (*) OLAP: online analytic process 联机分析处理: 一般只做select
+
+
+#### 4、（重点）Google的基本思想: Hadoop看成是一个山寨版的Google
+                Google                         Hadoop
+    （1）GFS（Google File System）   ---&gt;      HDFS(Hadoop Distributed File System)
+        (*) 文件的元信息：
+             命令：hdfs dfs -put a.avi /movie
+            文件的元信息(大概150B)：---&gt;  HDFS适合存单个的大文件
+            {
+            文件名：a.avi
+            路径：/movie
+            大小：200M
+            数据块：2个
+            数据块1：{DN1:5}  冗余信息： {DN2:10} {DN1:10}
+            数据块2：{DN3:2}  冗余信息： {DN2:8} {DN1:11}   
+            }            
+
+        (*) 数据如何找到？ ----&gt; 倒排索引 Reverted Index
+            (*) 复习：Oracle的索引 index，可以提高查询的效率
+                      概念：rowid 行地址，伪列
+                            rownum 行号，伪列 ---&gt; 分页查询
+                      执行计划：
+                      Oracle:
+                        explain plan for select * from emp where deptno=10;
+                        select * from table(dbms_xplan.display);
+
+                      Hive:执行SQL
+                         explain select * from emp where deptno=10;
+
+                      （1）没有索引
+                        --------------------------------------------------------------------------
+                        | Id  | Operation         | Name | Rows  | Bytes | Cost (%CPU)| Time     |
+                        --------------------------------------------------------------------------
+                        |   0 | SELECT STATEMENT  |      |     3 |   261 |     3   (0)| 00:00:01 |
+                        |*  1 |  TABLE ACCESS FULL| EMP  |     3 |   261 |     3   (0)| 00:00:01 |
+                        --------------------------------------------------------------------------
+
+                      （2）有索引
+                        create index myindex on emp(deptno);
+                        ---------------------------------------------------------------------------------------
+                        | Id  | Operation                   | Name    | Rows  | Bytes | Cost (%CPU)| Time     |
+                        ---------------------------------------------------------------------------------------
+                        |   0 | SELECT STATEMENT            |         |     3 |   261 |     2   (0)| 00:00:01 |
+                        |   1 |  TABLE ACCESS BY INDEX ROWID| EMP     |     3 |   261 |     2   (0)| 00:00:01 |
+                        |*  2 |   INDEX RANGE SCAN          | MYINDEX |     3 |       |     1   (0)| 00:00:01 |
+                        ---------------------------------------------------------------------------------------
+
+            （*）倒排索引 Reverted Index
+
+
+
+
+    （2）PageRank（搜索排名）        ---&gt;      MapReduce(Java程序)
+    （3）BigTable(大表)              ---&gt;      HBase
+</code></pre><h3 id="二-、实验环境"><a href="#二-、实验环境" class="headerlink" title="(二)、实验环境"></a>(二)、实验环境</h3><h3 id="三-、Apache-Hadoop的体系结构-重要"><a href="#三-、Apache-Hadoop的体系结构-重要" class="headerlink" title="(三)、Apache Hadoop的体系结构(重要)"></a>(三)、Apache Hadoop的体系结构(重要)</h3><pre><code>1、HDFS的体系结构
+2、Yarn的体系结构：运行MapReduce程序
+3、HBase的体系结构
+</code></pre><h3 id="四-、Hadoop-2-X的安装与配置"><a href="#四-、Hadoop-2-X的安装与配置" class="headerlink" title="(四)、Hadoop 2.X的安装与配置"></a>(四)、Hadoop 2.X的安装与配置</h3><pre><code>1、本地模式     （一台Linux）
+2、伪分布模式   （一台Linux）
+3、全分布模式   （三台Linux）
+</code></pre><h3 id="五-、Hadoop应用案例分析"><a href="#五-、Hadoop应用案例分析" class="headerlink" title="(五)、Hadoop应用案例分析"></a>(五)、Hadoop应用案例分析</h3><pre><code>1、基于大数据的应用架构
+2、日志分析（用户行为分析）
+3、Hadoop在淘宝的应用
+</code></pre><h3 id="六-、HDFS：存数据的"><a href="#六-、HDFS：存数据的" class="headerlink" title="(六)、HDFS：存数据的"></a>(六)、HDFS：存数据的</h3><pre><code>#### 1、操作：命令行、Java API、Web Console（控制台）
+#### 2、HDFS的提供功能：
+    （*）回收站recyclebin：补充：Oracle回收站
+    （*）快照snapshot：备份
+    （*）配额quota： （1）名称配额  : 限制目录下的文件的个数
+                     （2）空间配额  ：限制目录下的文件的大小
+    （*）安全模式（safemode）：重要，如果是安全模式，HDFS只读
+    （*）权限：chmod，类似Linux的权限
+
+#### 3、HDFS底层原理
+    （*）RPC：remote procedure call 远程过程调用
+    （*）Java的动态代理
+</code></pre><h3 id="七-、MapReduce-Java程序-—-gt-提交Yarn-容器-上运行-—-gt-处理的是HDFS的数据"><a href="#七-、MapReduce-Java程序-—-gt-提交Yarn-容器-上运行-—-gt-处理的是HDFS的数据" class="headerlink" title="(七)、MapReduce: Java程序 —&gt; 提交Yarn(容器)上运行 —&gt; 处理的是HDFS的数据"></a>(七)、MapReduce: Java程序 —&gt; 提交Yarn(容器)上运行 —&gt; 处理的是HDFS的数据</h3><pre><code>#### 1、第一个程序：WordCount单词计数
+         数据: I love Beijing
+               I love China
+               Beijing is the capital of China
+#### 2、（重要:画图）MapReduce程序的编程模型：数据流动的过程
+#### 3、开发自己的WordCount程序
+#### 4、MapReduce提供功能：排序、序列化、合并（Combiner，可以提高效率）
+                      分区（Partition：可以提高效率）
+#### 5、重要：MapReduce的核心：Shuffle(洗牌)
+#### 6、MapReduce案例程序：去掉重复记录、多表查询、自连接、
+                      倒排索引(Reverted Index)
+#### 7、使用MRUnit对MR进行单元测试
+</code></pre><p>数据分析的引擎：Hive  Pig   Impala(基于C语言)<br>补充：MySQL数据库    </p>
+<h3 id="八-、Hive-支持SQL（子集）-select-insert"><a href="#八-、Hive-支持SQL（子集）-select-insert" class="headerlink" title="(八)、Hive: 支持SQL（子集）: select  insert"></a>(八)、Hive: 支持SQL（子集）: select  insert</h3><h3 id="九-、Pig-支持Pig-Latin"><a href="#九-、Pig-支持Pig-Latin" class="headerlink" title="(九)、Pig:  支持Pig Latin"></a>(九)、Pig:  支持Pig Latin</h3><h3 id="十-、HBase-Hadoop-Database-NoSQL数据库"><a href="#十-、HBase-Hadoop-Database-NoSQL数据库" class="headerlink" title="(十)、HBase: Hadoop Database,NoSQL数据库"></a>(十)、HBase: Hadoop Database,NoSQL数据库</h3><pre><code>1、体系结构（重要），和Hadoop的关系
+2、安装和配置
+    1、本地模式     （一台Linux）
+    2、伪分布模式   （一台Linux）
+    3、全分布模式   （三台Linux）
+3、操作：命令行：hbase shell
+         Java API
+         Web Console
+
+4、HBase的原理
+5、HBase的过滤器（类似where）：就是一个Java程序
+6、使用MR处理HBase的数据
+</code></pre><p>数据采集的工具</p>
+<h3 id="十一-、Sqoop-RDBMS-Oracle-MySQL关系型数据库-lt-—-gt-Hadoop-HDFS"><a href="#十一-、Sqoop-RDBMS-Oracle-MySQL关系型数据库-lt-—-gt-Hadoop-HDFS" class="headerlink" title="(十一)、Sqoop: RDBMS(Oracle,MySQL关系型数据库) &lt;—&gt; Hadoop(HDFS)"></a>(十一)、Sqoop: RDBMS(Oracle,MySQL关系型数据库) &lt;—&gt; Hadoop(HDFS)</h3><h3 id="十二-、Flume-采集日志-—-gt-Hadoop-HDFS"><a href="#十二-、Flume-采集日志-—-gt-Hadoop-HDFS" class="headerlink" title="(十二)、Flume: 采集日志 —&gt; Hadoop(HDFS)"></a>(十二)、Flume: 采集日志 —&gt; Hadoop(HDFS)</h3><h3 id="十三-、HUE-基于Web的管理工具"><a href="#十三-、HUE-基于Web的管理工具" class="headerlink" title="(十三)、HUE: 基于Web的管理工具"></a>(十三)、HUE: 基于Web的管理工具</h3><p>实现Hadoop的集群（HA：high avaibility 高可用性）: 四台</p>
+<h3 id="十四-、ZooKeeper：相当于是一个数据库"><a href="#十四-、ZooKeeper：相当于是一个数据库" class="headerlink" title="(十四)、ZooKeeper：相当于是一个数据库"></a>(十四)、ZooKeeper：相当于是一个数据库</h3><h3 id="十五-、Hadoop的集群和HA"><a href="#十五-、Hadoop的集群和HA" class="headerlink" title="(十五)、Hadoop的集群和HA:"></a>(十五)、Hadoop的集群和HA:</h3><pre><code>（*）联盟：Federation
+（*）HA
+</code></pre><p>==============================================================</p>
+<h3 id="十六-、Storm-实时处理系统"><a href="#十六-、Storm-实时处理系统" class="headerlink" title="(十六)、Storm: 实时处理系统"></a>(十六)、Storm: 实时处理系统</h3><pre><code>1、区别：离线计算(Hadoop MR)和流式计算（实时计算:Storm）
+2、搭建Storm：（三台机器）
+3、编程模型
+4、开发Storm程序：WordCount
+5、Storm和其他系统集成: Redis、HDFS、HBase、Hive
+                        JMS（Java Messaging Service）、Kafka（消息系统）
+</code></pre><h2 id="四、图形描述"><a href="#四、图形描述" class="headerlink" title="四、图形描述"></a>四、图形描述</h2><h3 id="分布式文件系统"><a href="#分布式文件系统" class="headerlink" title="分布式文件系统"></a>分布式文件系统</h3><p><img src="http://ooj9cf5vc.bkt.clouddn.com/0ebno" alt="Untitled Image"></p>
+<h3 id="机架感知"><a href="#机架感知" class="headerlink" title="机架感知"></a>机架感知</h3><p><img src="http://ooj9cf5vc.bkt.clouddn.com/zDEjQ" alt="Untitled Image"></p>
+<h3 id="数据仓库"><a href="#数据仓库" class="headerlink" title="数据仓库"></a>数据仓库</h3><p><img src="http://ooj9cf5vc.bkt.clouddn.com/4s30M" alt="Untitled Image"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/虚拟化/" rel="tag"># 虚拟化</a>
+          
+            <a href="/tags/云计算/" rel="tag"># 云计算</a>
+          
+            <a href="/tags/hadoop/" rel="tag"># hadoop</a>
+          
+            <a href="/tags/spark/" rel="tag"># spark</a>
+          
+            <a href="/tags/大数据/" rel="tag"># 大数据</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/30/blog/2017-05-04祷告会/" rel="next" title="2017-05-04祷告会">
+                <i class="fa fa-chevron-left"></i> 2017-05-04祷告会
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/30/blog/hadoop搭建本地模式/" rel="prev" title="hadoop搭建本地模式">
+                hadoop搭建本地模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、学什么？Hadoop、Spark-Scala编程语言"><span class="nav-number">1.</span> <span class="nav-text">一、学什么？Hadoop、Spark(Scala编程语言)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、搭建Linux环境"><span class="nav-number">2.</span> <span class="nav-text">二、搭建Linux环境:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、vi编辑器"><span class="nav-number">2.1.</span> <span class="nav-text">1、vi编辑器:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、各章概述"><span class="nav-number">3.</span> <span class="nav-text">三、各章概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一-、Hadoop的起源与背景知识"><span class="nav-number">3.1.</span> <span class="nav-text">(一)、Hadoop的起源与背景知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二-、实验环境"><span class="nav-number">3.2.</span> <span class="nav-text">(二)、实验环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三-、Apache-Hadoop的体系结构-重要"><span class="nav-number">3.3.</span> <span class="nav-text">(三)、Apache Hadoop的体系结构(重要)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四-、Hadoop-2-X的安装与配置"><span class="nav-number">3.4.</span> <span class="nav-text">(四)、Hadoop 2.X的安装与配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五-、Hadoop应用案例分析"><span class="nav-number">3.5.</span> <span class="nav-text">(五)、Hadoop应用案例分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六-、HDFS：存数据的"><span class="nav-number">3.6.</span> <span class="nav-text">(六)、HDFS：存数据的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七-、MapReduce-Java程序-—-gt-提交Yarn-容器-上运行-—-gt-处理的是HDFS的数据"><span class="nav-number">3.7.</span> <span class="nav-text">(七)、MapReduce: Java程序 —&gt; 提交Yarn(容器)上运行 —&gt; 处理的是HDFS的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#八-、Hive-支持SQL（子集）-select-insert"><span class="nav-number">3.8.</span> <span class="nav-text">(八)、Hive: 支持SQL（子集）: select  insert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#九-、Pig-支持Pig-Latin"><span class="nav-number">3.9.</span> <span class="nav-text">(九)、Pig:  支持Pig Latin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十-、HBase-Hadoop-Database-NoSQL数据库"><span class="nav-number">3.10.</span> <span class="nav-text">(十)、HBase: Hadoop Database,NoSQL数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十一-、Sqoop-RDBMS-Oracle-MySQL关系型数据库-lt-—-gt-Hadoop-HDFS"><span class="nav-number">3.11.</span> <span class="nav-text">(十一)、Sqoop: RDBMS(Oracle,MySQL关系型数据库) &lt;—&gt; Hadoop(HDFS)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十二-、Flume-采集日志-—-gt-Hadoop-HDFS"><span class="nav-number">3.12.</span> <span class="nav-text">(十二)、Flume: 采集日志 —&gt; Hadoop(HDFS)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十三-、HUE-基于Web的管理工具"><span class="nav-number">3.13.</span> <span class="nav-text">(十三)、HUE: 基于Web的管理工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十四-、ZooKeeper：相当于是一个数据库"><span class="nav-number">3.14.</span> <span class="nav-text">(十四)、ZooKeeper：相当于是一个数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十五-、Hadoop的集群和HA"><span class="nav-number">3.15.</span> <span class="nav-text">(十五)、Hadoop的集群和HA:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十六-、Storm-实时处理系统"><span class="nav-number">3.16.</span> <span class="nav-text">(十六)、Storm: 实时处理系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、图形描述"><span class="nav-number">4.</span> <span class="nav-text">四、图形描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式文件系统"><span class="nav-number">4.1.</span> <span class="nav-text">分布式文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#机架感知"><span class="nav-number">4.2.</span> <span class="nav-text">机架感知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据仓库"><span class="nav-number">4.3.</span> <span class="nav-text">数据仓库</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

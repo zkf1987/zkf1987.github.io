@@ -1,0 +1,1092 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="linux,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="描述Unix: awk ‘/pattern/ {print “$1”}’ # 标准 Unix shell环境DOS/Win: awk ‘/pattern/ {print “$1”}’ # DJGPP 可编译通过awk “/pattern/ {print \”$1\”}” # GnuWin32，UnxUtils，Mingw环境 需要特别注意的是，DJGPP编译器可以允许awk脚本使用Unix的引号语">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWK相关实例">
+<meta property="og:url" content="http://yoursite.com/2018/12/30/blog/AWK相关实例/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="描述Unix: awk ‘/pattern/ {print “$1”}’ # 标准 Unix shell环境DOS/Win: awk ‘/pattern/ {print “$1”}’ # DJGPP 可编译通过awk “/pattern/ {print \”$1\”}” # GnuWin32，UnxUtils，Mingw环境 需要特别注意的是，DJGPP编译器可以允许awk脚本使用Unix的引号语">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-05T08:36:40.531Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AWK相关实例">
+<meta name="twitter:description" content="描述Unix: awk ‘/pattern/ {print “$1”}’ # 标准 Unix shell环境DOS/Win: awk ‘/pattern/ {print “$1”}’ # DJGPP 可编译通过awk “/pattern/ {print \”$1\”}” # GnuWin32，UnxUtils，Mingw环境 需要特别注意的是，DJGPP编译器可以允许awk脚本使用Unix的引号语">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/30/blog/AWK相关实例/">
+
+
+
+
+
+  <title> AWK相关实例 | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/blog/AWK相关实例/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AWK相关实例
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T15:10:10+08:00">
+                2018-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/30/blog/AWK相关实例/" class="leancloud_visitors" data-flag-title="AWK相关实例">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>Unix: awk ‘/pattern/ {print “$1”}’ # 标准 Unix shell环境<br>DOS/Win: awk ‘/pattern/ {print “$1”}’ # DJGPP 可编译通过<br>awk “/pattern/ {print \”$1\”}” # GnuWin32，UnxUtils，Mingw环境</p>
+<p>需要特别注意的是，DJGPP编译器可以允许awk脚本使用Unix的引号语法<br>‘/like/ {“this”}’。但是，用户必须知道在DOS/Windows环境下，使用CMD.EXE或者<br>COMMAND.COM程序的话，单引号并不能保护重定向符号（&lt;, &gt;）和管道（|）。<br>如果使用双引号的话，在DOS/CMD命令解释器下的特殊符号和他们的特殊含义都<br>会被忽略。如果你的命令提示符是bash、ksh或者其他的Unix终端，单引号和双引号<br>会沿用Unix标准的用法。<br><a id="more"></a></p>
+<p>同样，DOS/Win用户必须记住用，百分号（%）用来标记DOS/Win环境变量，<br>如果想要在awk使用的话，需要使用双百分号（%%）来表示一个百分号%。</p>
+<p>如果我能确定一个脚本不需要被指出是使用在Unix, DOS或者CMD环境下，我通常<br>会省略引号。如果一个例子是GNU awk所特有的，将会用 ‘gawk’命令来代替。如<br>果你发现错误或者新的命令想要添加到这个列表里（总长度控制在65个字符一下）<br>，请通知我。首先我经常会尝试去写一个最短字符的脚本。为了省空间，我通常使用<br>‘1’来代替’{print}’去打印每行，两种写法都能正确运行。</p>
+<p>文本间隔：</p>
+<p>文本间隔：</p>
+<p>每行后面增加一行空行<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">awk '1;&#123;print ""&#125;'</span><br><span class="line">awk 'BEGIN&#123;ORS="\n\n"&#125;;1'</span><br></pre></td></tr></table></figure></p>
+<p>每行后面增加一行空行。输出文件不会包含连续的两个或两个以上的空行<br>注意：在Unix系统， DOS行包括的 CRLF （\r\n） 通常会被作为非空行对待<br>因此 ‘NF’ 将会返回TRUE。<br>```shell<br>awk ‘NF{print $0 “\n”}’</p>
+<p>每行后面增加两行空行<br>```shell<br>awk ‘1;{print “\n”}’</p>
+<p>编号和计算：</p>
+<p>以文件为单位，在每句行前加上编号 （左对齐）<br>使用制表符 （\t） 来代替空格可以有效保护页变的空白。<br>```shell<br>awk ‘{print FNR “\t” $0}’ files*</p>
+<p>用制表符 （\t） 给所有文件加上连贯的编号。<br>```shell<br>awk ‘{print NR “\t” $0}’ files*</p>
+<p>以文件为单位，在每句行前加上编号 （编号在左，右对齐）<br>如果在DOS环境下，需要写两个’%’<br>awk ‘{printf(“%5d : %s\n”, NR,$0)}’</p>
+<p>给非空白行的行加上编号<br>记得Unix对于 \r 的处理的特殊之处。（上面已经提到）<br>awk ‘NF{$0=++a “ :” $0};{print}’<br>awk ‘{print (NF? ++a “ :” :””) $0}’</p>
+<p>计算行数 （模拟 “wc -l”）<br>awk ‘END{print NR}’</p>
+<p>计算每行每个区域之和<br>awk ‘{s=0; for (i=1; i&lt;=NF; i++) s=s+$i; print s}’</p>
+<p>计算所有行所有区域的总和<br>awk ‘{for (i=1; i&lt;=NF; i++) s=s+$i}; END{print s}’</p>
+<p>打印每行每区域的绝对值<br>awk ‘{for (i=1; i&lt;=NF; i++) if ($i &lt; 0) $i = -$i; print }’<br>awk ‘{for (i=1; i&lt;=NF; i++) $i = ($i &lt; 0) ? -$i : $i; print }’</p>
+<p>计算所有行所有区域（词）的个数<br>awk ‘{ total = total + NF }; END {print total}’ file</p>
+<p>打印包含 “Beth” 的行数<br>awk ‘/Beth/{n++}; END {print n+0}’ file</p>
+<p>打印第一列最大的行<br>并且在行前打印出这个最大的数<br>awk ‘$1 &gt; max {max=$1; maxline=$0}; END{ print max, maxline}’</p>
+<p>打印每行的列数，并在后面跟上此行内容<br>awk ‘{ print NF “:” $0 } ‘</p>
+<p>打印每行的最后一列<br>awk ‘{ print $NF }’</p>
+<p>打印最后一行的最后一列<br>awk ‘{ field = $NF }; END{ print field }’</p>
+<p>打印列数超过4的行<br>awk ‘NF &gt; 4’</p>
+<p>打印最后一列大于4的行<br>awk ‘$NF &gt; 4’</p>
+<p>构建字符串：</p>
+<p>构建一指定长度的字符串（比如，513个空格）<br>awk ‘BEGIN{while (a++&lt;513) s=s “ “; print s}’</p>
+<p>在某一位置中插入以特定长度的字符串<br>例子：在每行第6列后插入49个空格<br>gawk –re-interval ‘BEGIN{while(a++&lt;49)s=s “ “};{sub(/^.{6}/,”&amp;” s)};1’</p>
+<p>构建数组：</p>
+<p>以下两个部分并不是一句话脚本，但是这些技巧相当便捷所以也包括进来</p>
+<p>构建一个叫”month”的数组，以数字为索引，month[1]就是’Jan’，month[2]就是<br>‘Feb’，month[3]就是’Mar’，以此类推。<br>split(“Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec”, month, “ “)</p>
+<p>构建一个叫”mdigit”的数组，以字符串为索引，mdigit[“Jan”] 等于 1，<br>mdigit[“Feb”] 等于 2，等等。需要有”month”数组。<br>for (i=1; i&lt;=12; i++) m_digit[month[i]] = i</p>
+<p>文本转换和替代：</p>
+<p>在Unix环境：转换DOS新行 （CR/LF） 为Unix格式<br>awk ‘{sub(/\r$/,””)};1’ 假设每行都以Ctrl-M结尾</p>
+<p>在Unix环境：转换Unix新行 （LF） 为DOS格式<br>awk ‘{sub(/$/,”\r”)};1’</p>
+<p>在DOS环境：转换Unix新行 （LF） 为DOS格式<br>awk 1</p>
+<p>在DOS环境：转换DOS新行 （CR/LF） 为Unix格式<br>DOS版本的awk不能运行, 只能用gawk:<br>gawk -v BINMODE=”w” ‘1’ infile &gt;outfile</p>
+<p>用 “tr” 替代的方法。<br>tr -d \r outfile GNU tr 版本为 1.22 或者更高</p>
+<p>删除每行前的空白（包括空格符和制表符）<br>使所有文本左对齐<br>awk ‘{sub(/^[ \t]+/, “”)};1’</p>
+<p>删除每行结尾的空白（包括空格符和制表符）<br>awk ‘{sub(/[ \t]+$/, “”)};1’</p>
+<p>删除每行开头和结尾的所有空白（包括空格符和制表符）<br>awk ‘{gsub(/^[ \t]+|[ \t]+$/,””)};1’<br>awk ‘{$1=$1};1’ 每列之间的空白也被删除</p>
+<p>在每一行开头处插入5个空格 （做整页的左位移）<br>awk ‘{sub(/^/, “ “)};1’</p>
+<p>用79个字符为宽度，将全部文本右对齐<br>awk ‘{printf “%79s\n”, $0}’ file*</p>
+<p>用79个字符为宽度，将全部文本居中对齐<br>awk ‘{l=length();s=int((79-l)/2); printf “%”(s+l)”s\n”,$0}’ file*</p>
+<p>每行用 “bar” 查找替换 “foo”<br>awk ‘{sub(/foo/,”bar”)}; 1’ 仅仅替换第一个找到的”foo”<br>gawk ‘{$0=gensub(/foo/,”bar”,4)}; 1’ 仅仅替换第四个找到的”foo”<br>awk ‘{gsub(/foo/,”bar”)}; 1’ 全部替换</p>
+<p>在包含 “baz” 的行里，将 “foo” 替换为 “bar”<br>awk ‘/baz/{gsub(/foo/, “bar”)}; 1’</p>
+<p>在不包含 “baz” 的行里，将 “foo” 替换为 “bar”<br>awk ‘!/baz/{gsub(/foo/, “bar”)}; 1’</p>
+<p>将 “scarlet” 或者 “ruby” 或者 “puce” 替换为 “red”<br>awk ‘{gsub(/scarlet|ruby|puce/, “red”)}; 1’</p>
+<p>倒排文本 （模拟 “tac”）<br>awk ‘{a[i++]=$0} END {for (j=i-1; j&gt;=0;) print a[j–] }’ file*</p>
+<p>如果一行结尾为反斜线符，将下一行接到这行后面<br>（如果有连续多行后面带反斜线符，将会失败）<br>awk ‘/\$/ {sub(/\$/,””); getline t; print $0 t; next}; 1’ file*</p>
+<p>排序并打印所有登录用户的姓名<br>awk -F “:” ‘{ print $1 | “sort” }’ /etc/passwd</p>
+<p>以相反的顺序打印出每行的前两列<br>awk ‘{print $2, $1}’ file</p>
+<p>调换前两列的位置<br>awk ‘{temp = $1; $1 = $2; $2 = temp}’ file</p>
+<p>打印每行，并删除第二列<br>awk ‘{ $2 = “”; print }’</p>
+<p>倒置每行并打印<br>awk ‘{for (i=NF; i&gt;0; i–) printf(“%s “,i);printf (“\n”)}’ file</p>
+<p>用逗号链接每5行<br>awk ‘ORS=NR%5?”,”:”\n”‘ file</p>
+<p>选择性的打印某些行：</p>
+<p>打印文件的前十行 （模拟 “head”）<br>awk ‘NR &lt; 11’</p>
+<p>打印文件的第一行 （模拟 “head -1”）<br>awk ‘NR&gt;1{exit};1’</p>
+<p>打印文件的最后两行 （模拟 “tail -2”）<br>awk ‘{y=x “\n” $0; x=$0};END{print y}’</p>
+<p>打印文件的最后一行 （模拟 “tail -1”）<br>awk ‘END{print}’</p>
+<p>打印匹配正则表达式的行 （模拟 “grep”）<br>awk ‘/regex/‘</p>
+<p>打印不匹配正则表达式的行 （模拟 “grep -v”）<br>awk ‘!/regex/‘</p>
+<p>打印第5列等于”abc123”的行<br>awk ‘$5 == “abc123”‘</p>
+<p>打印第5列不等于”abc123”的行<br>这个同样可以用于打印少于5列的行<br>awk ‘$5 != “abc123”‘<br>awk ‘!($5 == “abc123”)’</p>
+<p>用正则匹配某一列<br>awk ‘$7 ~ /^[a-f]/‘ 打印第7列匹配的行<br>awk ‘$7 !~ /^[a-f]/‘ 打印第7列不匹配的行</p>
+<p>打印匹配正则表达式的前一行，但是不打印当前行<br>awk ‘/regex/{print x};{x=$0}’<br>awk ‘/regex/{print (x==”” ? “match on line 1” : x)};{x=$0}’</p>
+<p>打印匹配正则表达式的后一行，但是不打印当前行<br>awk ‘/regex/{getline;print}’</p>
+<p>以任何顺序查找包含 AAA、BBB 和 CCC 的行<br>awk ‘/AAA/; /BBB/; /CCC/‘</p>
+<p>以指定顺序查找包含 AAA、BBB 和 CCC 的行<br>awk ‘/AAA.<em>BBB.</em>CCC/‘</p>
+<p>打印长度大于64个字节的行<br>awk ‘length &gt; 64’</p>
+<p>打印长度小于64个字节的行<br>awk ‘length &lt; 64’</p>
+<p>打印从匹配正则起到文件末尾的内容<br>awk ‘/regex/,0’<br>awk ‘/regex/,EOF’</p>
+<p>打印指定行之间的内容 （8-12行, 包括第8和第12行）<br>awk ‘NR==8,NR==12’</p>
+<p>打印第52行<br>awk ‘NR==52’<br>awk ‘NR==52 {print;exit}’ 对于大文件更有效率</p>
+<p>打印两个正则匹配间的内容 （包括正则的内容）<br>awk ‘/Iowa/,/Montana/‘ 大小写敏感</p>
+<p>选择性的删除某些行：</p>
+<p>删除所有空白行 （类似于 “grep ‘.’ “）<br>awk NF<br>awk ‘/./‘</p>
+<p>删除重复连续的行 （模拟 “uniq”）<br>awk ‘a !~ $0; {a=$0}’</p>
+<p>删除重复的、非连续的行<br>awk ‘! a[$0]++’ 最简练<br>awk ‘!($0 in a) {a[$0];print}’ 最有效</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/30/blog/centos配置NFS服务器/" rel="next" title="centos配置NFS服务器">
+                <i class="fa fa-chevron-left"></i> centos配置NFS服务器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/30/blog/kubeadm 踩坑记/" rel="prev" title="kubeadm 踩坑记">
+                kubeadm 踩坑记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

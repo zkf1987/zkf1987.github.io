@@ -1,0 +1,1141 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="自动化运维,Ansible1,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="描述根据zs官方的分类，将模块按功能分类为：云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块 ，具体可以参看官方页面。这里从官方分类的模块里选择最常用的一些模块进行介绍。">
+<meta name="keywords" content="自动化运维,Ansible1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【转载】Ansible5：常用模块">
+<meta property="og:url" content="http://yoursite.com/2018/12/30/blog/【转载】Ansible5：常用模块/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="描述根据zs官方的分类，将模块按功能分类为：云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块 ，具体可以参看官方页面。这里从官方分类的模块里选择最常用的一些模块进行介绍。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-08-23T09:54:46.760Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【转载】Ansible5：常用模块">
+<meta name="twitter:description" content="描述根据zs官方的分类，将模块按功能分类为：云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块 ，具体可以参看官方页面。这里从官方分类的模块里选择最常用的一些模块进行介绍。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/30/blog/【转载】Ansible5：常用模块/">
+
+
+
+
+
+  <title> 【转载】Ansible5：常用模块 | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/blog/【转载】Ansible5：常用模块/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【转载】Ansible5：常用模块
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T15:10:10+08:00">
+                2018-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/30/blog/【转载】Ansible5：常用模块/" class="leancloud_visitors" data-flag-title="【转载】Ansible5：常用模块">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>根据zs官方的分类，将模块按功能分类为：云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块 ，具体可以参看官方页面。<br>这里从官方分类的模块里选择最常用的一些模块进行介绍。<br><a id="more"></a></p>
+<h2 id="一、ping模块"><a href="#一、ping模块" class="headerlink" title="一、ping模块"></a>一、ping模块</h2><p>测试主机是否是通的，用法很简单，不涉及参数：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m ping</span><br></pre></td></tr></table></figure></p>
+<h2 id="二、setup模块"><a href="#二、setup模块" class="headerlink" title="二、setup模块"></a>二、setup模块</h2><p>setup模块，主要用于获取主机信息，在playbooks里经常会用到的一个参数gather_facts就与该模块相关。setup模块下经常使用的一个参数是filter参数，具体使用示例如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ansible 10.212.52.252 -m setup -a 'filter=ansible_*_mb'   //查看主机内存信息</span><br><span class="line">ansible 10.212.52.252 -m setup -a 'filter=ansible_eth[0-2]'   //查看地接口为eth0-2的网卡信息</span><br><span class="line">ansible all -m setup --tree /tmp/facts   //将所有主机的信息输入到/tmp/facts目录下，每台主机的信息输入到主机名文件中（/etc/ansible/hosts里的主机名）</span><br></pre></td></tr></table></figure></p>
+<h2 id="三、file模块"><a href="#三、file模块" class="headerlink" title="三、file模块"></a>三、file模块</h2><p>file模块主要用于远程主机上的文件操作，file模块包含如下选项： </p>
+<p>force：需要在两种情况下强制创建软链接，一种是源文件不存在但之后会建立的情况下；另一种是目标软链接已存在,需要先取消之前的软链，然后创建新的软链，有两个选项：yes|no </p>
+<p>group：定义文件/目录的属组 </p>
+<p>mode：定义文件/目录的权限</p>
+<p>owner：定义文件/目录的属主</p>
+<p>path：必选项，定义文件/目录的路径</p>
+<p>recurse：递归的设置文件的属性，只对目录有效</p>
+<p>src：要被链接的源文件的路径，只应用于state=link的情况</p>
+<p>dest：被链接到的路径，只应用于state=link的情况 </p>
+<p>state：  </p>
+<p>directory：如果目录不存在，创建目录</p>
+<p>file：即使文件不存在，也不会被创建</p>
+<p>link：创建软链接</p>
+<p>hard：创建硬链接</p>
+<p>touch：如果文件不存在，则会创建一个新的文件，如果文件或目录已存在，则更新其最后修改时间</p>
+<p>absent：删除目录、文件或者取消链接文件</p>
+<p>使用示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m file -a "src=/etc/fstab dest=/tmp/fstab state=link"</span><br><span class="line">ansible test -m file -a "path=/tmp/fstab state=absent"</span><br><span class="line">ansible test -m file -a "path=/tmp/test state=touch"</span><br></pre></td></tr></table></figure></p>
+<h2 id="四、copy模块"><a href="#四、copy模块" class="headerlink" title="四、copy模块"></a>四、copy模块</h2><p>复制文件到远程主机，copy模块包含如下选项：</p>
+<p>backup：在覆盖之前将原文件备份，备份文件包含时间信息。有两个选项：yes|no </p>
+<p>content：用于替代”src”,可以直接设定指定文件的值 </p>
+<p>dest：必选项。要将源文件复制到的远程主机的绝对路径，如果源文件是一个目录，那么该路径也必须是个目录 </p>
+<p>directory_mode：递归的设定目录的权限，默认为系统默认权限</p>
+<p>force：如果目标主机包含该文件，但内容不同，如果设置为yes，则强制覆盖，如果为no，则只有当目标主机的目标位置不存在该文件时，才复制。默认为yes</p>
+<p>others：所有的file模块里的选项都可以在这里使用</p>
+<p>src：要复制到远程主机的文件在本地的地址，可以是绝对路径，也可以是相对路径。如果路径是一个目录，它将递归复制。在这种情况下，如果路径使用”/“来结尾，则只复制目录里的内容，如果没有使用”/“来结尾，则包含目录在内的整个内容全部复制，类似于rsync。 </p>
+<p>validate ：The validation command to run before copying into place. The path to the file to validate is passed in via ‘%s’ which must be present as in the visudo example below.</p>
+<p>示例如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m copy -a "src=/srv/myfiles/foo.conf dest=/etc/foo.conf owner=foo group=foo mode=0644"</span><br><span class="line">ansible test -m copy -a "src=/mine/ntp.conf dest=/etc/ntp.conf owner=root group=root mode=644 backup=yes"</span><br><span class="line">ansible test -m copy -a "src=/mine/sudoers dest=/etc/sudoers validate='visudo -cf %s'"</span><br></pre></td></tr></table></figure></p>
+<h2 id="五、service模块"><a href="#五、service模块" class="headerlink" title="五、service模块"></a>五、service模块</h2><p>用于管理服务</p>
+<p>该模块包含如下选项： </p>
+<p>arguments：给命令行提供一些选项 </p>
+<p>enabled：是否开机启动 yes|no</p>
+<p>name：必选项，服务名称 </p>
+<p>pattern：定义一个模式，如果通过status指令来查看服务的状态时，没有响应，就会通过ps指令在进程中根据该模式进行查找，如果匹配到，则认为该服务依然在运行</p>
+<p>runlevel：运行级别</p>
+<p>sleep：如果执行了restarted，在则stop和start之间沉睡几秒钟</p>
+<p>state：对当前服务执行启动，停止、重启、重新加载等操作（started,stopped,restarted,reloaded）</p>
+<p>使用示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m service -a "name=httpd state=started enabled=yes"</span><br><span class="line">asnible test -m service -a "name=foo pattern=/usr/bin/foo state=started"</span><br><span class="line">ansible test -m service -a "name=network state=restarted args=eth0"</span><br></pre></td></tr></table></figure></p>
+<h2 id="六、cron模块"><a href="#六、cron模块" class="headerlink" title="六、cron模块"></a>六、cron模块</h2><p>用于管理计划任务包含如下选项： </p>
+<p>backup：对远程主机上的原任务计划内容修改之前做备份 </p>
+<p>cron_file：如果指定该选项，则用该文件替换远程主机上的cron.d目录下的用户的任务计划 </p>
+<p>day：日（1-31，<em>，</em>/2,……） </p>
+<p>hour：小时（0-23，<em>，</em>/2，……）  </p>
+<p>minute：分钟（0-59，<em>，</em>/2，……） </p>
+<p>month：月（1-12，<em>，</em>/2，……） </p>
+<p>weekday：周（0-7，*，……）</p>
+<p>job：要执行的任务，依赖于state=present </p>
+<p>name：该任务的描述 </p>
+<p>special_time：指定什么时候执行，参数：reboot,yearly,annually,monthly,weekly,daily,hourly </p>
+<p>state：确认该任务计划是创建还是删除 </p>
+<p>user：以哪个用户的身份执行</p>
+<p>示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m cron -a 'name="a job for reboot" special_time=reboot job="/some/job.sh"'</span><br><span class="line">ansible test -m cron -a 'name="yum autoupdate" weekday="2" minute=0 hour=12 user="root</span><br><span class="line">ansible test -m cron  -a 'backup="True" name="test" minute="0" hour="5,2" job="ls -alh &gt; /dev/null"'</span><br><span class="line">ansilbe test -m cron -a 'cron_file=ansible_yum-autoupdate state=absent'</span><br></pre></td></tr></table></figure></p>
+<h2 id="七、yum模块"><a href="#七、yum模块" class="headerlink" title="七、yum模块"></a>七、yum模块</h2><p>使用yum包管理器来管理软件包，其选项有： </p>
+<p>config_file：yum的配置文件 </p>
+<p>disable_gpg_check：关闭gpg_check </p>
+<p>disablerepo：不启用某个源 </p>
+<p>enablerepo：启用某个源</p>
+<p>name：要进行操作的软件包的名字，也可以传递一个url或者一个本地的rpm包的路径 </p>
+<p>state：状态（present，absent，latest）</p>
+<p>示例如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m yum -a 'name=httpd state=latest'</span><br><span class="line">ansible test -m yum -a 'name="@Development tools" state=present'</span><br><span class="line">ansible test -m yum -a 'name=http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm state=present'</span><br></pre></td></tr></table></figure></p>
+<h2 id="八、user模块与group模块"><a href="#八、user模块与group模块" class="headerlink" title="八、user模块与group模块"></a>八、user模块与group模块</h2><p>user模块是请求的是useradd, userdel, usermod三个指令，goup模块请求的是groupadd, groupdel, groupmod 三个指令。</p>
+<p>1、user模块</p>
+<p>home：指定用户的家目录，需要与createhome配合使用</p>
+<p>groups：指定用户的属组</p>
+<p>uid：指定用的uid</p>
+<p>password：指定用户的密码</p>
+<p>name：指定用户名</p>
+<p>createhome：是否创建家目录 yes|no</p>
+<p>system：是否为系统用户</p>
+<p>remove：当state=absent时，remove=yes则表示连同家目<br>录一起删除，等价于userdel -r</p>
+<p>state：是创建还是删除</p>
+<p>shell：指定用户的shell环境</p>
+<p>使用示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">user: name=johnd comment="John Doe" uid=1040 group=admin</span><br><span class="line">user: name=james shell=/bin/bash groups=admins,developers append=yes user: name=johnd state=absent remove=yes</span><br><span class="line">user: name=james18 shell=/bin/zsh groups=developers expires=1422403387</span><br><span class="line">user: name=test generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa    #生成密钥时，只会生成公钥文件和私钥文件，和直接使用ssh-keygen指令效果相同，不会生成authorized_keys文件。</span><br></pre></td></tr></table></figure></p>
+<p>注：指定password参数时，不能使用明文密码，因为后面这一串密码会被直接传送到被管理主机的/etc/shadow文件中，所以需要先将密码字符串进行加密处理。然后将得到的字符串放到password中即可。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo "123456" | openssl passwd -1 -salt $(&lt; /dev/urandom tr -dc '[:alnum:]' | head -c 32) -stdin</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">1<span class="variable">$4P4PlFuE</span><span class="variable">$ur9ObJiT5iHNrb9QnjaIB0</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">使用上面的密码创建用户</span></span><br><span class="line"></span><br><span class="line">ansible all -m user -a 'name=foo password="$1$4P4PlFuE$ur9ObJiT5iHNrb9QnjaIB0"'</span><br></pre></td></tr></table></figure></p>
+<p>不同的发行版默认使用的加密方式可能会有区别，具体可以查看/etc/login.defs文件确认，centos 6.5版本使用的是SHA512加密算法。</p>
+<p>2、group示例<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible all -m group -a 'name=somegroup state=present'</span><br></pre></td></tr></table></figure></p>
+<h2 id="九、synchronize模块"><a href="#九、synchronize模块" class="headerlink" title="九、synchronize模块"></a>九、synchronize模块</h2><p>使用rsync同步文件，其参数如下：</p>
+<p>archive: 归档，相当于同时开启recursive(递归)、links、perms、times、owner、group、-D选项都为yes ，默认该项为开启</p>
+<p>checksum: 跳过检测sum值，默认关闭</p>
+<p>compress:是否开启压缩</p>
+<p>copy_links：复制链接文件，默认为no ，注意后面还有一个links参数</p>
+<p>delete: 删除不存在的文件，默认no</p>
+<p>dest：目录路径</p>
+<p>dest_port：默认目录主机上的端口 ，默认是22，走的ssh协议</p>
+<p>dirs：传速目录不进行递归，默认为no，即进行目录递归</p>
+<p>rsync_opts：rsync参数部分</p>
+<p>set_remote_user：主要用于/etc/ansible/hosts中定义或默认使用的用户与rsync使用的用户不同的情况</p>
+<p>mode: push或pull 模块，push模的话，一般用于从本机向远程主机上传文件，pull 模式用于从远程主机上取文件</p>
+<p>使用示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">src=some/relative/path dest=/some/absolute/path rsync_path="sudo rsync"</span><br><span class="line">src=some/relative/path dest=/some/absolute/path archive=no links=yes</span><br><span class="line">src=some/relative/path dest=/some/absolute/path checksum=yes times=no</span><br><span class="line">src=/tmp/helloworld dest=/var/www/helloword rsync_opts=--no-motd,--exclude=.git mode=pull</span><br></pre></td></tr></table></figure></p>
+<h2 id="十、filesystem模块"><a href="#十、filesystem模块" class="headerlink" title="十、filesystem模块"></a>十、filesystem模块</h2><p>在块设备上创建文件系统</p>
+<p>选项： </p>
+<p>dev：目标块设备</p>
+<p>force：在一个已有文件系统 的设备上强制创建</p>
+<p>fstype：文件系统的类型</p>
+<p>opts：传递给mkfs命令的选项</p>
+<p>示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m filesystem -a 'fstype=ext2 dev=/dev/sdb1 force=yes'</span><br><span class="line">ansible test -m filesystem -a 'fstype=ext4 dev=/dev/sdb1 opts="-cc"'</span><br></pre></td></tr></table></figure></p>
+<h2 id="十一、mount模块"><a href="#十一、mount模块" class="headerlink" title="十一、mount模块"></a>十一、mount模块</h2><p>配置挂载点</p>
+<p>选项： </p>
+<p>dump</p>
+<p>fstype：必选项，挂载文件的类型 </p>
+<p>name：必选项，挂载点 </p>
+<p>opts：传递给mount命令的参数</p>
+<p>src：必选项，要挂载的文件 </p>
+<p>state：必选项 </p>
+<p>present：只处理fstab中的配置 </p>
+<p>absent：删除挂载点 </p>
+<p>mounted：自动创建挂载点并挂载之 </p>
+<p>umounted：卸载</p>
+<p>示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">name=/mnt/dvd src=/dev/sr0 fstype=iso9660 opts=ro state=present</span><br><span class="line">name=/srv/disk src='LABEL=SOME_LABEL' state=present</span><br><span class="line">name=/home src='UUID=b3e48f45-f933-4c8e-a700-22a159ec9077' opts=noatime state=present</span><br><span class="line">ansible test -a 'dd if=/dev/zero of=/disk.img bs=4k count=1024'</span><br><span class="line">ansible test -a 'losetup /dev/loop0 /disk.img'</span><br><span class="line">ansible test -m filesystem 'fstype=ext4 force=yes opts=-F dev=/dev/loop0'</span><br><span class="line">ansible test -m mount 'name=/mnt src=/dev/loop0 fstype=ext4 state=mounted opts=rw'</span><br></pre></td></tr></table></figure></p>
+<h2 id="十二、get-url-模块"><a href="#十二、get-url-模块" class="headerlink" title="十二、get_url 模块"></a>十二、get_url 模块</h2><p>该模块主要用于从http、ftp、https服务器上下载文件（类似于wget），主要有如下选项：</p>
+<p>sha256sum：下载完成后进行sha256 check；</p>
+<p>timeout：下载超时时间，默认10s</p>
+<p>url：下载的URL</p>
+<p>url_password、url_username：主要用于需要用户名密码进行验证的情况</p>
+<p>use_proxy：是事使用代理，代理需事先在环境变更中定义</p>
+<p>示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">get_url: url=http://example.com/path/file.conf dest=/etc/foo.conf mode=0440</span><br><span class="line">get_url: url=http://example.com/path/file.conf dest=/etc/foo.conf sha256sum=b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c</span><br></pre></td></tr></table></figure></p>
+<h2 id="十三、unarchive模块"><a href="#十三、unarchive模块" class="headerlink" title="十三、unarchive模块"></a>十三、unarchive模块</h2><p>用于解压文件，模块包含如下选项：</p>
+<p>copy：在解压文件之前，是否先将文件复制到远程主机，默认为yes。若为no，则要求目标主机上压缩包必须存在。</p>
+<p>creates：指定一个文件名，当该文件存在时，则解压指令不执行</p>
+<p>dest：远程主机上的一个路径，即文件解压的路径 </p>
+<p>grop：解压后的目录或文件的属组</p>
+<p>list_files：如果为yes，则会列出压缩包里的文件，默认为no，2.0版本新增的选项</p>
+<p>mode：解决后文件的权限</p>
+<p>src：如果copy为yes，则需要指定压缩文件的源路径<br>owner：解压后文件或目录的属主</p>
+<p>示例如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- unarchive: src=foo.tgz dest=/var/lib/foo</span><br><span class="line">- unarchive: src=/tmp/foo.zip dest=/usr/local/bin copy=no</span><br><span class="line">- unarchive: src=https://example.com/example.zip dest=/usr/local/bin copy=no</span><br></pre></td></tr></table></figure></p>
+<p>本文出自 “无名小卒” 博客，请务必保留此出处<a href="http://breezey.blog.51cto.com/2400275/1555530" target="_blank" rel="noopener">http://breezey.blog.51cto.com/2400275/1555530</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/自动化运维/" rel="tag"># 自动化运维</a>
+          
+            <a href="/tags/Ansible1/" rel="tag"># Ansible1</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/30/blog/【转载】Ansible3：ansible.cfg配置说明/" rel="next" title="【转载】Ansible3：ansible.cfg配置说明">
+                <i class="fa fa-chevron-left"></i> 【转载】Ansible3：ansible.cfg配置说明
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/30/blog/Linux下安装部署Ansible/" rel="prev" title="Linux下安装部署Ansible">
+                Linux下安装部署Ansible <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、ping模块"><span class="nav-number">2.</span> <span class="nav-text">一、ping模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、setup模块"><span class="nav-number">3.</span> <span class="nav-text">二、setup模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、file模块"><span class="nav-number">4.</span> <span class="nav-text">三、file模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、copy模块"><span class="nav-number">5.</span> <span class="nav-text">四、copy模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、service模块"><span class="nav-number">6.</span> <span class="nav-text">五、service模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、cron模块"><span class="nav-number">7.</span> <span class="nav-text">六、cron模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、yum模块"><span class="nav-number">8.</span> <span class="nav-text">七、yum模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八、user模块与group模块"><span class="nav-number">9.</span> <span class="nav-text">八、user模块与group模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九、synchronize模块"><span class="nav-number">10.</span> <span class="nav-text">九、synchronize模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十、filesystem模块"><span class="nav-number">11.</span> <span class="nav-text">十、filesystem模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十一、mount模块"><span class="nav-number">12.</span> <span class="nav-text">十一、mount模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十二、get-url-模块"><span class="nav-number">13.</span> <span class="nav-text">十二、get_url 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十三、unarchive模块"><span class="nav-number">14.</span> <span class="nav-text">十三、unarchive模块</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

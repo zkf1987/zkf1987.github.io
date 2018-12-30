@@ -1,0 +1,1052 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="kubernates,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="描述Kubeadm 是个让我爱恨交加的东西，一方面，我不认为一个生产集群应该使用这样一个第三方工具进行在线安装，尤其是在目前这种网络环境之下；而另外一方面，Kubeadm 这一工具是随 Kubernetes 同步更新的，其中包含了大量的集群配置方面的最佳实践，是追新的最佳参考，所以这个讨厌的东西的运行是必须需要得到保障的。kubeadm 的执行过程沉默到令人发指，因此下面分享几个使用过程中遇到的一">
+<meta name="keywords" content="kubernates">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubeadm 踩坑记">
+<meta property="og:url" content="http://yoursite.com/2018/12/30/blog/kubeadm 踩坑记/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="描述Kubeadm 是个让我爱恨交加的东西，一方面，我不认为一个生产集群应该使用这样一个第三方工具进行在线安装，尤其是在目前这种网络环境之下；而另外一方面，Kubeadm 这一工具是随 Kubernetes 同步更新的，其中包含了大量的集群配置方面的最佳实践，是追新的最佳参考，所以这个讨厌的东西的运行是必须需要得到保障的。kubeadm 的执行过程沉默到令人发指，因此下面分享几个使用过程中遇到的一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/E4C62">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/aLYCf">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/vYzSN">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/7kTIM">
+<meta property="og:updated_time" content="2018-02-28T08:57:01.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kubeadm 踩坑记">
+<meta name="twitter:description" content="描述Kubeadm 是个让我爱恨交加的东西，一方面，我不认为一个生产集群应该使用这样一个第三方工具进行在线安装，尤其是在目前这种网络环境之下；而另外一方面，Kubeadm 这一工具是随 Kubernetes 同步更新的，其中包含了大量的集群配置方面的最佳实践，是追新的最佳参考，所以这个讨厌的东西的运行是必须需要得到保障的。kubeadm 的执行过程沉默到令人发指，因此下面分享几个使用过程中遇到的一">
+<meta name="twitter:image" content="http://ooj9cf5vc.bkt.clouddn.com/E4C62">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/30/blog/kubeadm 踩坑记/">
+
+
+
+
+
+  <title> kubeadm 踩坑记 | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/blog/kubeadm 踩坑记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                kubeadm 踩坑记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T15:10:10+08:00">
+                2018-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/30/blog/kubeadm 踩坑记/" class="leancloud_visitors" data-flag-title="kubeadm 踩坑记">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>Kubeadm 是个让我爱恨交加的东西，一方面，我不认为一个生产集群应该使用这样一个第三方工具进行在线安装，尤其是在目前这种网络环境之下；而另外一方面，Kubeadm 这一工具是随 Kubernetes 同步更新的，其中包含了大量的集群配置方面的最佳实践，是追新的最佳参考，所以这个讨厌的东西的运行是必须需要得到保障的。kubeadm 的执行过程沉默到令人发指，因此下面分享几个使用过程中遇到的一些问题和解决的思路和方法，希望对同行们有所帮助。<br><a id="more"></a></p>
+<p>写入 yum repo 并进行安装之后，利用 systemctl enable kubelet 启用 kubelet 服务之后，只要运行一下 systemctl daemon-reload即可，这一服务的启动需要 kubeadm 生成的证书和配置文件等的支持，因此无需进行启动。</p>
+<p>kubeadm init过程首先会检查代理服务器，确定跟 kube-apiserver 的 https 连接方式，如果有代理设置，会提出警告。</p>
+<p>接下来会对 sysctl 进行检查，我这里需要执行 sysctl net.bridge.bridge-nf-call-iptables=1，对这一参数进行调整，解决他的警告。</p>
+<p>接下来进入最抓狂的一个等待时间，屏幕显示为[apiclient] Created API client, waiting for the control plane to become ready，这一过程中会遇到大多数的坑，我一般会另外启动一个连接或者 tmux 窗口，进行观察和除错：</p>
+<p>这里已经做好运行 kubelet 服务的准备，因此这一时间内，我们可以利用systemctl statusl -l kubelet对服务的启动状况进行检查，目前比较容易遇到的是 kubectl 和 docker 两个服务的cgroup-driver不一致的问题，这里编辑文件/etc/systemd/system/kubelet.service.d/10-kubeadm.conf，修改这一参数值为跟 docker 一致的cgroupfs即可。这一步可以在 kubeadm init 之前执行完成<br>kubelet 启动之后，会尝试运行系统组件的 Pod，这里我们可以通过观察docker images的镜像列表来观察是否能够顺利进行下载。</p>
+<p>镜像下载完成之后就会开始运行各个系统组件，因此也是事故最为集中的阶段，我们可以使用docker ps、docker logs、docker inspect几个命令，逐个查看组件的运行情况，对失败组件的原因进行排除，之前提过的resolv.conf的故障就是在这一阶段发现并排除的。</p>
+<p>大家可以比较参数名称的变化, 当我们启动时, 会出现错误. 他会检测系统网桥的配置, 这个时候我们需要进行简单的修改<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 创建文件</span><br><span class="line">vi /etc/sysctl.d/k8s.conf</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 添加如下内容</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 使配置生效</span><br><span class="line">sysctl -p /etc/sysctl.d/k8s.conf</span><br></pre></td></tr></table></figure></p>
+<p>这个是K8S v1.6.x的一个变化, 文件驱动默认由systemd改成cgroupfs, 而我们安装的docker使用的文件驱动是systemd, 造成不一致, 导致镜像无法启动<br>现在有两种方式, 一种是修改docker, 另一种是修改kubelet, 这里我建议大家选择第二种, 修改kubelet的文件驱动, 因为我试着修改docker, 发现镜像无法拉取, 导致初始化不能成功<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看docker的文件驱动</span><br><span class="line">docker info</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ooj9cf5vc.bkt.clouddn.com/E4C62" alt="Untitled Image"></p>
+<p>修改kubelet的文件驱动<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">进入kubelet启动配置文件</span><br><span class="line">cd /etc/systemd/system/kubelet.service.d/</span><br><span class="line">vi 10-kubeadm.conf</span><br></pre></td></tr></table></figure></p>
+<h2 id="修改docker的Cgroup-Driver"><a href="#修改docker的Cgroup-Driver" class="headerlink" title="修改docker的Cgroup Driver"></a>修改docker的Cgroup Driver</h2><p>在第二种安装方式中，如果我们要修改docker的Cgroup Driver可以使用如下命令：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/lib/systemd/system/docker.service</span><br><span class="line"></span><br><span class="line">ExecStart=/usr/bin/dockerd –exec-opt native.cgroupdriver=systemd</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ooj9cf5vc.bkt.clouddn.com/aLYCf" alt="Untitled Image"></p>
+<h2 id="修改默认docker仓库地址"><a href="#修改默认docker仓库地址" class="headerlink" title="修改默认docker仓库地址"></a>修改默认docker仓库地址</h2><p>docker安装完毕后，默认是从<a href="https://registry-1.docker.io仓库地址下载镜像的。" target="_blank" rel="noopener">https://registry-1.docker.io仓库地址下载镜像的。</a></p>
+<p>由于众所周知的原因，从docker hub下载镜像比较慢的。我们可以使用国内网易的docker仓库。</p>
+<p>修改/usr/lib/systemd/system/docker.service文件，如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/lib/systemd/system/docker.service</span><br><span class="line"></span><br><span class="line">ExecStart=/usr/bin/dockerd –registry-mirror=http://hub.c.163.com -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ooj9cf5vc.bkt.clouddn.com/vYzSN" alt="Untitled Image"></p>
+<p>重启docker服务，如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br><span class="line"></span><br><span class="line">systemctl status docker</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ooj9cf5vc.bkt.clouddn.com/7kTIM" alt="Untitled Image"></p>
+<h2 id="卸载DOCKER"><a href="#卸载DOCKER" class="headerlink" title="卸载DOCKER"></a>卸载DOCKER</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum history list docker</span><br><span class="line">yum history undo 2</span><br></pre></td></tr></table></figure>
+<h2 id="镜像拉取策略"><a href="#镜像拉取策略" class="headerlink" title="镜像拉取策略"></a>镜像拉取策略</h2><p>ImagePullPolicy<br>支持三种ImagePullPolicy</p>
+<p>Always：不管镜像是否存在都会进行一次拉取。</p>
+<p>Never：不管镜像是否存在都不会进行拉取</p>
+<p>IfNotPresent：只有镜像不存在时，才会进行镜像拉取。</p>
+<p>注意：</p>
+<p>默认为IfNotPresent，但:latest标签的镜像默认为Always。</p>
+<p>拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。</p>
+<p>生产环境中应该尽量避免使用:latest标签，而开发环境中可以借助:latest标签自动拉取最新的镜像。</p>
+<h2 id="资源限制"><a href="#资源限制" class="headerlink" title="资源限制"></a>资源限制</h2><p>Kubernetes通过cgroups限制容器的CPU和内存等计算资源，包括requests（请求，调度器保证调度到资源充足的Node上）和limits（上限）等：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">spec.containers[].resources.limits.cpu：CPU上限，可以短暂超过，容器也不会被停止</span></span><br><span class="line"><span class="string">spec.containers[].resources.limits.memory：内存上限，不可以超过；如果超过，容器可能会被停止或调度到其他资源充足的机器上</span></span><br><span class="line"><span class="string">spec.containers[].resources.requests.cpu：CPU请求，可以超过</span></span><br><span class="line"><span class="string">spec.containers[].resources.requests.memory：内存请求，可以超过；但如果超过，容器可能会在Node内存不足时清理</span></span><br></pre></td></tr></table></figure></p>
+<p>比如nginx容器请求30%的CPU和56MB的内存，但限制最多只用50%的CPU和128MB的内存：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">    - image:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">      name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">      resources:</span></span><br><span class="line"><span class="attr">        requests:</span></span><br><span class="line"><span class="attr">          cpu:</span> <span class="string">"300m"</span></span><br><span class="line"><span class="attr">          memory:</span> <span class="string">"56Mi"</span></span><br><span class="line"><span class="attr">        limits:</span></span><br><span class="line"><span class="attr">          cpu:</span> <span class="string">"500m"</span></span><br><span class="line"><span class="attr">          memory:</span> <span class="string">"128Mi"</span></span><br></pre></td></tr></table></figure>
+<p>注意，CPU的单位是milicpu，500mcpu=0.5cpu；而内存的单位则包括E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki等。</p>
+<h2 id="kubernetes对象简称"><a href="#kubernetes对象简称" class="headerlink" title="kubernetes对象简称"></a>kubernetes对象简称</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">*</span> <span class="string">all</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">certificatesigningrequests</span> <span class="string">(aka</span> <span class="string">'csr'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">clusterrolebindings</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">clusterroles</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">clusters</span> <span class="string">(valid</span> <span class="string">only</span> <span class="string">for</span> <span class="string">federation</span> <span class="string">apiservers)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">componentstatuses</span> <span class="string">(aka</span> <span class="string">'cs'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">configmaps</span> <span class="string">(aka</span> <span class="string">'cm'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">controllerrevisions</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">cronjobs</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">daemonsets</span> <span class="string">(aka</span> <span class="string">'ds'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">deployments</span> <span class="string">(aka</span> <span class="string">'deploy'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">endpoints</span> <span class="string">(aka</span> <span class="string">'ep'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">events</span> <span class="string">(aka</span> <span class="string">'ev'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">horizontalpodautoscalers</span> <span class="string">(aka</span> <span class="string">'hpa'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">ingresses</span> <span class="string">(aka</span> <span class="string">'ing'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">jobs</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">limitranges</span> <span class="string">(aka</span> <span class="string">'limits'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">namespaces</span> <span class="string">(aka</span> <span class="string">'ns'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">networkpolicies</span> <span class="string">(aka</span> <span class="string">'netpol'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">nodes</span> <span class="string">(aka</span> <span class="string">'no'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">persistentvolumeclaims</span> <span class="string">(aka</span> <span class="string">'pvc'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">persistentvolumes</span> <span class="string">(aka</span> <span class="string">'pv'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">poddisruptionbudgets</span> <span class="string">(aka</span> <span class="string">'pdb'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">podpreset</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">pods</span> <span class="string">(aka</span> <span class="string">'po'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">podsecuritypolicies</span> <span class="string">(aka</span> <span class="string">'psp'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">podtemplates</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">replicasets</span> <span class="string">(aka</span> <span class="string">'rs'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">replicationcontrollers</span> <span class="string">(aka</span> <span class="string">'rc'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">resourcequotas</span> <span class="string">(aka</span> <span class="string">'quota'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">rolebindings</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">roles</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">secrets</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">serviceaccounts</span> <span class="string">(aka</span> <span class="string">'sa'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">services</span> <span class="string">(aka</span> <span class="string">'svc'</span><span class="string">)</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">statefulsets</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">storageclasses</span>  </span><br><span class="line"><span class="string">*</span> <span class="string">thirdpartyresources</span></span><br></pre></td></tr></table></figure>
+<h2 id="格式化输出"><a href="#格式化输出" class="headerlink" title="格式化输出"></a>格式化输出</h2><p>要以特定的格式向终端窗口输出详细信息，可以在 kubectl 命令中添加 -o 或者 -output 标志。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">输出格式</span>							<span class="string">描述</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=custom-columns=&lt;spec&gt;</span>			<span class="string">使用逗号分隔的自定义列列表打印表格</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=custom-columns-file=&lt;filename&gt;</span>	<span class="string">使用</span> <span class="string">文件中的自定义列模板打印表格</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=json</span>								<span class="string">输出</span> <span class="string">JSON</span> <span class="string">格式的</span> <span class="string">API</span> <span class="string">对象</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=jsonpath=&lt;template&gt;</span>				<span class="string">打印</span> <span class="string">jsonpath</span> <span class="string">表达式中定义的字段</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=jsonpath-file=&lt;filename&gt;</span>			<span class="string">打印由</span> <span class="string">文件中的</span> <span class="string">jsonpath</span> <span class="string">表达式定义的字段</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=name</span>								<span class="string">仅打印资源名称</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=wide</span>								<span class="string">以纯文本格式输出任何附加信息，对于</span> <span class="string">Pod</span> <span class="string">，包含节点名称</span></span><br><span class="line"><span class="bullet">-</span><span class="string">o=yaml</span>								<span class="string">输出</span> <span class="string">YAML</span> <span class="string">格式的</span> <span class="string">API</span> <span class="string">对象</span></span><br></pre></td></tr></table></figure>
+<h2 id="Kubectl-详细输出和调试"><a href="#Kubectl-详细输出和调试" class="headerlink" title="Kubectl 详细输出和调试"></a>Kubectl 详细输出和调试</h2><p>使用 -v 或 –v 标志跟着一个整数来指定日志级别。这里 描述了通用的 kubernetes 日志约定和相关的日志级别。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">详细等级</span>	<span class="string">描述</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=0</span>	<span class="string">总是对操作人员可见。</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=1</span>	<span class="string">合理的默认日志级别，如果您不需要详细输出。</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=2</span>	<span class="string">可能与系统的重大变化相关的，有关稳定状态的信息和重要的日志信息。这是对大多数系统推荐的日志级别。</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=3</span>	<span class="string">有关更改的扩展信息。</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=4</span>	<span class="string">调试级别详细输出。</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=6</span>	<span class="string">显示请求的资源。</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=7</span>	<span class="string">显示HTTP请求的header。</span></span><br><span class="line"><span class="bullet">-</span><span class="bullet">-v=8</span>	<span class="string">显示HTTP请求的内容。</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/kubernates/" rel="tag"># kubernates</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/30/blog/AWK相关实例/" rel="next" title="AWK相关实例">
+                <i class="fa fa-chevron-left"></i> AWK相关实例
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/30/blog/docker常用命令总结/" rel="prev" title="docker常用命令总结">
+                docker常用命令总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改docker的Cgroup-Driver"><span class="nav-number">2.</span> <span class="nav-text">修改docker的Cgroup Driver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改默认docker仓库地址"><span class="nav-number">3.</span> <span class="nav-text">修改默认docker仓库地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卸载DOCKER"><span class="nav-number">4.</span> <span class="nav-text">卸载DOCKER</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像拉取策略"><span class="nav-number">5.</span> <span class="nav-text">镜像拉取策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源限制"><span class="nav-number">6.</span> <span class="nav-text">资源限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubernetes对象简称"><span class="nav-number">7.</span> <span class="nav-text">kubernetes对象简称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#格式化输出"><span class="nav-number">8.</span> <span class="nav-text">格式化输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubectl-详细输出和调试"><span class="nav-number">9.</span> <span class="nav-text">Kubectl 详细输出和调试</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1015 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="python,was,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="描述集团安全检查中间件，根据检查表格模板，写python脚本进行自查安全检查项包括：账号安全要求、检查启动帐户权限、自动登出、管理后台登录登陆限制、ALL_AUTHENTICATED 组角色仅设为“控制台命名读”、密码安全要求、检查用户口令策略是否符合安全要求、明文口令、补丁管理、漏洞管理、权限设置、错误页面重定向、banner 安全配置、用例/文件管理、禁止Websphere列表显示文件、启用日">
+<meta name="keywords" content="python,was">
+<meta property="og:type" content="article">
+<meta property="og:title" content="websphere根据基线检查脚本">
+<meta property="og:url" content="http://yoursite.com/2018/12/30/blog/websphere根据基线检查脚本/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="描述集团安全检查中间件，根据检查表格模板，写python脚本进行自查安全检查项包括：账号安全要求、检查启动帐户权限、自动登出、管理后台登录登陆限制、ALL_AUTHENTICATED 组角色仅设为“控制台命名读”、密码安全要求、检查用户口令策略是否符合安全要求、明文口令、补丁管理、漏洞管理、权限设置、错误页面重定向、banner 安全配置、用例/文件管理、禁止Websphere列表显示文件、启用日">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-05-25T03:06:40.744Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="websphere根据基线检查脚本">
+<meta name="twitter:description" content="描述集团安全检查中间件，根据检查表格模板，写python脚本进行自查安全检查项包括：账号安全要求、检查启动帐户权限、自动登出、管理后台登录登陆限制、ALL_AUTHENTICATED 组角色仅设为“控制台命名读”、密码安全要求、检查用户口令策略是否符合安全要求、明文口令、补丁管理、漏洞管理、权限设置、错误页面重定向、banner 安全配置、用例/文件管理、禁止Websphere列表显示文件、启用日">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/30/blog/websphere根据基线检查脚本/">
+
+
+
+
+
+  <title> websphere根据基线检查脚本 | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/blog/websphere根据基线检查脚本/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                websphere根据基线检查脚本
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T15:10:10+08:00">
+                2018-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/30/blog/websphere根据基线检查脚本/" class="leancloud_visitors" data-flag-title="websphere根据基线检查脚本">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>集团安全检查中间件，根据检查表格模板，写python脚本进行自查<br>安全检查项包括：<br>账号安全要求、检查启动帐户权限、自动登出、管理后台登录登陆限制、ALL_AUTHENTICATED 组角色仅设为“控制台命名读”、密码安全要求、检查用户口令策略是否符合安全要求、明文口令、补丁管理、漏洞管理、权限设置、错误页面重定向、banner 安全配置、用例/文件管理、禁止Websphere列表显示文件、启用日志等<br><a id="more"></a></p>
+<h2 id="检查脚本"><a href="#检查脚本" class="headerlink" title="检查脚本"></a>检查脚本</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> os.path</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"></span><br><span class="line">(<span class="keyword">False</span>, <span class="keyword">True</span>) = (<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">svr = AdminControl.queryNames(<span class="string">'type=Server,*'</span>)</span><br><span class="line">svr_num = svr.split(<span class="string">','</span>)[<span class="number">5</span>][<span class="number">8</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">'********:'</span>,svr</span><br><span class="line"><span class="keyword">print</span> <span class="string">'********:'</span>,svr_num</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Init</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		AdminConfig = sys._getframe(<span class="number">1</span>).f_locals[<span class="string">"AdminConfig"</span>]</span><br><span class="line">		AdminApp = sys._getframe(<span class="number">1</span>).f_locals[<span class="string">"AdminApp"</span>]</span><br><span class="line">		AdminControl = sys._getframe(<span class="number">1</span>).f_locals[<span class="string">"AdminControl"</span>]</span><br><span class="line">		AdminTask = sys._getframe(<span class="number">1</span>).f_locals[<span class="string">"AdminTask"</span>]</span><br><span class="line">	<span class="keyword">except</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"Warning: Caught exception accessing Admin objects. Continuing."</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查soap.client.props配置文件中com.ibm.SOAP.securityEnabled的值</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkPassword</span><span class="params">(profile_name)</span>:</span></span><br><span class="line">	soap_client_props = (<span class="string">"%s/properties/soap.client.props"</span>) % (profile_name)</span><br><span class="line">	result = <span class="string">""</span></span><br><span class="line">	<span class="keyword">if</span> os.path.isfile(soap_client_props):</span><br><span class="line">		file = open(soap_client_props, <span class="string">'r'</span>)</span><br><span class="line">		contents = file.readlines()</span><br><span class="line">		file.close()</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> contents:</span><br><span class="line">		<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">'com.ibm.SOAP.securityEnabled'</span>):</span><br><span class="line">			result = i</span><br><span class="line">	<span class="keyword">if</span> i:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"checkPassword:"</span>, result</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"checkPassword:false"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查是否删除EVERYONE组</span></span><br><span class="line"><span class="comment"># 如果was版本为8或者7启动了就用wsadmin脚本来检查</span></span><br><span class="line"><span class="comment"># 否则直接读取naming-authz.xml配置文件来检查是否包含EveryoneExt关键字</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkCosNaming_Everyone</span><span class="params">(profile_name)</span>:</span></span><br><span class="line">	f_everyone = <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">if</span> svr_num == <span class="string">'8'</span> <span class="keyword">or</span> svr_num == <span class="string">'7'</span>:</span><br><span class="line">		groups_NamingRoles = AdminTask.listGroupsForNamingRoles()</span><br><span class="line">		<span class="keyword">if</span> groups_NamingRoles.count(<span class="string">"EVERYONE"</span>):</span><br><span class="line">			f_everyone = <span class="keyword">False</span></span><br><span class="line">		<span class="keyword">if</span> f_everyone:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"everyone is removed,CheckCosNaming_Everyone result:true"</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"everyone not removed,CheckCosNaming_Everyone result:false"</span></span><br><span class="line">	<span class="keyword">elif</span> svr_num == <span class="string">'6'</span>:</span><br><span class="line">		cell_name = AdminControl.getCell()</span><br><span class="line">		file_path = (<span class="string">"%s/config/cells/%s/naming-authz.xml"</span>) % ( profile_name, cell_name)</span><br><span class="line">		<span class="keyword">if</span> os.path.isfile(file_path):</span><br><span class="line">			file = open(file_path, <span class="string">'r'</span>)</span><br><span class="line">			contents = file.read()</span><br><span class="line">			<span class="keyword">if</span> <span class="number">-1</span> != contents.find(<span class="string">"EveryoneExt"</span>):</span><br><span class="line">				<span class="keyword">print</span> <span class="string">"everyone not removed,CheckCosNaming_Everyone result:false"</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">"everyone is removed,CheckCosNaming_Everyone result:true"</span></span><br><span class="line">			file.close()</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkCosNaming</span><span class="params">(profile_name)</span>:</span></span><br><span class="line">	checkCosNaming_Everyone(profile_name)</span><br><span class="line">	checkCosNaming_AllAuthenticated(profile_name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查ALLAUTHENTICATED组是否存在并且是否是控制台命名读权限</span></span><br><span class="line"><span class="comment"># 如果was版本为8或者7就用wsadmin脚本来检查</span></span><br><span class="line"><span class="comment"># 否则直接读取naming-authz.xml配置文件来检查是否包含AllAuthenticatedUsersExt关键字</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkCosNaming_AllAuthenticated</span><span class="params">(profile_name)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> svr_num == <span class="string">'8'</span> <span class="keyword">or</span> svr_num == <span class="string">'7'</span>:</span><br><span class="line">		groups_NamingRoles = AdminTask.listGroupsForNamingRoles()</span><br><span class="line">		index = groups_NamingRoles.find(<span class="string">"CosNamingRead="</span>)</span><br><span class="line">		<span class="keyword">if</span> groups_NamingRoles[index:<span class="number">-1</span>].count(<span class="string">"ALLAUTHENTICATED"</span>):</span><br><span class="line">			<span class="keyword">if</span> <span class="number">1</span> != groups_NamingRoles.count(<span class="string">"ALLAUTHENTICATED"</span>):</span><br><span class="line">				<span class="keyword">print</span> <span class="string">"allAuthenticated more,CheckCosNaming_AllAuthenticated result:false"</span>	</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">"allAuthenticated readonly once,CheckCosNaming_AllAuthenticated result:true"</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">"allAuthenticated not readonly,CheckCosNaming_AllAuthenticated result:false"</span></span><br><span class="line">	<span class="keyword">elif</span> svr_num == <span class="string">'6'</span>:</span><br><span class="line">		cell_name = AdminControl.getCell()</span><br><span class="line">		<span class="keyword">print</span> cell_name</span><br><span class="line">		file_path = (<span class="string">"%s/config/cells/%s/naming-authz.xml"</span>) % (profile_name, cell_name)</span><br><span class="line">		<span class="keyword">if</span> os.path.isfile(file_path):</span><br><span class="line">			file = open(file_path, <span class="string">'r'</span>)</span><br><span class="line">			contents = file.readlines()</span><br><span class="line">			file.close()</span><br><span class="line">			Flag = <span class="keyword">False</span></span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> contents:</span><br><span class="line">				<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"SecurityRoleExt_1"</span>):</span><br><span class="line">					Flag = <span class="keyword">True</span></span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"authorizations"</span>):</span><br><span class="line">					Flag = <span class="keyword">False</span></span><br><span class="line">					<span class="keyword">break</span></span><br><span class="line">				<span class="keyword">if</span> <span class="keyword">True</span> == Flag:</span><br><span class="line">					<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"AllAuthenticatedUsersExt"</span>):</span><br><span class="line">						<span class="keyword">print</span> <span class="string">"allAuthenticated readonly once,CheckCosNaming_AllAuthenticated result:true"</span></span><br><span class="line">						<span class="keyword">break</span></span><br><span class="line">					<span class="keyword">if</span> <span class="keyword">False</span> == Flag:</span><br><span class="line">						<span class="keyword">print</span> <span class="string">"allAuthenticated not readonly,CheckCosNaming_AllAuthenticated result:false"</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据制定备份目录查找是否有根据概要文件命名的备份文件</span></span><br><span class="line"><span class="comment"># 如果有返回true  否则返回false</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backupFiles</span><span class="params">(backup_path, profile_name)</span>:</span></span><br><span class="line">	file_list = os.listdir(backup_path)</span><br><span class="line">	result = <span class="string">"false"</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> file_list:</span><br><span class="line">		<span class="keyword">if</span> os.path.splitext(i)[<span class="number">1</span>] == <span class="string">".zip"</span> <span class="keyword">and</span> <span class="number">-1</span> != i.find(profile_name):</span><br><span class="line">			result = <span class="string">"true"</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">if</span> os.path.splitext(i)[<span class="number">1</span>] == <span class="string">".gz"</span> <span class="keyword">and</span> <span class="number">-1</span> != i.find(profile_name):</span><br><span class="line">			result = <span class="string">"true"</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">if</span> result == <span class="string">"true"</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"checkbackupfiles:true"</span></span><br><span class="line">	<span class="keyword">elif</span> result == <span class="string">"false"</span>:</span><br><span class="line">	    <span class="keyword">print</span> <span class="string">"checkbackupfiles:false"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查config和properties两个目录的权限是否为700</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkFolderAttributes</span><span class="params">(profile_name)</span>:</span></span><br><span class="line">	config_path = (<span class="string">"%s/config"</span>) % ( profile_name)</span><br><span class="line">	properties_path = (<span class="string">"%s/properties"</span>) % ( profile_name)</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"config_attribute:"</span>,</span><br><span class="line">	command = <span class="string">"ls -ld %s"</span> % config_path</span><br><span class="line">	os.system(command)</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"properties_attribute:"</span>,</span><br><span class="line">	command = <span class="string">"ls -ld %s"</span> % properties_path</span><br><span class="line">	os.system(command)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查WAS的版本信息以及更新记录</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkInfo</span><span class="params">(profile_name)</span>:</span></span><br><span class="line">    history_path = (<span class="string">"%s/bin/historyInfo.sh"</span>) % ( profile_name)</span><br><span class="line">    version_path = (<span class="string">"%s/bin/versionInfo.sh"</span>) % ( profile_name)</span><br><span class="line">    genVersionReport_path = (<span class="string">"%s/bin/genVersionReport.sh"</span>) % ( profile_name)</span><br><span class="line">    genHistoryReport_path = (<span class="string">"%s/bin/genHistoryReport.sh"</span>) % ( profile_name)</span><br><span class="line">    hisroty_command = <span class="string">"sh %s"</span> % history_path</span><br><span class="line">    version_command = <span class="string">"sh %s"</span> % version_path</span><br><span class="line">    genHistory_command = <span class="string">"sh %s"</span> % genHistoryReport_path</span><br><span class="line">    genVersion_command = <span class="string">"sh %s"</span> % genVersionReport_path</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"History"</span></span><br><span class="line">    os.system(hisroty_command)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"History-End"</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Version"</span></span><br><span class="line">    os.system(version_command)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Version-End"</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"genHistory"</span></span><br><span class="line">    os.system(genHistory_command)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"genHistory-End"</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"genVersion"</span></span><br><span class="line">    os.system(genVersion_command)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"genVersion-End"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查配置的所有用户信息</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkUser</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">"checkUser"</span></span><br><span class="line">	<span class="keyword">if</span> svr_num == <span class="string">'8'</span> <span class="keyword">or</span> svr_num == <span class="string">'7'</span>:</span><br><span class="line">		<span class="keyword">print</span> AdminTask.listUserIDsOfAuthorizationGroup()</span><br><span class="line">		<span class="keyword">print</span> AdminTask.listAuditUserIDsOfAuthorizationGroup()</span><br><span class="line">	<span class="keyword">elif</span> svr_num == <span class="string">'6'</span>:</span><br><span class="line">		<span class="keyword">print</span> AdminTask.listUserIDsOfAuthorizationGroup()</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">"checkUserEnd"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查二项配置是否达标</span></span><br><span class="line"><span class="comment"># 检查文件ibm-web-ext.xmi 是在installedApps不是在config目录下切记</span></span><br><span class="line"><span class="comment"># 1、是否配置错误页面  defaultErrorPage</span></span><br><span class="line"><span class="comment"># 2、是否允许目录遍历 directoryBrowsingEnabled=false  fileServingEnabled=false</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkBrowser</span><span class="params">( profile_name)</span>:</span></span><br><span class="line">	Apps = AdminApp.list().split(<span class="string">'\n'</span>)</span><br><span class="line">	cell_name = AdminControl.getCell()</span><br><span class="line">	config_file = []</span><br><span class="line">	wrong_directoryBrowsing = []</span><br><span class="line">	wrong_fileServing = []</span><br><span class="line">	error_file = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> Apps:</span><br><span class="line">		tmp_path = (<span class="string">"%s/installedApps/%s/%s.ear"</span>) % ( profile_name, cell_name, i)</span><br><span class="line">		<span class="keyword">if</span> os.path.exists(tmp_path):</span><br><span class="line">			<span class="keyword">for</span> j <span class="keyword">in</span> os.listdir(tmp_path):</span><br><span class="line">				<span class="keyword">if</span> j[<span class="number">-4</span>:] == <span class="string">".war"</span>:</span><br><span class="line">					tmp_file = tmp_path + <span class="string">"/"</span> + j + <span class="string">"/WEB-INF/ibm-web-ext.xmi"</span></span><br><span class="line">					<span class="keyword">if</span> os.path.isfile(tmp_file):</span><br><span class="line">						config_file.append(tmp_file)</span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> config_file:</span><br><span class="line">		file = open(x, <span class="string">'r'</span>)</span><br><span class="line">		contents = file.read()</span><br><span class="line">		file.close()</span><br><span class="line">		text = contents.find(<span class="string">'directoryBrowsingEnabled="false"'</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="number">-1</span> == text:</span><br><span class="line">			wrong_directoryBrowsing.append(x)</span><br><span class="line">		text = contents.find(<span class="string">'fileServingEnabled="false"'</span>)</span><br><span class="line">		text1 = contents.find(<span class="string">'fileServingEnabled="true"'</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="number">-1</span> == text <span class="keyword">or</span> <span class="number">-1</span> != text1:</span><br><span class="line">			wrong_fileServing.append(x)</span><br><span class="line">		text = contents.find(<span class="string">"defaultErrorPage"</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="number">-1</span> == text:</span><br><span class="line">			error_file.append(x)</span><br><span class="line">		<span class="keyword">if</span> AdminApp.list() == <span class="string">""</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"errorPage:true"</span></span><br><span class="line">			<span class="keyword">print</span> <span class="string">"CheckFileServing:valid"</span></span><br><span class="line">			<span class="keyword">print</span> <span class="string">"CheckContentsBrowser:valid"</span></span><br><span class="line">		<span class="keyword">if</span> <span class="number">0</span> != len(error_file):</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"errorPage:false,file is "</span>, error_file</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"errorPage:true"</span></span><br><span class="line">		<span class="keyword">if</span> <span class="number">0</span> == len(wrong_directoryBrowsing):</span><br><span class="line">			 <span class="keyword">print</span> <span class="string">"CheckContentsBrowser:valid"</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"CheckContentsBrowser:invalid.file is"</span>, wrong_directoryBrowsing</span><br><span class="line">		<span class="keyword">if</span> <span class="number">0</span> == len(wrong_fileServing):</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"CheckFileServing:valid"</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"CheckFileServing:invalid.file is"</span>, wrong_fileServing</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"checkFile:"</span>, config_file</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkRolesMap</span><span class="params">( profile_name)</span>:</span></span><br><span class="line">	Apps = AdminApp.list().split(<span class="string">'\n'</span>)</span><br><span class="line">	cell_name = AdminControl.getCell()</span><br><span class="line">	result_Map = []</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"rolesMap"</span></span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> Apps:</span><br><span class="line">		rolesMap = (<span class="string">"%s/config/cells/%s/applications/%s.ear/deployments/%s/META-INF/ibm-application-bnd.xmi"</span>) % ( profile_name, cell_name, x, x)</span><br><span class="line">		<span class="keyword">print</span> rolesMap</span><br><span class="line">		<span class="keyword">if</span> os.path.isfile(rolesMap):</span><br><span class="line">			file = open(rolesMap, <span class="string">'r'</span>)</span><br><span class="line">			contents = file.readlines()</span><br><span class="line">			file.close()</span><br><span class="line">			Flag = <span class="keyword">False</span></span><br><span class="line">			count = <span class="number">0</span></span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> contents:</span><br><span class="line">				<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"/authorizations"</span>):</span><br><span class="line">					Flag = <span class="keyword">False</span></span><br><span class="line">					<span class="keyword">if</span> count &lt; <span class="number">3</span>:</span><br><span class="line">						result_Map.append(x)</span><br><span class="line">						<span class="keyword">break</span></span><br><span class="line">					count = <span class="number">0</span></span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"authorizations"</span>):</span><br><span class="line">					Flag = <span class="keyword">True</span></span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				<span class="keyword">if</span> <span class="keyword">True</span> == Flag:</span><br><span class="line">					<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"users"</span>):</span><br><span class="line">						count = count + <span class="number">1</span></span><br><span class="line">						<span class="keyword">continue</span></span><br><span class="line">					<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"specialSubjects"</span>):</span><br><span class="line">						count = count + <span class="number">1</span></span><br><span class="line">						<span class="keyword">continue</span></span><br><span class="line">					<span class="keyword">if</span> <span class="number">-1</span> != i.find(<span class="string">"group"</span>):</span><br><span class="line">						count = count + <span class="number">1</span></span><br><span class="line">						<span class="keyword">continue</span></span><br><span class="line">	<span class="keyword">if</span> <span class="number">0</span> != len(result_Map):</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"RolesMap:"</span>, <span class="string">","</span>.join(result_Map)</span><br><span class="line">		<span class="keyword">print</span> result_Map</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"RolesMap:true"</span></span><br><span class="line">		<span class="keyword">print</span> <span class="string">"rolesMapEnd"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkLTPA</span><span class="params">(profile_name)</span>:</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">"LTPA"</span></span><br><span class="line">	<span class="keyword">if</span> svr_num == <span class="string">'8'</span> <span class="keyword">or</span> svr_num == <span class="string">'7'</span>:</span><br><span class="line">		<span class="keyword">print</span> AdminTask.getActiveSecuritySettings()</span><br><span class="line">	<span class="keyword">elif</span> svr_num == <span class="string">'6'</span>:</span><br><span class="line">		cell_name = AdminControl.getCell()</span><br><span class="line">		file_path = (<span class="string">"%s/config/cells/%s/security.xml"</span>) % ( profile_name, cell_name)</span><br><span class="line">		<span class="keyword">if</span> os.path.isfile(file_path):</span><br><span class="line">			file = open(file_path, <span class="string">'r'</span>)</span><br><span class="line">			contents = file.read()</span><br><span class="line">			file.close()</span><br><span class="line">			<span class="keyword">if</span> <span class="number">-1</span> != contents.find(<span class="string">'activeAuthMechanism="LTPA_1"'</span>):</span><br><span class="line">				<span class="keyword">print</span> <span class="string">"[activeAuthMechanism LTPA]"</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">"LTPA is false"</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">"LTPAEND"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	appServer_path =<span class="string">'/home/was/was85/AppServer'</span> </span><br><span class="line">	profile_path = <span class="string">'/home/was/boss_app/'</span></span><br><span class="line">	profile_name = <span class="string">'boss-app-bd01-pf1'</span></span><br><span class="line">	backup_path = <span class="string">'/home/was/backup'</span></span><br><span class="line">	Init()</span><br><span class="line">	checkPassword(profile_path+profile_name)</span><br><span class="line">	checkCosNaming(profile_path+profile_name)</span><br><span class="line">	backupFiles(backup_path, profile_name)</span><br><span class="line">	checkFolderAttributes(profile_path+profile_name)</span><br><span class="line">	checkInfo(profile_path+profile_name)</span><br><span class="line">	checkUser()</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"java2security:"</span>, AdminConfig.showAttribute(AdminConfig.list(<span class="string">"Security"</span>), <span class="string">"enforceJava2Security"</span>)</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"appSecurityEnabled:"</span>, AdminTask.isAppSecurityEnabled()</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"logTrace:"</span>, AdminConfig.showAttribute(AdminConfig.list(<span class="string">"TraceService"</span>), <span class="string">"enable"</span>)</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"loglevel:"</span>, AdminConfig.showAttribute(AdminConfig.list(<span class="string">"TraceService"</span>), <span class="string">"startupTraceSpecification"</span>)</span><br><span class="line">	<span class="comment">#print "timeout:", AdminConfig.showAttribute(AdminConfig.showAttribute(AdminConfig.showAttribute(AdminConfig.list("DeployedObjectConfig"), "sessionManagement"), "tuningParams"),"invalidationTimeout")</span></span><br><span class="line">	emps = <span class="string">","</span>.join(AdminApp.list().split(<span class="string">"\n"</span>))</span><br><span class="line">	emp_ret = []</span><br><span class="line">	<span class="keyword">if</span> <span class="number">-1</span> != emps.find(<span class="string">"DefaultApplication"</span>):</span><br><span class="line">		emp_ret.append(<span class="string">"DefaultApplication"</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="number">-1</span> != emps.find(<span class="string">"PlantsByWebSphere"</span>):</span><br><span class="line">		emp_ret.append(<span class="string">"PlantsByWebSphere"</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="number">-1</span> != emps.find(<span class="string">"SamplesGallery"</span>):</span><br><span class="line">		emp_ret.append(<span class="string">"SamplesGallery"</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="number">-1</span> != emps.find(<span class="string">"ivtApp"</span>):</span><br><span class="line">		emp_ret.append(<span class="string">"ivtApp"</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="number">-1</span> != emps.find(<span class="string">"query"</span>):</span><br><span class="line">		emp_ret.append(<span class="string">"query"</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="number">0</span> == len(emp_ret):</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"examples:valid"</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"examples:"</span>, <span class="string">","</span>.join(emp_ret)</span><br><span class="line">	</span><br><span class="line">	checkBrowser(profile_path+profile_name)</span><br><span class="line">	checkRolesMap(profile_path+profile_name)</span><br><span class="line">	checkLTPA(profile_path+profile_name)</span><br><span class="line"><span class="keyword">except</span> AttributeError:</span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h2 id="检查结果"><a href="#检查结果" class="headerlink" title="检查结果"></a>检查结果</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br></pre></td><td class="code"><pre><span class="line">********: WebSphere:name=boss-app-bd01-node1-srv,process=boss-app-bd01-node1-srv,platform=proxy,node=boss-app-bd01-node1,j2eeType=J2EEServer,version=<span class="number">8.5</span><span class="number">.5</span><span class="number">.11</span>,type=Server,mbeanIdentifier=cells/boss-app-bd01-node1-cell/nodes/boss-app-bd01-node1/servers/boss-app-bd01-node1-srv/server.xml<span class="comment">#Server_1183122130078,cell=boss-app-bd01-node1-cell,spec=1.0,processType=UnManagedProcess</span></span><br><span class="line">********: <span class="number">8</span></span><br><span class="line">checkPassword: com.ibm.SOAP.securityEnabled=true</span><br><span class="line"></span><br><span class="line">everyone <span class="keyword">not</span> removed,CheckCosNaming_Everyone result:false</span><br><span class="line">allAuthenticated readonly once,CheckCosNaming_AllAuthenticated result:true</span><br><span class="line">checkbackupfiles:true</span><br><span class="line">config_attribute:drwxr-xr-x <span class="number">9</span> was was <span class="number">4096</span> <span class="number">12</span>月  <span class="number">9</span> <span class="number">11</span>:<span class="number">51</span> /home/was/boss_app/boss-app-bd01-pf1/config</span><br><span class="line">properties_attribute:drwxr-xr-x <span class="number">7</span> was was <span class="number">4096</span> <span class="number">5</span>月  <span class="number">23</span> <span class="number">14</span>:<span class="number">32</span> /home/was/boss_app/boss-app-bd01-pf1/properties</span><br><span class="line">History</span><br><span class="line">WVER0210I: Copyright (c) IBM Corporation <span class="number">2002</span>, <span class="number">2012</span>; All rights reserved.</span><br><span class="line">WVER0212I: HistoryInfo Reporter V1<span class="number">.7</span><span class="number">.1</span><span class="number">.28</span>，日期：<span class="number">10</span>/<span class="number">18</span>/<span class="number">11</span></span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">IBM WebSphere 产品历史记录报告</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">日期和时间 <span class="number">2017</span>年<span class="number">5</span>月<span class="number">25</span>日 上午<span class="number">10</span>时<span class="number">54</span>分<span class="number">16</span>秒 时的报告</span><br><span class="line"></span><br><span class="line">安装</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">产品目录      /home/was/was85/AppServer</span><br><span class="line">版本目录      /home/was/was85/AppServer/properties/version</span><br><span class="line">DTD 目录    /home/was/was85/AppServer/properties/version/dtd</span><br><span class="line">日志目录      /home/was/var/ibm/InstallationManager/logs</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140317</span>_1520.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-03</span><span class="number">-17</span> <span class="number">15</span>:<span class="number">20</span>:<span class="number">42</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               更新</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.1</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5001</span><span class="number">.20131018</span>_2242</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140317</span>_1523.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-03</span><span class="number">-17</span> <span class="number">15</span>:<span class="number">23</span>:<span class="number">31</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line">                                 用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.1</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5001</span><span class="number">.20131018</span>_2242</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1228.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">28</span>:<span class="number">44</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line">                                 用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               回滚</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1231.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">31</span>:<span class="number">23</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1233.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">33</span>:<span class="number">48</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1237a.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">38</span>:<span class="number">01</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1244.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">44</span>:<span class="number">25</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1247.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">47</span>:<span class="number">18</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1251.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">51</span>:<span class="number">30</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1255.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">56</span>:<span class="number">02</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1258a.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">58</span>:<span class="number">38</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1302.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">02</span>:<span class="number">43</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1304.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">04</span>:<span class="number">38</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1306.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">06</span>:<span class="number">38</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1327.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">27</span>:<span class="number">19</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1330.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">30</span>:<span class="number">46</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1339.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">39</span>:<span class="number">26</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1343.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">44</span>:<span class="number">11</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1357.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">13</span>:<span class="number">57</span>:<span class="number">23</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1436.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">14</span>:<span class="number">36</span>:<span class="number">38</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               更新</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.1</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5001</span><span class="number">.20131018</span>_2242</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20140513</span>_1441.xml</span><br><span class="line">时间戳记                             <span class="number">2014</span><span class="number">-05</span><span class="number">-13</span> <span class="number">14</span>:<span class="number">41</span>:<span class="number">30</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line">                                 用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               更新</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.10</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5010</span><span class="number">.20160721</span>_0036</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20161130</span>_1508.xml</span><br><span class="line">时间戳记                             <span class="number">2016</span><span class="number">-11</span><span class="number">-30</span> <span class="number">15</span>:<span class="number">08</span>:<span class="number">35</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line">                                 用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               卸载</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.10</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5010</span><span class="number">.20160721</span>_0036</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20161209</span>_1022.xml</span><br><span class="line">时间戳记                             <span class="number">2016</span><span class="number">-12</span><span class="number">-09</span> <span class="number">10</span>:<span class="number">22</span>:<span class="number">59</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">32</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.0</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5000</span><span class="number">.20130514</span>_1044</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20161209</span>_1026.xml</span><br><span class="line">时间戳记                             <span class="number">2016</span><span class="number">-12</span><span class="number">-09</span> <span class="number">10</span>:<span class="number">26</span>:<span class="number">54</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               更新</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.10</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5010</span><span class="number">.20160721</span>_0036</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20161209</span>_1113.xml</span><br><span class="line">时间戳记                             <span class="number">2016</span><span class="number">-12</span><span class="number">-09</span> <span class="number">11</span>:<span class="number">13</span>:<span class="number">42</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line">                                 用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.ND.v85</span><br><span class="line">操作                               更新</span><br><span class="line">版本                               <span class="number">8.5</span><span class="number">.5</span><span class="number">.11</span></span><br><span class="line">软件包                              com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5011</span><span class="number">.20161206</span>_1434</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20170124</span>_1009.xml</span><br><span class="line">时间戳记                             <span class="number">2017</span><span class="number">-01</span><span class="number">-24</span> <span class="number">10</span>:<span class="number">09</span>:<span class="number">38</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line">已安装功能部件                          针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line">                                 用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">                                 可嵌入式 EJB 容器</span><br><span class="line">                                 独立瘦客户机和资源适配器</span><br><span class="line"></span><br><span class="line">安装事件</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Installation Manager 产品标识        com.ibm.websphere.IBMJAVA.v71</span><br><span class="line">操作                               安装</span><br><span class="line">版本                               <span class="number">7.1</span><span class="number">.3</span><span class="number">.60</span></span><br><span class="line">软件包                              com.ibm.websphere.IBMJAVA.v71_7<span class="number">.1</span><span class="number">.3060</span><span class="number">.20161124</span>_1256</span><br><span class="line">日志文件名                            /home/was/var/ibm/InstallationManager/logs/<span class="number">20170419</span>_1435.xml</span><br><span class="line">时间戳记                             <span class="number">2017</span><span class="number">-04</span><span class="number">-19</span> <span class="number">14</span>:<span class="number">35</span>:<span class="number">55</span>+<span class="number">0800</span></span><br><span class="line">结果                               成功</span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">结束历史记录报告</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">History-End</span><br><span class="line">Version</span><br><span class="line">WVER0010I: Copyright (c) IBM Corporation <span class="number">2002</span>, <span class="number">2012</span>; All rights reserved.</span><br><span class="line">WVER0012I: VersionInfo reporter V1<span class="number">.15</span><span class="number">.1</span><span class="number">.48</span>，日期：<span class="number">2</span>/<span class="number">8</span>/<span class="number">12</span></span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">IBM WebSphere 产品安装状态报告</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">日期和时间 <span class="number">2017</span>年<span class="number">5</span>月<span class="number">25</span>日 上午<span class="number">10</span>时<span class="number">54</span>分<span class="number">19</span>秒 时的报告</span><br><span class="line"></span><br><span class="line">安装</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">产品目录                     /home/was/was85/AppServer</span><br><span class="line">版本目录                     /home/was/was85/AppServer/properties/version</span><br><span class="line">DTD 目录                   /home/was/was85/AppServer/properties/version/dtd</span><br><span class="line">日志目录                     /home/was/var/ibm/InstallationManager/logs</span><br><span class="line"></span><br><span class="line">产品列表</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">ND                       已安装</span><br><span class="line">IBMJAVA71                已安装</span><br><span class="line"></span><br><span class="line">已安装产品</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">名称         IBM WebSphere Application Server Network Deployment</span><br><span class="line">版本         <span class="number">8.5</span><span class="number">.5</span><span class="number">.11</span></span><br><span class="line">标识         ND</span><br><span class="line">构建级别       cf111649<span class="number">.01</span></span><br><span class="line">构建日期       <span class="number">12</span>/<span class="number">6</span>/<span class="number">16</span></span><br><span class="line">软件包        com.ibm.websphere.ND.v85_8<span class="number">.5</span><span class="number">.5011</span><span class="number">.20161206</span>_1434</span><br><span class="line">体系结构       x86<span class="number">-64</span> (<span class="number">64</span> bit)</span><br><span class="line">已安装功能部件    针对 Java 的 IBM <span class="number">64</span> 位 WebSphere SDK</span><br><span class="line">           WebSphere Application Server Full Profile</span><br><span class="line">           用于 EJB <span class="number">3.0</span> 之前的模块的 EJBDeploy 工具</span><br><span class="line">           可嵌入式 EJB 容器</span><br><span class="line">           独立瘦客户机和资源适配器</span><br><span class="line">可选语言       简体中文</span><br><span class="line"></span><br><span class="line">已安装产品</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">名称         IBM WebSphere SDK Java Technology Edition (Optional)</span><br><span class="line">版本         <span class="number">7.1</span><span class="number">.3</span><span class="number">.60</span></span><br><span class="line">标识         IBMJAVA71</span><br><span class="line">构建级别       cf111647<span class="number">.02</span></span><br><span class="line">构建日期       <span class="number">11</span>/<span class="number">24</span>/<span class="number">16</span></span><br><span class="line">软件包        com.ibm.websphere.IBMJAVA.v71_7<span class="number">.1</span><span class="number">.3060</span><span class="number">.20161124</span>_1256</span><br><span class="line">体系结构       x86<span class="number">-64</span> (<span class="number">64</span> bit)</span><br><span class="line">已安装功能部件    IBM WebSphere SDK <span class="keyword">for</span> Java Technology Edition V7<span class="number">.1</span></span><br><span class="line">可选语言       简体中文</span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">结束安装状态报告</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Version-End</span><br><span class="line">genHistory</span><br><span class="line">WVER0210I: Copyright (c) IBM Corporation <span class="number">2002</span>, <span class="number">2012</span>; All rights reserved.</span><br><span class="line">WVER0212I: HistoryInfo Reporter V1<span class="number">.7</span><span class="number">.1</span><span class="number">.28</span>，日期：<span class="number">10</span>/<span class="number">18</span>/<span class="number">11</span></span><br><span class="line"></span><br><span class="line">genHistory-End</span><br><span class="line">genVersion</span><br><span class="line">WVER0010I: Copyright (c) IBM Corporation <span class="number">2002</span>, <span class="number">2012</span>; All rights reserved.</span><br><span class="line">WVER0012I: VersionInfo reporter V1<span class="number">.15</span><span class="number">.1</span><span class="number">.48</span>，日期：<span class="number">2</span>/<span class="number">8</span>/<span class="number">12</span></span><br><span class="line"></span><br><span class="line">genVersion-End</span><br><span class="line">checkUser</span><br><span class="line">&#123;nobody=[], monitor=[], configurator=[], administrator=[], deployer=[], iscadmins=[], operator=[], adminsecuritymanager=[]&#125;</span><br><span class="line">&#123;auditor=[]&#125;</span><br><span class="line">checkUserEnd</span><br><span class="line">java2security: false</span><br><span class="line">appSecurityEnabled: false</span><br><span class="line">logTrace: true</span><br><span class="line">loglevel: *=info:SecurityManager=all:SystemOut=all</span><br><span class="line">examples:valid</span><br><span class="line">errorPage:true</span><br><span class="line">CheckContentsBrowser:valid</span><br><span class="line">CheckFileServing:valid</span><br><span class="line">checkFile: [<span class="string">'/home/was/boss_app/boss-app-bd01-pf1/installedApps/boss-app-bd01-node1-cell/BOSS_APP.ear/boss_app_web.war/WEB-INF/ibm-web-ext.xmi'</span>]</span><br><span class="line">rolesMap</span><br><span class="line">/home/was/boss_app/boss-app-bd01-pf1/config/cells/boss-app-bd01-node1-cell/applications/BOSS_APP.ear/deployments/BOSS_APP/META-INF/ibm-application-bnd.xmi</span><br><span class="line">RolesMap:true</span><br><span class="line">rolesMapEnd</span><br><span class="line">LTPA</span><br><span class="line">[[enableGlobalSecurity true] [dynUpdateSSLConfig true] [activeAuthMechanism LTPA] [adminPreferredAuthMech RSAToken] [useDomainQualifiedUserNames false] [cacheTimeout <span class="number">600</span>] [issuePermissionWarning true] [enforceJava2Security false] [appSecurityEnabled false] [enforceFineGrainedJCASecurity false] [activeUserRegistry WIMUserRegistry] [properties [[[name security.enablePluggableAuthentication] [value true] ]</span><br><span class="line">[[name com.ibm.CSI.rmiOutboundPropagationEnabled] [value true] ]</span><br><span class="line">[[name com.ibm.CSI.rmiInboundPropagationEnabled] [value true] ]</span><br><span class="line">[[name com.ibm.CSI.rmiOutboundLoginEnabled] [value false] ]</span><br><span class="line">[[name com.ibm.ws.security.webInboundPropagationEnabled] [value true] ]</span><br><span class="line">[[name com.ibm.ws.security.ssoInteropModeEnabled] [value false] ]</span><br><span class="line">[[name com.ibm.CSI.supportedTargetRealms] [value ] ]</span><br><span class="line">[[name com.ibm.CSI.rmiInboundLoginConfig] [value system.RMI_INBOUND] ]</span><br><span class="line">[[name com.ibm.CSI.rmiOutboundLoginConfig] [value system.RMI_OUTBOUND] ]</span><br><span class="line">[[name com.ibm.ws.security.webInboundLoginConfig] [value system.WEB_INBOUND] ]</span><br><span class="line">[[name com.ibm.ws.security.defaultLoginConfig] [value system.DEFAULT] ]</span><br><span class="line">[[name com.ibm.wsspi.security.ltpa.tokenFactory] [value com.ibm.ws.security.ltpa.LTPATokenFactory|com.ibm.ws.security.ltpa.LTPAToken2Factory|com.ibm.ws.security.ltpa.AuthzPropTokenFactory] ]</span><br><span class="line">[[name com.ibm.wsspi.security.token.authenticationTokenFactory] [value com.ibm.ws.security.ltpa.LTPATokenFactory] ]</span><br><span class="line">[[name com.ibm.wsspi.security.token.authorizationTokenFactory] [value com.ibm.ws.security.ltpa.AuthzPropTokenFactory] ]</span><br><span class="line">[[name com.ibm.wsspi.security.token.propagationTokenFactory] [value com.ibm.ws.security.ltpa.AuthzPropTokenFactory] ]</span><br><span class="line">[[name com.ibm.wsspi.security.token.singleSignonTokenFactory] [value com.ibm.ws.security.ltpa.LTPAToken2Factory] ]</span><br><span class="line">[[name com.ibm.ws.security.webChallengeIfCustomSubjectNotFound] [value true] ]</span><br><span class="line">[[name com.ibm.security.useFIPS] [value false] ]</span><br><span class="line">[[name com.ibm.websphere.security.DeferTAItoSSO] [value com.ibm.ws.security.spnego.TrustAssociationInterceptorImpl] ]</span><br><span class="line">[[name com.ibm.ws.security.propagationExcludeList] [value com.ibm.security.jgss.*:javax.security.auth.kerberos.KerberosKey:javax.security.auth.kerberos.KerberosTicket] ]</span><br><span class="line">[[name com.ibm.websphere.security.krb.allowLTPAAuth] [value true] ]</span><br><span class="line">[[name com.ibm.websphere.security.krb.canonical_host] [value true] ]</span><br><span class="line">[[name com.ibm.ws.security.addHttpOnlyAttributeToCookies] [value true] ]</span><br><span class="line">[[name com.ibm.ssl.defaultCertReqSubjectDN] [value cn=<span class="number">10.96</span><span class="number">.18</span><span class="number">.227</span>,ou=boss-app-bd01-node1-cell,ou=boss-app-bd01-node1,o=IBM,c=US] ]</span><br><span class="line">[[name com.ibm.ssl.rootCertSubjectDN] [value [cn=<span class="number">10.96</span><span class="number">.18</span><span class="number">.227</span>,ou=Root Certificate,ou=boss-app-bd01-node1-cell,ou=boss-app-bd01-node1,o=IBM,c=US]] ]</span><br><span class="line">[[name com.ibm.ssl.rootCertValidDays] [value <span class="number">5475</span>] ]</span><br><span class="line">[[name com.ibm.ssl.defaultCertReqDays] [value <span class="number">365</span>] ]]] ]</span><br><span class="line">LTPAEND</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/was/" rel="tag"># was</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/30/blog/was收集类加载失败的trace日志方法/" rel="next" title="was收集类加载失败的trace日志方法">
+                <i class="fa fa-chevron-left"></i> was收集类加载失败的trace日志方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/30/blog/websphere通过脚本来创建用户和组/" rel="prev" title="websphere通过脚本来创建用户和组">
+                websphere通过脚本来创建用户和组 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查脚本"><span class="nav-number">2.</span> <span class="nav-text">检查脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查结果"><span class="nav-number">3.</span> <span class="nav-text">检查结果</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

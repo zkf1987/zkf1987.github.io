@@ -1,0 +1,1046 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="liberty,jython,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="描述如果 Liberty 安装没有服务器，请创建 Liberty 服务器。例如，在命令窗口中的 wlp/bin 目录，创建名为 myServer 的服务器。1server create adminSrv 说明：该示例命令将服务器文件添加到 wlp/usr/servers/adminSrv 目录。">
+<meta name="keywords" content="liberty,jython">
+<meta property="og:type" content="article">
+<meta property="og:title" content="liberty安装adminCenter &amp;&amp; jython监控liberty">
+<meta property="og:url" content="http://yoursite.com/2018/12/30/blog/liberty安装adminCenter/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="描述如果 Liberty 安装没有服务器，请创建 Liberty 服务器。例如，在命令窗口中的 wlp/bin 目录，创建名为 myServer 的服务器。1server create adminSrv 说明：该示例命令将服务器文件添加到 wlp/usr/servers/adminSrv 目录。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/pnMPV">
+<meta property="og:updated_time" content="2017-06-16T03:42:02.897Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="liberty安装adminCenter &amp;&amp; jython监控liberty">
+<meta name="twitter:description" content="描述如果 Liberty 安装没有服务器，请创建 Liberty 服务器。例如，在命令窗口中的 wlp/bin 目录，创建名为 myServer 的服务器。1server create adminSrv 说明：该示例命令将服务器文件添加到 wlp/usr/servers/adminSrv 目录。">
+<meta name="twitter:image" content="http://ooj9cf5vc.bkt.clouddn.com/pnMPV">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/30/blog/liberty安装adminCenter/">
+
+
+
+
+
+  <title> liberty安装adminCenter && jython监控liberty | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/blog/liberty安装adminCenter/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                liberty安装adminCenter && jython监控liberty
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T15:10:10+08:00">
+                2018-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/30/blog/liberty安装adminCenter/" class="leancloud_visitors" data-flag-title="liberty安装adminCenter && jython监控liberty">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>如果 Liberty 安装没有服务器，请创建 Liberty 服务器。<br>例如，在命令窗口中的 wlp/bin 目录，创建名为 myServer 的服务器。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server create adminSrv</span><br></pre></td></tr></table></figure></p>
+<p>说明：该示例命令将服务器文件添加到 wlp/usr/servers/adminSrv 目录。<br><a id="more"></a></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>配置server.xml文件如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">server</span> <span class="attr">description</span>=<span class="string">"new server"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Enable features --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">featureManager</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">feature</span>&gt;</span>jsp-2.2<span class="tag">&lt;/<span class="name">feature</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--安装管理中心--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">feature</span>&gt;</span>adminCenter-1.0<span class="tag">&lt;/<span class="name">feature</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--增加监控功能--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">feature</span>&gt;</span>monitor-1.0<span class="tag">&lt;/<span class="name">feature</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">featureManager</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">httpEndpoint</span> <span class="attr">id</span>=<span class="string">"defaultHttpEndpoint"</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">httpPort</span>=<span class="string">"9089"</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">httpsPort</span>=<span class="string">"9449"</span> <span class="attr">host</span>=<span class="string">"*"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Automatically expand WAR files and EAR files --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">applicationManager</span> <span class="attr">autoExpand</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--adminCenter的用户名和密码--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">quickStartSecurity</span> <span class="attr">userName</span>=<span class="string">"admin"</span> <span class="attr">userPassword</span>=<span class="string">"admin"</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!--key.jks证书的密码该证书自动生成--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">keyStore</span> <span class="attr">id</span>=<span class="string">"defaultKeyStore"</span> <span class="attr">password</span>=<span class="string">"123456"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">server</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="启动server"><a href="#启动server" class="headerlink" title="启动server"></a>启动server</h2><p>启动SERVER如下<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[was@kube-mini bin]$ sh server run adminSrv</span><br><span class="line">Launching adminSrv (WebSphere Application Server 16.0.0.2/wlp-1.0.13.cl160220160526-2258) on IBM J9 VM, version pxa6480sr3fp12-20160919_01 (SR3 FP12) (en_US)</span><br><span class="line">[AUDIT   ] CWWKE0001I: The server adminSrv has been launched.</span><br><span class="line">[AUDIT   ] CWWKZ0058I: Monitoring dropins for applications.</span><br><span class="line">[AUDIT   ] CWWKF0012I: The server installed the following features: [servlet-3.0, jsp-2.2, ssl-1.0, jndi-1.0, json-1.0, adminCenter-1.0, distributedMap-1.0, jaxrs-1.1, restConnector-1.0].</span><br><span class="line">[AUDIT   ] CWWKF0011I: The server adminSrv is ready to run a smarter planet.</span><br><span class="line">[AUDIT   ] CWWKT0016I: Web application available (default_host): http://10.244.3.0:9089/ibm/api/</span><br><span class="line">[AUDIT   ] CWWKT0016I: Web application available (default_host): http://10.244.3.0:9089/IBMJMXConnectorREST/</span><br><span class="line">[AUDIT   ] CWWKT0016I: Web application available (default_host): http://10.244.3.0:9089/ibm/adminCenter/serverConfig-1.0/</span><br><span class="line">[AUDIT   ] CWWKT0016I: Web application available (default_host): http://10.244.3.0:9089/ibm/adminCenter/explore-1.0/</span><br><span class="line">[AUDIT   ] CWWKT0016I: Web application available (default_host): http://10.244.3.0:9089/adminCenter/</span><br><span class="line">[AUDIT   ] CWWKT0016I: Web application available (default_host): http://10.244.3.0:9089/snoop/</span><br><span class="line">[AUDIT   ] CWWKZ0001I: Application snoop started in 0.319 seconds.</span><br></pre></td></tr></table></figure></p>
+<p>访问控制台：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://192.168.10.32:9449/adminCenter/login.jsp</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ooj9cf5vc.bkt.clouddn.com/pnMPV" alt="Untitled Image"></p>
+<h2 id="REST-Connector-API-监控"><a href="#REST-Connector-API-监控" class="headerlink" title="REST Connector API 监控"></a>REST Connector API 监控</h2><p>将 REST 连接器文件复制到 Jython 目录：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$WLP_DIR</span>/wlp/jython </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp <span class="variable">$WLP_DIR</span>/wlp/clients/jython/restConnector.py  . </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp <span class="variable">$WLP_DIR</span>/wlp/clients/restConnector.jar . </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls -l</span></span><br></pre></td></tr></table></figure></p>
+<p>收集 Liberty 服务器的性能数据</p>
+<h3 id="启动-Jython-会话"><a href="#启动-Jython-会话" class="headerlink" title="启动 Jython 会话"></a>启动 Jython 会话</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java -cp jython-standalone-2.5.3.jar:restConnector.jar org.python.util.jython</span><br><span class="line"></span><br><span class="line">[was@kube-mini jython]$ java -cp jython-standalone-2.5.3.jar:restConnector.jar org.python.util.jython</span><br><span class="line">Jython 2.5.3 (2.5:c56500f08d34+, Aug 13 2012, 14:54:35)</span><br><span class="line">[IBM J9 VM (IBM Corporation)] on java1.8.0</span><br><span class="line">Type "help", "copyright", "credits" or "license" for more information.</span><br></pre></td></tr></table></figure>
+<h3 id="连接到控制器服务器"><a href="#连接到控制器服务器" class="headerlink" title="连接到控制器服务器"></a>连接到控制器服务器</h3><p>要连接到控制器服务器，可使用 restConnector.py 文件中的 JMXRESTConnector 对象。我们使用了以下元素：</p>
+<p>控制器信任密钥文件</p>
+<p>控制器信任密码</p>
+<p>控制器主机名或 IP 地址</p>
+<p>控制器端口</p>
+<p>控制器用户 ID 和密码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> restConnector <span class="keyword">import</span> JMXRESTConnector </span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>JMXRESTConnector.trustStore = <span class="string">'/home/was/nd/wlp/usr/servers/adminSrv/resources/security/key.jks'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>JMXRESTConnector.trustStorePassword = <span class="string">'123456'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>connector = JMXRESTConnector() </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>connection = connector.connect( <span class="string">'&lt;controller_hostname&gt;'</span>, <span class="number">9449</span>, <span class="string">'admin'</span>, <span class="string">'admin'</span>) </span><br><span class="line">Connecting to the server... </span><br><span class="line">Successfully connected to the server <span class="string">"&lt;controller_hostname&gt;:9449"</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="连接到控制器-MBean-服务器"><a href="#连接到控制器-MBean-服务器" class="headerlink" title="连接到控制器 MBean 服务器"></a>连接到控制器 MBean 服务器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">mconnection = connection.getMBeanServerConnection()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>mconnection = connector.getMBeanServerConnection() </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; mconnection </span><br><span class="line"> com.ibm.ws.jmx.connector.client.rest.internal.RESTMBeanServerConnection@aba685fb </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; dir( mconnection) </span><br><span class="line"> [<span class="string">'MBeanCount'</span>, <span class="string">'PollingMode'</span>, <span class="string">'ServerPollingThread'</span>, <span class="string">'__class__'</span>, <span class="string">'__copy__'</span>, </span><br><span class="line"> <span class="string">'__deepcopy__'</span>, <span class="string">'__delattr__'</span>, <span class="string">'__doc__'</span>, <span class="string">'__ensure_finalizer__'</span>, <span class="string">'__eq__'</span>, </span><br><span class="line"> <span class="string">'__format__'</span>, <span class="string">'__getattribute__'</span>, <span class="string">'__hash__'</span>, <span class="string">'__init__'</span>, <span class="string">'__ne__'</span>, <span class="string">'__new__'</span>, </span><br><span class="line"> <span class="string">'__reduce__'</span>, <span class="string">'__reduce_ex__'</span>, <span class="string">'__repr__'</span>, <span class="string">'__setattr__'</span>, <span class="string">'__str__'</span>, <span class="string">'__subclasshook__'</span>, </span><br><span class="line"> <span class="string">'__unicode__'</span>, <span class="string">'addNotificationListener'</span>, <span class="string">'class'</span>, <span class="string">'createMBean'</span>, <span class="string">'defaultDomain'</span>, </span><br><span class="line"> <span class="string">'domains'</span>, <span class="string">'equals'</span>, <span class="string">'getAttribute'</span>, <span class="string">'getAttributes'</span>, <span class="string">'getClass'</span>, <span class="string">'getDefaultDomain'</span>, </span><br><span class="line"> <span class="string">'getDomains'</span>, <span class="string">'getMBeanCount'</span>, <span class="string">'getMBeanInfo'</span>, <span class="string">'getObjectInstance'</span>, <span class="string">'hashCode'</span>, </span><br><span class="line"> <span class="string">'invoke'</span>, <span class="string">'isInstanceOf'</span>, <span class="string">'isRegistered'</span>, <span class="string">'notify'</span>, <span class="string">'notifyAll'</span>, <span class="string">'queryMBeans'</span>, </span><br><span class="line"> <span class="string">'queryNames'</span>, <span class="string">'removeNotificationListener'</span>, <span class="string">'setAttribute'</span>, <span class="string">'setAttributes'</span>, <span class="string">'toString'</span>, </span><br><span class="line"> <span class="string">'unregisterMBean'</span>, <span class="string">'wait'</span>] </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; type( mconnection) </span><br><span class="line"> &lt;type <span class="string">'com.ibm.ws.jmx.connector.client.rest.internal.RESTMBeanServerConnection'</span>&gt; </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; mconnection.getClass() </span><br><span class="line"> &lt;type <span class="string">'com.ibm.ws.jmx.connector.client.rest.internal.RESTMBeanServerConnection'</span>&gt; </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; <span class="keyword">for</span> i <span class="keyword">in</span> mconnection.getClass().getMethods(): <span class="keyword">print</span> i </span><br><span class="line"> ... </span><br><span class="line"> public boolean java.lang.Object.equals(java.lang.Object) </span><br><span class="line"> public int java.lang.Object.hashCode() </span><br><span class="line"> public java.lang.String java.lang.Object.toString()</span><br></pre></td></tr></table></figure>
+<h3 id="列出可用的-MBean"><a href="#列出可用的-MBean" class="headerlink" title="列出可用的 MBean"></a>列出可用的 MBean</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> javax.management <span class="keyword">import</span> ObjectName </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; mbeans = mconnection.queryNames( ObjectName( <span class="string">"WebSphere:*"</span>), <span class="keyword">None</span>).toArray() </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; type( mbeans) </span><br><span class="line"> &lt;type <span class="string">'array.array'</span>&gt; </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; mbeans[<span class="number">0</span>] </span><br><span class="line"> WebSphere:name=com.ibm.websphere.config.mbeans.FeatureListMBean </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; type( mbeans[<span class="number">0</span>]) </span><br><span class="line"> &lt;type <span class="string">'javax.management.ObjectName'</span>&gt; </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; <span class="keyword">for</span> i <span class="keyword">in</span> mbeans: <span class="keyword">print</span> i </span><br><span class="line"> ... </span><br><span class="line"> WebSphere:name=com.ibm.websphere.config.mbeans.FeatureListMBean </span><br><span class="line"> WebSphere:feature=collectiveController,type=ControllerConfig,name=ControllerConfig </span><br><span class="line"> WebSphere:name=com.ibm.websphere.config.mbeans.ServerXMLConfigurationMBean </span><br><span class="line"> WebSphere:type=ServletStats,name=com.ibm.ws.jmx.connector.server.rest.MBeanServerConnector </span><br><span class="line"> WebSphere:feature=collectiveController,type=CollectiveRepository,name=CollectiveRepository </span><br><span class="line"> WebSphere:feature=collectiveController,type=MaintenanceMode,name=MaintenanceMode </span><br><span class="line"> WebSphere:feature=collectiveMember,type=EndpointRoutingInfo,name=EndpointRoutingInfo </span><br><span class="line"> WebSphere:feature=collectiveController,type=RepositoryPathUtility, </span><br><span class="line"> name=RepositoryPathUtility </span><br><span class="line"> WebSphere:name=com.ibm.ws.jmx.mbeans.sessionManagerMBean </span><br><span class="line"> WebSphere:name=com.ibm.ws.jmx.mbeans.generatePluginConfig </span><br><span class="line"> WebSphere:feature=restConnector,type=FileService,name=FileService </span><br><span class="line"> WebSphere:feature=collectiveController,type=ServerCommands,name=ServerCommands </span><br><span class="line"> WebSphere:name=com.ibm.ws.config.serverSchemaGenerator </span><br><span class="line"> WebSphere:feature=collectiveController,type=CollectiveRegistration, </span><br><span class="line"> name=CollectiveRegistration </span><br><span class="line"> WebSphere:feature=CacheAdmin,type=DynaCache,name=DistributedMap </span><br><span class="line"> WebSphere:feature=collectiveController,type=RoutingContext,name=RoutingContext </span><br><span class="line"> WebSphere:feature=collectiveController,type=ClusterManager,name=ClusterManager </span><br><span class="line"> WebSphere:feature=collectiveController,type=RoutingInfoManager,name=RoutingInfoManager </span><br><span class="line"> WebSphere:feature=collectiveController,type=RepositoryConfiguration, </span><br><span class="line"> name=RepositoryConfiguration </span><br><span class="line"> WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean </span><br><span class="line"> WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint </span><br><span class="line"> WebSphere:type=JvmStats </span><br><span class="line"> WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint-ssl </span><br><span class="line"> WebSphere:name=com.ibm.websphere.runtime.update.RuntimeUpdateNotificationMBean </span><br><span class="line"> WebSphere:feature=collectiveController,type=AdminMetadataManager,name=AdminMetadataManager </span><br><span class="line"> WebSphere:feature=collectiveMember,type=SingletonServiceMessenger, </span><br><span class="line"> name=SingletonServiceMessenger </span><br><span class="line"> WebSphere:feature=kernel,name=ServerInfo </span><br><span class="line"> WebSphere:type=ThreadPoolStats,name=Default Executor </span><br><span class="line"> WebSphere:feature=restConnector,type=FileTransfer,name=FileTransfer</span><br></pre></td></tr></table></figure>
+<h3 id="获得-JvmStats-MBean"><a href="#获得-JvmStats-MBean" class="headerlink" title="获得 JvmStats MBean"></a>获得 JvmStats MBean</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>mbeans = mconnection.queryNames( ObjectName( <span class="string">"WebSphere:type=JvmStats,*"</span>), </span><br><span class="line"> <span class="keyword">None</span>).toArray() </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; <span class="keyword">for</span> i <span class="keyword">in</span> mbeans: <span class="keyword">print</span> i </span><br><span class="line"> ... </span><br><span class="line"> WebSphere:type=JvmStats</span><br></pre></td></tr></table></figure>
+<h3 id="访问-JvmStats-MBean-详细信息"><a href="#访问-JvmStats-MBean-详细信息" class="headerlink" title="访问 JvmStats MBean 详细信息"></a>访问 JvmStats MBean 详细信息</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>mbean_jvm = mbeans[ <span class="number">0</span>] </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>mbean_info = mconnection.getMBeanInfo( mbean_jvm) </span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type( mbean_info) </span><br><span class="line">&lt;type <span class="string">'javax.management.MBeanInfo'</span>&gt; </span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dir( mbean_info) </span><br><span class="line">[<span class="string">'__class__'</span>, <span class="string">'__copy__'</span>, <span class="string">'__deepcopy__'</span>, <span class="string">'__delattr__'</span>, <span class="string">'__doc__'</span>, </span><br><span class="line"><span class="string">'__ensure_finalizer__'</span>, <span class="string">'__eq__'</span>, <span class="string">'__format__'</span>, <span class="string">'__getattribute__'</span>, <span class="string">'__hash__'</span>, </span><br><span class="line"><span class="string">'__init__'</span>, <span class="string">'__ne__'</span>, <span class="string">'__new__'</span>, <span class="string">'__reduce__'</span>, <span class="string">'__reduce_ex__'</span>, <span class="string">'__repr__'</span>, </span><br><span class="line"><span class="string">'__setattr__'</span>, <span class="string">'__str__'</span>, <span class="string">'__subclasshook__'</span>, <span class="string">'__unicode__'</span>, <span class="string">'attributes'</span>, <span class="string">'class'</span>, </span><br><span class="line"><span class="string">'className'</span>, <span class="string">'clone'</span>, <span class="string">'constructors'</span>, <span class="string">'description'</span>, <span class="string">'descriptor'</span>, <span class="string">'equals'</span>, </span><br><span class="line"><span class="string">'getAttributes'</span>, <span class="string">'getClass'</span>, <span class="string">'getClassName'</span>, <span class="string">'getConstructors'</span>, <span class="string">'getDescription'</span>, </span><br><span class="line"><span class="string">'getDescriptor'</span>, <span class="string">'getNotifications'</span>, <span class="string">'getOperations'</span>, <span class="string">'hashCode'</span>, <span class="string">'notifications'</span>, </span><br><span class="line"><span class="string">'notify'</span>, <span class="string">'notifyAll'</span>, <span class="string">'operations'</span>, <span class="string">'toString'</span>, <span class="string">'wait'</span>] </span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>mbean_info </span><br><span class="line">javax.management.MBeanInfo[description=Information on the management interface of the </span><br><span class="line">MBean, attributes=[javax.management.MBeanAttributeInfo[description=UsedMemory, </span><br><span class="line">name=UsedMemory, type=long, read-only, </span><br><span class="line">descriptor=&#123;openType=javax.management.openmbean.SimpleType(name=java.lang.Long), </span><br><span class="line">originalType=long&#125;], javax.management.MBeanAttributeInfo[description=FreeMemory, </span><br><span class="line">name=FreeMemory, type=long, read-only, </span><br><span class="line">descriptor=&#123;openType=javax.management.openmbean.SimpleType(name=java.lang.Long), </span><br><span class="line">originalType=long&#125;], javax.management.MBeanAttributeInfo[description=Heap, name=Heap, </span><br><span class="line">type=long, read-only, </span><br><span class="line">descriptor=&#123;openType=javax.management.openmbean.SimpleType(name=java.lang.Long), </span><br><span class="line">originalType=long&#125;], javax.management.MBeanAttributeInfo[description=UpTime, </span><br><span class="line">name=UpTime, type=long, read-only, </span><br><span class="line">descriptor=&#123;openType=javax.management.openmbean.SimpleType(name=java.lang.Long), </span><br><span class="line">originalType=long&#125;], javax.management.MBeanAttributeInfo[description=ProcessCPU, </span><br><span class="line">name=ProcessCPU, type=double, read-only, </span><br><span class="line">descriptor=&#123;openType=javax.management.openmbean.SimpleType(name=java.lang.Double), </span><br><span class="line">originalType=double&#125;], javax.management.MBeanAttributeInfo[description=GcCount, </span><br><span class="line">name=GcCount, type=long, read-only, </span><br><span class="line">descriptor=&#123;openType=javax.management.openmbean.SimpleType(name=java.lang.Long), </span><br><span class="line">originalType=long&#125;], javax.management.MBeanAttributeInfo[description=GcTime, </span><br><span class="line">name=GcTime, type=long, read-only, </span><br><span class="line">descriptor=&#123;openType=javax.management.openmbean.SimpleType(name=java.lang.Long), </span><br><span class="line">originalType=long&#125;]], </span><br><span class="line">constructors=[javax.management.MBeanConstructorInfo[description=Public constructor of </span><br><span class="line">the MBean, name=com.ibm.ws.monitors.helper.JvmStats, </span><br><span class="line">signature=[javax.management.MBeanParameterInfo[description=, name=p1, </span><br><span class="line">type=com.ibm.ws.monitors.helper.JvmMonitorHelper, descriptor=&#123;&#125;]], descriptor=&#123;&#125;]], </span><br><span class="line">operations=[], notifications=[], descriptor=&#123;immutableInfo=true, </span><br><span class="line">interfaceClassName=com.ibm.websphere.monitor.meters.JvmMXBean, mxbean=true&#125;]</span><br></pre></td></tr></table></figure>
+<h3 id="获得-JvmStats-MBean-属性"><a href="#获得-JvmStats-MBean-属性" class="headerlink" title="获得 JvmStats MBean 属性"></a>获得 JvmStats MBean 属性</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>mbean_attributes = mbean_info.getAttributes() </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; type( mbean_attributes) </span><br><span class="line"> &lt;type <span class="string">'array.array'</span>&gt; </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; type( mbean_attributes[ <span class="number">0</span>]) </span><br><span class="line"> &lt;type <span class="string">'javax.management.MBeanAttributeInfo'</span>&gt; </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; dir( mbean_attributes[<span class="number">0</span>]) </span><br><span class="line"> [<span class="string">'__class__'</span>, <span class="string">'__copy__'</span>, <span class="string">'__deepcopy__'</span>, <span class="string">'__delattr__'</span>, <span class="string">'__doc__'</span>, </span><br><span class="line"> <span class="string">'__ensure_finalizer__'</span>, <span class="string">'__eq__'</span>, <span class="string">'__format__'</span>, <span class="string">'__getattribute__'</span>, <span class="string">'__hash__'</span>, </span><br><span class="line"> <span class="string">'__init__'</span>, <span class="string">'__ne__'</span>, <span class="string">'__new__'</span>, <span class="string">'__reduce__'</span>, <span class="string">'__reduce_ex__'</span>, <span class="string">'__repr__'</span>, </span><br><span class="line"> <span class="string">'__setattr__'</span>, <span class="string">'__str__'</span>, <span class="string">'__subclasshook__'</span>, <span class="string">'__unicode__'</span>, <span class="string">'class'</span>, <span class="string">'clone'</span>, </span><br><span class="line"> <span class="string">'description'</span>, <span class="string">'descriptor'</span>, <span class="string">'equals'</span>, <span class="string">'getClass'</span>, <span class="string">'getDescription'</span>, <span class="string">'getDescriptor'</span>, </span><br><span class="line"> <span class="string">'getName'</span>, <span class="string">'getType'</span>, <span class="string">'hashCode'</span>, <span class="string">'is'</span>, <span class="string">'isIs'</span>, <span class="string">'isReadable'</span>, <span class="string">'isWritable'</span>, <span class="string">'name'</span>, </span><br><span class="line"> <span class="string">'notify'</span>, <span class="string">'notifyAll'</span>, <span class="string">'readable'</span>, <span class="string">'toString'</span>, <span class="string">'type'</span>, <span class="string">'wait'</span>, <span class="string">'writable'</span>] </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; <span class="keyword">for</span> attribute <span class="keyword">in</span> mbean_attributes: </span><br><span class="line">  name = attribute.getName() </span><br><span class="line">  value = mconnection.getAttribute( mbean_jvm, name) </span><br><span class="line">  type = attribute.getType() </span><br><span class="line">  <span class="keyword">print</span> <span class="string">"      %s [%s] = %s"</span> % ( name, type, str( value)) </span><br><span class="line"> ... </span><br><span class="line">      UsedMemory [long] = <span class="number">52011592</span> </span><br><span class="line">      FreeMemory [long] = <span class="number">3481008</span> </span><br><span class="line">      Heap [long] = <span class="number">55771136</span> </span><br><span class="line">      UpTime [long] = <span class="number">2435005</span> </span><br><span class="line">      ProcessCPU [double] = <span class="number">0.0729284201396</span> </span><br><span class="line">      GcCount [long] = <span class="number">144</span> </span><br><span class="line">      GcTime [long] = <span class="number">365</span> </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; exit()</span><br></pre></td></tr></table></figure>
+<h2 id="添加-Jython-实用工具函数"><a href="#添加-Jython-实用工具函数" class="headerlink" title="添加 Jython 实用工具函数"></a>添加 Jython 实用工具函数</h2><p>为了简化 Jython 会话，您可以创建一个连接参数文件和一些实用工具函数。</p>
+<p>要创建连接参数文件，请输入：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi wlp_collect_conf.py</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Config = &#123;</span><br><span class="line">    <span class="string">'host'</span>: <span class="string">'192.168.10.32'</span>,</span><br><span class="line">    <span class="string">'port'</span>: <span class="number">9449</span>,</span><br><span class="line">    <span class="string">'user'</span>: <span class="string">'admin'</span>,</span><br><span class="line">    <span class="string">'password'</span>: <span class="string">'admin'</span>,</span><br><span class="line">    <span class="string">'truststore'</span>: <span class="string">'/home/was/nd/wlp/usr/servers/adminSrv/resources/security/key.jks'</span>,</span><br><span class="line">    <span class="string">'truststore_password'</span>: <span class="string">'123456'</span>,</span><br><span class="line">    <span class="string">'objectName'</span>: <span class="string">'WebSphere:*'</span>,</span><br><span class="line">    <span class="string">'collectiveName'</span>: <span class="string">'WebSphere:type=CollectiveRepository,*'</span>,</span><br><span class="line">    <span class="string">'routingName'</span>: <span class="string">'WebSphere:type=RoutingContext,*'</span>,</span><br><span class="line">    <span class="string">'attributeName'</span>: <span class="string">'*'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，创建包含用于 connect、disconnect 和 collect 实用工具的函数的文件：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi wlp_collect.py</span><br></pre></td></tr></table></figure></p>
+<p>collect 函数使用了 MBean getAttributes 和 getOperations 方法。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> restConnector <span class="keyword">import</span> JMXRESTConnector</span><br><span class="line"><span class="keyword">from</span> javax.management <span class="keyword">import</span> ObjectName</span><br><span class="line"><span class="keyword">from</span> wlp_collect_conf <span class="keyword">import</span> Config</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">connect</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">      param : none BUT uses the Config object define in wlp_collect_conf.py</span></span><br><span class="line"><span class="string">      result: return a connection object</span></span><br><span class="line"><span class="string">      note  : use simple connect method</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">print</span> Config[<span class="string">'port'</span>]</span><br><span class="line">    <span class="keyword">print</span> Config[<span class="string">'truststore'</span>]</span><br><span class="line">    JMXRESTConnector.trustStore = Config[<span class="string">'truststore'</span>]</span><br><span class="line">    JMXRESTConnector.trustStorePassword = Config[<span class="string">'truststore_password'</span>]</span><br><span class="line">    connector = JMXRESTConnector()</span><br><span class="line">    connector.connect(Config[<span class="string">'host'</span>], Config[<span class="string">'port'</span>], Config[<span class="string">'user'</span>],</span><br><span class="line">                      Config[<span class="string">'password'</span>])</span><br><span class="line">    <span class="keyword">return</span> connector</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">disconnect</span><span class="params">(connector)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">      param : a connection object (return by connect())</span></span><br><span class="line"><span class="string">      result: none</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    connector.disconnect()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">collect</span><span class="params">(connector, details=False, objectName=Config[<span class="string">'objectName'</span>], attributeName=Config[<span class="string">'attributeName'</span>])</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">      param1: connection object (return by connect() function)</span></span><br><span class="line"><span class="string">      param2: output with or without details (True|False)</span></span><br><span class="line"><span class="string">      param3: mbean object like "WebSphere:type=JvmStats,*"</span></span><br><span class="line"><span class="string">      param4: attribute to retrieve in the mbean object</span></span><br><span class="line"><span class="string">      result: return an array of mbeans objects found</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    mconnection = connector.getMBeanServerConnection()</span><br><span class="line">    <span class="comment"># print dir( mconnection)</span></span><br><span class="line">    <span class="comment"># "WebSphere:type=endpoint,*"</span></span><br><span class="line">    mbeans = mconnection.queryNames(ObjectName(objectName), <span class="keyword">None</span>).toArray()</span><br><span class="line">    <span class="keyword">for</span> mbean <span class="keyword">in</span> mbeans:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"\n MBean details for %s"</span> % str(mbean)</span><br><span class="line">        <span class="comment"># --- get MBeanInfo</span></span><br><span class="line">        mbean_info = mconnection.getMBeanInfo(mbean)</span><br><span class="line">        mbean_class = mbean_info.className</span><br><span class="line">        <span class="comment"># --- printing attributes</span></span><br><span class="line">        mbean_attributes = mbean_info.getAttributes()</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"\n   %s attributes"</span> % str(len(mbean_info.attributes))</span><br><span class="line">        <span class="keyword">for</span> attribute <span class="keyword">in</span> mbean_attributes:</span><br><span class="line">            name = attribute.name</span><br><span class="line">            value = mconnection.getAttribute(mbean, name)</span><br><span class="line">            type = attribute.type</span><br><span class="line">            <span class="keyword">if</span> details <span class="keyword">and</span> (attributeName == <span class="string">"*"</span> <span class="keyword">or</span> attributeName == name):</span><br><span class="line">                <span class="keyword">print</span> <span class="string">"      %s [%s] = %s"</span> % (name, type, str(value))</span><br><span class="line">        <span class="comment"># --- printing operations</span></span><br><span class="line">        mbean_operations = mbean_info.getOperations()</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"\n   %s operations"</span> % str(len(mbean_info.operations))</span><br><span class="line">        <span class="keyword">for</span> operation <span class="keyword">in</span> mbean_operations:</span><br><span class="line">            name = operation.getName()</span><br><span class="line">            <span class="comment"># value = mconnection.getOperation( mbean, name)</span></span><br><span class="line">            <span class="comment"># type = operation.type</span></span><br><span class="line">            <span class="keyword">if</span> details <span class="keyword">and</span> (attributeName == <span class="string">"*"</span> <span class="keyword">or</span> attributeName == name):</span><br><span class="line">                <span class="comment"># print "      %s" % name</span></span><br><span class="line">                print(<span class="string">"\n      "</span> + str(operation.getName()) + <span class="string">" : "</span> +</span><br><span class="line">                      str(operation.getDescription()))</span><br><span class="line">                <span class="keyword">for</span> param <span class="keyword">in</span> operation.getSignature():</span><br><span class="line">                    print(<span class="string">"        "</span> + str(param.getName()) + <span class="string">" ["</span> +</span><br><span class="line">                          str(param.getType()) + <span class="string">"] : "</span> + str(param.getDescription()))</span><br><span class="line">    <span class="keyword">return</span> mbeans</span><br></pre></td></tr></table></figure></p>
+<p>collect 方法可以包含 1-4 个参数：</p>
+<p>参数 1：连接对象</p>
+<p>参数 2：显示详细信息 [False, True]（默认值为 False。）</p>
+<p>参数 3：ObjectName（默认值为 WebSphere:*。）</p>
+<p>参数 4：要收集的属性（默认值为 *。）</p>
+<p>要使用新实用工具函数，可启动一个 Jython 会话：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp jython-standalone-2.5.3.jar:restConnector.jar org.python.util.jython</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; <span class="keyword">from</span> wlp_collect <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; dir() </span><br><span class="line"> [<span class="string">'ClientProvider'</span>, <span class="string">'Config'</span>, <span class="string">'ConnectorSettings'</span>, <span class="string">'JMXConnector'</span>, <span class="string">'JMXRESTConnector'</span>, <span class="string">'ObjectName'</span>, <span class="string">'__builtins__'</span>, <span class="string">'__doc__'</span>, <span class="string">'__name__'</span>, <span class="string">'__package__'</span>, <span class="string">'array'</span>, <span class="string">'collect'</span>, <span class="string">'collect_controller'</span>, <span class="string">'connect'</span>, <span class="string">'connect_adv'</span>, <span class="string">'disconnect'</span>, <span class="string">'getServersFromRepository'</span>, <span class="string">'java'</span>, <span class="string">'print_usage'</span>, <span class="string">'script_name'</span>, <span class="string">'sys'</span>, <span class="string">'urllib2'</span>] </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; connection = connect()</span><br><span class="line"> <span class="number">9449</span> </span><br><span class="line"> /home/was/nd/wlp/usr/servers/adminSrv/resources/security/key.jks </span><br><span class="line"> Connecting to the server... </span><br><span class="line"> Successfully connected to the server <span class="string">"&lt;controller_hostname&gt;:9449"</span></span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; collect( connection, <span class="keyword">False</span>, <span class="string">"WebSphere:type=JvmStats,*"</span>)</span><br><span class="line"></span><br><span class="line"> MBean details <span class="keyword">for</span> WebSphere:type=JvmStats </span><br><span class="line"></span><br><span class="line">   <span class="number">7</span> attributes </span><br><span class="line"></span><br><span class="line">   <span class="number">0</span> operations </span><br><span class="line"> array(java.lang.Object, [WebSphere:type=JvmStats]) </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; collect( connection, <span class="keyword">True</span>,  <span class="string">"WebSphere:type=JvmStats,*"</span>)</span><br><span class="line"></span><br><span class="line"> MBean details <span class="keyword">for</span> WebSphere:type=JvmStats </span><br><span class="line"></span><br><span class="line">   <span class="number">7</span> attributes </span><br><span class="line">      UsedMemory [long] = <span class="number">50492936</span> </span><br><span class="line">      FreeMemory [long] = <span class="number">11909624</span> </span><br><span class="line">      Heap [long] = <span class="number">62586880</span> </span><br><span class="line">      UpTime [long] = <span class="number">7060539</span> </span><br><span class="line">      ProcessCPU [double] = <span class="number">0.131003185929</span> </span><br><span class="line">      GcCount [long] = <span class="number">193</span> </span><br><span class="line">      GcTime [long] = <span class="number">460</span> </span><br><span class="line"></span><br><span class="line">   <span class="number">0</span> operations </span><br><span class="line"> array(java.lang.Object, [WebSphere:type=JvmStats]) </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; collect( connection, <span class="keyword">True</span>,  <span class="string">"WebSphere:type=JvmStats,*"</span>, <span class="string">'FreeMemory'</span>)</span><br><span class="line"></span><br><span class="line"> MBean details <span class="keyword">for</span> WebSphere:type=JvmStats </span><br><span class="line"></span><br><span class="line">   <span class="number">7</span> attributes </span><br><span class="line">      FreeMemory [long] = <span class="number">23083576</span> </span><br><span class="line"></span><br><span class="line">   <span class="number">0</span> operations </span><br><span class="line"> array(java.lang.Object, [WebSphere:type=JvmStats]) </span><br><span class="line"></span><br><span class="line"> &gt;&gt;&gt; disconnect( connection)</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/liberty/" rel="tag"># liberty</a>
+          
+            <a href="/tags/jython/" rel="tag"># jython</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/30/blog/java处理对象排序和hadoop处理对象排序/" rel="next" title="java处理对象排序和hadoop处理对象排序">
+                <i class="fa fa-chevron-left"></i> java处理对象排序和hadoop处理对象排序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/30/blog/kubernetes1.6集群搭建/" rel="prev" title="kubernetes1.6集群搭建">
+                kubernetes1.6集群搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动server"><span class="nav-number">3.</span> <span class="nav-text">启动server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#REST-Connector-API-监控"><span class="nav-number">4.</span> <span class="nav-text">REST Connector API 监控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Jython-会话"><span class="nav-number">4.1.</span> <span class="nav-text">启动 Jython 会话</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接到控制器服务器"><span class="nav-number">4.2.</span> <span class="nav-text">连接到控制器服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接到控制器-MBean-服务器"><span class="nav-number">4.3.</span> <span class="nav-text">连接到控制器 MBean 服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列出可用的-MBean"><span class="nav-number">4.4.</span> <span class="nav-text">列出可用的 MBean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得-JvmStats-MBean"><span class="nav-number">4.5.</span> <span class="nav-text">获得 JvmStats MBean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问-JvmStats-MBean-详细信息"><span class="nav-number">4.6.</span> <span class="nav-text">访问 JvmStats MBean 详细信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得-JvmStats-MBean-属性"><span class="nav-number">4.7.</span> <span class="nav-text">获得 JvmStats MBean 属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加-Jython-实用工具函数"><span class="nav-number">5.</span> <span class="nav-text">添加 Jython 实用工具函数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
