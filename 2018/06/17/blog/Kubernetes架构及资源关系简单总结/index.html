@@ -1,0 +1,1065 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="自动化运维,kubernates,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="描述之前在《Kubernetes初体验》一文中已经简单介绍了Kubernetes的架构和一些基本概念，最近接着学习了一下，觉得Kubernetes的这些资源（或者称为对象）对于理解和学习Kubernetes非常重要，而且因为比较多，所以决定写篇博客来做一下总结，加深记忆。当然，本文不会对每个资源做深入描述，因为每个资源要介绍的比较清楚都需要一篇长篇大论了。后面我会分篇详细介绍每一个资源，当然最好的">
+<meta name="keywords" content="自动化运维,kubernates">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes架构及资源关系简单总结">
+<meta property="og:url" content="http://yoursite.com/2018/06/17/blog/Kubernetes架构及资源关系简单总结/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="描述之前在《Kubernetes初体验》一文中已经简单介绍了Kubernetes的架构和一些基本概念，最近接着学习了一下，觉得Kubernetes的这些资源（或者称为对象）对于理解和学习Kubernetes非常重要，而且因为比较多，所以决定写篇博客来做一下总结，加深记忆。当然，本文不会对每个资源做深入描述，因为每个资源要介绍的比较清楚都需要一篇长篇大论了。后面我会分篇详细介绍每一个资源，当然最好的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ooj9cf5vc.bkt.clouddn.com/2ZVqK">
+<meta property="og:updated_time" content="2018-06-17T02:22:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes架构及资源关系简单总结">
+<meta name="twitter:description" content="描述之前在《Kubernetes初体验》一文中已经简单介绍了Kubernetes的架构和一些基本概念，最近接着学习了一下，觉得Kubernetes的这些资源（或者称为对象）对于理解和学习Kubernetes非常重要，而且因为比较多，所以决定写篇博客来做一下总结，加深记忆。当然，本文不会对每个资源做深入描述，因为每个资源要介绍的比较清楚都需要一篇长篇大论了。后面我会分篇详细介绍每一个资源，当然最好的">
+<meta name="twitter:image" content="http://ooj9cf5vc.bkt.clouddn.com/2ZVqK">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/17/blog/Kubernetes架构及资源关系简单总结/">
+
+
+
+
+
+  <title> Kubernetes架构及资源关系简单总结 | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/17/blog/Kubernetes架构及资源关系简单总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes架构及资源关系简单总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-17T10:22:11+08:00">
+                2018-06-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/06/17/blog/Kubernetes架构及资源关系简单总结/" class="leancloud_visitors" data-flag-title="Kubernetes架构及资源关系简单总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>之前在《Kubernetes初体验》一文中已经简单介绍了Kubernetes的架构和一些基本概念，最近接着学习了一下，觉得Kubernetes的这些资源（或者称为对象）对于理解和学习Kubernetes非常重要，而且因为比较多，所以决定写篇博客来做一下总结，加深记忆。当然，本文不会对每个资源做深入描述，因为每个资源要介绍的比较清楚都需要一篇长篇大论了。后面我会分篇详细介绍每一个资源，当然最好的了解方式还是去看Kubernetes官方对于这些资源的描述：<a href="https://kubernetes.io/docs/reference。本文的目标有两个：" target="_blank" rel="noopener">https://kubernetes.io/docs/reference。本文的目标有两个：</a></p>
+<p>对Kubernetes的架构做一个简单的介绍。<br><a id="more"></a><br>对Kubernetes的大部分资源极其关系做一个简单的介绍。</p>
+<p>文章尽可能简明、简短。Just keep it simple and focus。</p>
+<h2 id="Kubernetes架构"><a href="#Kubernetes架构" class="headerlink" title="Kubernetes架构"></a>Kubernetes架构</h2><p>先引用一下官方的架构图：<br><img src="http://ooj9cf5vc.bkt.clouddn.com/2ZVqK" alt="Untitled Image"></p>
+<p>对于本文来说，我觉得这张图有点复杂了，但是我又懒得自己画了，就用这张吧。Kubernetes是一个集群，和传统的集群相似，它也是有一个主节点和若干个工作节点组成。在Kubernetes中，主节点称之为Master节点，就是上图中左边的大框；工作节点称之为Node（原来称为Minion，一个意思）。下面我们分别介绍Master节点和Node节点。</p>
+<p>##Master<br>Master节点上面主要由四个模块组成：APIServer、scheduler、controller manager、etcd。</p>
+<p>1、APIServer。APIServer的功能如其名，负责对外提供RESTful的Kubernetes API服务，它是系统管理指令的统一入口，任何对资源进行增删改查的操作都要交给APIServer处理后再提交给etcd。如架构图中所示，kubectl（Kubernetes提供的客户端工具，该工具内部就是对Kubernetes API的调用）是直接和APIServer交互的。</p>
+<p>2、schedule。scheduler的职责很明确，就是负责调度pod（Kubernetes中最小的调度单元，后面马上就会介绍）到合适的Node上。如果把scheduler看成一个黑匣子，那么它的输入是pod和由多个Node组成的列表，输出是Pod和一个Node的绑定（bind），即将这个pod部署到这个Node上。虽然scheduler的职责很简单，但我们知道调度系统的智能程度对于整个集群是非常重要的。Kubernetes目前提供了调度算法，但是同样也保留了接口，用户可以根据自己的需求定义自己的调度算法。</p>
+<p>3、controller manager。如果说APIServer做的是“前台”的工作的话，那controller manager就是负责“后台”的。后面我们马上会介绍到资源，每个资源一般都对应有一个控制器，而controller manager就是负责管理这些控制器的。还是举个例子来说明吧：比如我们通过APIServer创建一个pod，当这个pod创建成功后，APIServer的任务就算完成了。而后面保证Pod的状态始终和我们预期的一样的重任就由controller manager去保证了。</p>
+<p>4、etcd。etcd是一个高可用的键值存储系统，Kubernetes使用它来存储各个资源的状态，从而实现了Restful的API。</p>
+<p>至此，Kubernetes Master就简单介绍完了。当然，每个模块内部的实现都很复杂，而且功能也比较复杂，我现在也只是比较浅的了解了一下。如果后续了解的比较清楚了，再做总结分享。</p>
+<h2 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h2><p>真正干活的来了。每个Node节点主要由三个模块组成：kubelet、kube-proxy、runtime。先从简单的说吧。</p>
+<p>1、runtime。runtime指的是容器运行环境，目前Kubernetes支持docker和rkt两种容器，一般都指的是docker，毕竟docker现在是最主流的容器。</p>
+<p>2、kube-proxy。该模块实现了Kubernetes中的服务发现和反向代理功能。反向代理方面：kube-proxy支持TCP和UDP连接转发，默认基于Round Robin算法将客户端流量转发到与service对应的一组后端pod。服务发现方面，kube-proxy使用etcd的watch机制，监控集群中service和endpoint对象数据的动态变化，并且维护一个service到endpoint的映射关系，从而保证了后端pod的IP变化不会对访问者造成影响。另外kube-proxy还支持session affinity。（这里涉及到了service的概念，可以先跳过，等了解了service之后再来看。）</p>
+<p>3、kubelet。Kubelet是Master在每个Node节点上面的agent，是Node节点上面最重要的模块，它负责维护和管理该Node上面的所有容器，但是如果容器不是通过Kubernetes创建的，它并不会管理。本质上，它负责使Pod得运行状态与期望的状态一致。</p>
+<p>至此，Kubernetes的Master和Node就简单介绍完了。下面我们来看Kubernetes中的各种资源/对象。</p>
+<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><p>Pod是Kubernetes里面抽象出来的一个概念，它具有如下特点：</p>
+<p>Pod是能够被创建、调度和管理的最小单元；</p>
+<p>每个Pod都有一个独立的IP；</p>
+<p>一个Pod由一个或多个容器构成；</p>
+<p>一个Pod内的容器共享Pod的所有资源，这些资源主要包括：共享存储（以Volumes的形式）、共享网络、共享端口等。</p>
+<p>集群内的Pod之间不论是否在同一个Node上都可以任意访问，这一般是通过一个二层网络来实现的。</p>
+<p>Kubernetes虽然也是一个容器编排系统，但不同于其他系统，它的最小操作单元不是单个容器，而是Pod。这个特性给Kubernetes带来了很多优势，比如最显而易见的是同一个Pod内的容器可以非常方便的互相访问（通过localhost就可以访问）和共享数据。使用Pod时我们需要注意两点：</p>
+<p>虽然Pod内可以有多个容器，但一般我们只将有亲密关系的容器放在一个Pod内，比如这些容器需要相互访问、共享数据等。举个最典型的例子，比如我们有一个系统，前端是tomcat作为web，后端是存储数据的数据库mysql，那么将这两个容器部署在一个Pod内就非常合理了，因为他们通过localhost就可以访问彼此。</p>
+<p>虽然每个Pod都有独立的IP，但是不推荐前台通过IP去访问Pod，因为Pod一旦销毁重建，IP就会变化。如果我们的Pod提供了对外的Web服务，那么我们可以通过Kubernetes提供的service去访问，后面会介绍到。</p>
+<p>下面是一个Pod的描述文件nginx-pod.yaml：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">nginx-pod</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">    - image:</span> <span class="string">registry.hnaresearch.com/library/nginx:latest</span></span><br><span class="line"><span class="attr">      name:</span>  <span class="string">nginx</span></span><br><span class="line"><span class="attr">      ports:</span></span><br><span class="line"><span class="attr">      - containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure></p>
+<p>apiVersion表示API的版本，kind表示我们要创建的资源的类型。metadata是Pod的一些元数据描述。spec描述了我们期望该Pod内运行的容器。通过kubectl create -f nginx-pod.yaml就可以创建一个Pod，这个Pod里面只有一个nginx容器。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜  kubectl create -f nginx-pod.yaml</span><br><span class="line">pod "nginx-pod" created</span><br><span class="line">➜  kubectl get pod</span><br><span class="line">NAME        READY     STATUS    RESTARTS   AGE</span><br><span class="line">nginx-pod   1/1       Running   0          1h</span><br></pre></td></tr></table></figure></p>
+<p>这里我们只是为了示例，其实实际应用中我们很少会去直接创建一个Pod，因为这样创建的Pod就像个没人管的孩子，挂了的话也不会有人去重新建立一个新的来顶替它。Kubernetes提供了很多创建Pod的方式，下面我们接着介绍。</p>
+<h2 id="Replication-Controller"><a href="#Replication-Controller" class="headerlink" title="Replication Controller"></a>Replication Controller</h2><p>Replication Controller简称RC，一般翻译为副本控制器，这里的副本指的是Pod。如它的名字所言RC的作用就是保证任意时刻集群中都有期望个数的Pod副本在正常运行。我们通过一个简单的RC描述文件（mysql-rc.yaml）来介绍它：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  replicas:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">  selector:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">  template:</span></span><br><span class="line"><span class="attr">    metadata:</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">    spec:</span></span><br><span class="line"><span class="attr">      containers:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">        image:</span> <span class="string">registry.hnaresearch.com/library/mysql:5.6</span></span><br><span class="line"><span class="attr">        ports:</span></span><br><span class="line"><span class="attr">        - containerPort:</span> <span class="number">3306</span></span><br><span class="line"><span class="attr">        env:</span></span><br><span class="line"><span class="attr">        - name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line"><span class="attr">          value:</span> <span class="string">"123456"</span></span><br></pre></td></tr></table></figure></p>
+<p>上面这个文件描述了一个RC，名字叫mysql，最上面的spec描述了我们期望有1个副本，这些副本都是按照下面的template去创建的。如果某一时刻副本数比replicas描述的少，就按照template去创建新的，如果多了，就干掉几个。而下面的spec描述了这个Pod内运行的容器。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  kubectl create -f mysql-rc.yaml</span><br><span class="line">replicationcontroller "mysql" created</span><br><span class="line">➜  kubectl get rc</span><br><span class="line">NAME      DESIRED   CURRENT   READY     AGE</span><br><span class="line">mysql     1         1         1         7s</span><br><span class="line">➜  kubectl get pod</span><br><span class="line">NAME          READY     STATUS    RESTARTS   AGE</span><br><span class="line">mysql-1l717   1/1       Running   0          27s</span><br><span class="line">nginx-pod     1/1       Running   0          1h</span><br></pre></td></tr></table></figure>
+<p>然后我们进行一些删除操作：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  kubectl delete pod nginx-pod</span><br><span class="line">pod "nginx-pod" deleted</span><br><span class="line">➜  kubectl get pod</span><br><span class="line">NAME          READY     STATUS    RESTARTS   AGE</span><br><span class="line">mysql-1l717   1/1       Running   0          5m</span><br><span class="line">➜  kubectl delete pod mysql-1l717</span><br><span class="line">pod "mysql-1l717" deleted</span><br><span class="line">➜  kubectl get pod</span><br><span class="line">NAME          READY     STATUS    RESTARTS   AGE</span><br><span class="line">mysql-2vl9k   1/1       Running   0          4s</span><br></pre></td></tr></table></figure></p>
+<p>我们先删掉之前通过Pod描述文件创建的nginx-pod，按照预期它被删除了，并没有重建。然后我们删掉mysql-1l717，发现又出来一个新的mysql-2vl9k。这是因为mysql这个是通过RC创建的，除非删除它的RC，否则任意时刻该RC都会保证有预期个Pod副本在运行。</p>
+<p>那么，RC是怎么和Pod产生关联的呢？上面的selector是什么含义？OK，我们来介绍下一个对象。</p>
+<h2 id="Labels和Selector"><a href="#Labels和Selector" class="headerlink" title="Labels和Selector"></a>Labels和Selector</h2><p>Label是附属在Kubernetes对象上的键值对，它可以在创建的时候指定，也可以随时增删改。一个对象上面可以有任意多个Labels。它往往对于用户是有意义的，对系统是没有特殊含义的。我个人理解你可以简单把他当做Git上面的tag。这里我们只介绍一下它和Selector配合使用时的场景。我们从上面Pod和RC的描述文件中可以看到，每个Pod都有一个Labels，而RC的Selector部分也有一个定义了一个labels。RC会认为凡是和它Selector部分定义的labels相同的Pod都是它预期的副本。比如凡是labels为app=mysql的Pod都是刚才定义的RC的副本。</p>
+<p>所以就有一个注意点，我们不要单独去创建Pod，更不要单独去创建符合某个RC的Selector的Pod，那样RC会认为是它自己创建的这个Pod而导致与预期Pod数不一致而干掉某些Pod。当然Labels还有很多用途，Selector除了等值外也有一些其他判读规则，这里不细述。</p>
+<h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><p>终于轮到Service出场了，之前我们已经多次提到它了。Service是Kubernetes里面抽象出来的一层，它定义了由多个Pods组成的逻辑组（logical set），可以对组内的Pod做一些事情：</p>
+<p>对外暴露流量</p>
+<p>做负载均衡（load balancing）</p>
+<p>服务发现（service-discovery）。</p>
+<p>前面我们说了如果我们想将Pod内容器提供的服务暴露出去，就要使用Service。因为Service除了上面的特性外，还有一个集群内唯一的私有IP和对外的端口，用于接收流量。如果我们想将一个Service暴露到集群外，即集群外也可以访问的话，有两种方法：</p>
+<p>LoadBalancer - 提供一个公网的IP</p>
+<p>NodePort - 使用NAT将Service的端口暴露出去。</p>
+<p>为什么不能通过Pod的IP，而要通过Service呢？因为在Kubernetes中，Pod是可能随时死掉被重建的，所以说其IP是不可靠的。但是Service一旦创建，其IP就会一直固定直到这个Service消亡。其实我们能够看到，Kubernetes中一个Service就相当于一个微服务。这里我们就不细述Service的创建方法以及如何使用LB以及NodePort了。</p>
+<h2 id="Replica-Sets和Deployment"><a href="#Replica-Sets和Deployment" class="headerlink" title="Replica Sets和Deployment"></a>Replica Sets和Deployment</h2><p>Replica Sets被称为下一代的Replication Controller，它被设计出来的目的是替代RC并提供更多的功能。就目前看，ReplicaSet和RC的唯一区别是对于Labels和Selector的支持。RC只支持等值的方式，而ReplicaSet还支持集合的选择方式（In，Not In）。另外，ReplicaSet很少像RC一样单独使用（当然，它可以单独使用），一般都是配合Deployment一起使用。</p>
+<p>Deployment也是Kubernetes新增加的一种资源，从它的名字就可以看出它主要是为部署而设计的，之前的文章中已经有具体的例子了。想像一下我们利用RC创建了一些Pod，但现在我们想要更新Pod内容器使用的镜像或者想更改副本的个数等。这些我们无法通过修改已有的RC去做，只能删除旧的，创建新的。但这样Pod内的容器就会停止，也即业务就会中断，这在生产环境中往往是不可接受的。但有了Deployment以后，这些问题就都可以解决了。通过Deployment我们可以动态的控制副本个数、ReplicaSet和Pod的状态、滚动升级等。Deployment的强大真的需要很长的一篇文章来介绍，后续的博客再介绍吧。</p>
+<h2 id="HPA"><a href="#HPA" class="headerlink" title="HPA"></a>HPA</h2><p>HPA全称Horizontal Pod Autoscaling，即Pod的水平自动扩展，我觉得这个简直就是Kubernetes的黑科技。因为它可以根据当前系统的负载来自动水平扩容，如果系统负载超过预定值，就开始增加Pod的个数，如果低于某个值，就自动减少Pod的个数。因为被以前的系统扩容缩容深深的折磨过，所以我觉得这个功能是多么的强大。当然，目前Kubernetes的HPA只能根据CPU和内存去度量系统的负载，而且目前还依赖heapster去收集CPU的使用情况，所以功能还不是很强大，但是其完善也只是时间的问题了。让我们期待吧。</p>
+<h2 id="Namespace"><a href="#Namespace" class="headerlink" title="Namespace"></a>Namespace</h2><p>有时我们可能有这样的需求，需要在所有Pod上面（包括将来新创建的）都运行某个容器，比如用于监控、日志收集等。那我们就可以使用DaemonSet，它可以保证所有容器上面都运行一份我们指定的容器的实例。而且，通过Labels和Selector，我们可以实现只在某些Pod上面部署，非常的灵活。</p>
+<p>但是现在也有一些局限，比如如果我们无法更改已经部署的Daemon Set。如果需要更改，只能删除重建。当然，更改的功能也已经在开发中了。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>当然，Kubernetes还有很多其他的资源/对象，比如执行一次任务的Job，存储相关的Volume等，这些我觉得都没法简单的说清楚其功能。后续再介绍。<br>写到这里，感觉本文已经和开始的说的简明、简短有些渐行渐远了…Oops</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/自动化运维/" rel="tag"># 自动化运维</a>
+          
+            <a href="/tags/kubernates/" rel="tag"># kubernates</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/17/blog/docker常用命令总结/" rel="next" title="docker常用命令总结">
+                <i class="fa fa-chevron-left"></i> docker常用命令总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/17/blog/Docker私有仓库搭建/" rel="prev" title="Docker私有仓库创建">
+                Docker私有仓库创建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubernetes架构"><span class="nav-number">2.</span> <span class="nav-text">Kubernetes架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node"><span class="nav-number">3.</span> <span class="nav-text">Node</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod"><span class="nav-number">4.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Replication-Controller"><span class="nav-number">5.</span> <span class="nav-text">Replication Controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Labels和Selector"><span class="nav-number">6.</span> <span class="nav-text">Labels和Selector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service"><span class="nav-number">7.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Replica-Sets和Deployment"><span class="nav-number">8.</span> <span class="nav-text">Replica Sets和Deployment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HPA"><span class="nav-number">9.</span> <span class="nav-text">HPA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Namespace"><span class="nav-number">10.</span> <span class="nav-text">Namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">11.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
