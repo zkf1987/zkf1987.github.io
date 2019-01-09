@@ -491,7 +491,7 @@
 <p>state：是创建还是删除</p>
 <p>shell：指定用户的shell环境</p>
 <p>使用示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">user: name=johnd comment="John Doe" uid=1040 group=admin</span><br><span class="line">user: name=james shell=/bin/bash groups=admins,developers append=yes user: name=johnd state=absent remove=yes</span><br><span class="line">user: name=james18 shell=/bin/zsh groups=developers expires=1422403387</span><br><span class="line">user: name=test generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa    #生成密钥时，只会生成公钥文件和私钥文件，和直接使用ssh-keygen指令效果相同，不会生成authorized_keys文件。</span><br></pre></td></tr></table></figure></p>
-<p>注：指定password参数时，不能使用明文密码，因为后面这一串密码会被直接传送到被管理主机的/etc/shadow文件中，所以需要先将密码字符串进行加密处理。然后将得到的字符串放到password中即可。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo "123456" | openssl passwd -1 -salt $(&lt; /dev/urandom tr -dc '[:alnum:]' | head -c 32) -stdin</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">1<span class="variable">$4P4PlFuE</span><span class="variable">$ur9ObJiT5iHNrb9QnjaIB0</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">使用上面的密码创建用户</span></span><br><span class="line"></span><br><span class="line">ansible all -m user -a 'name=foo password="$1$4P4PlFuE$ur9ObJiT5iHNrb9QnjaIB0"'</span><br></pre></td></tr></table></figure></p>
+<p>注：指定password参数时，不能使用明文密码，因为后面这一串密码会被直接传送到被管理主机的/etc/shadow文件中，所以需要先将密码字符串进行加密处理。然后将得到的字符串放到password中即可。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo "123456" | openssl passwd -1 -salt $(&lt; /dev/urandom tr -dc '[:alnum:]' | head -c 32) -stdin</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span>1$4P4PlFuE$ur9ObJiT5iHNrb9QnjaIB0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>使用上面的密码创建用户</span><br><span class="line"></span><br><span class="line">ansible all -m user -a 'name=foo password="$1$4P4PlFuE$ur9ObJiT5iHNrb9QnjaIB0"'</span><br></pre></td></tr></table></figure></p>
 <p>不同的发行版默认使用的加密方式可能会有区别，具体可以查看/etc/login.defs文件确认，centos 6.5版本使用的是SHA512加密算法。</p>
 <p>2、group示例<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible all -m group -a 'name=somegroup state=present'</span><br></pre></td></tr></table></figure></p>
 <h2 id="九、synchronize模块"><a href="#九、synchronize模块" class="headerlink" title="九、synchronize模块"></a>九、synchronize模块</h2><p>使用rsync同步文件，其参数如下：</p>
@@ -670,7 +670,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -750,7 +750,7 @@
         <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

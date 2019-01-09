@@ -439,7 +439,7 @@
 <p>三个命令都会返回执行成功的状态。不过实际上只有前两个文件会被创建成功。使用raw模块的执行的结果文件事实上也被正常创建了，不过不是在chdir指定的目录，而是在当前执行用户的家目录。</p>
 <p>creates与removes示例：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ansible 192.168.1.1 -a 'creates=/tmp/server.txt uptime' #当/tmp/server.txt文件存在时，则不执行uptime指令</span><br><span class="line">ansible 192.168.1.1 -a 'removes=/tmp/server.txt uptime' #当/tmp/server.txt文件不存在时，则不执行uptime指令</span><br></pre></td></tr></table></figure>
-<p>script模块示例：<br>要执行的脚本文件script.sh内容如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/bin/bash</span></span><br><span class="line">ifconfig</span><br><span class="line">df -hT</span><br><span class="line">执行ansible指令：ansible 10.212.52.252 -m script -a 'script.sh' |egrep '&gt;&gt;|stdout'</span><br></pre></td></tr></table></figure></p>
+<p>script模块示例：<br>要执行的脚本文件script.sh内容如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>/bin/bash</span><br><span class="line">ifconfig</span><br><span class="line">df -hT</span><br><span class="line">执行ansible指令：ansible 10.212.52.252 -m script -a 'script.sh' |egrep '&gt;&gt;|stdout'</span><br></pre></td></tr></table></figure></p>
 <p>本文出自 “无名小卒” 博客，请务必保留此出处<a href="http://breezey.blog.51cto.com/2400275/1757588" target="_blank" rel="noopener">http://breezey.blog.51cto.com/2400275/1757588</a></p>
 
       
@@ -567,7 +567,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -647,7 +647,7 @@
         <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

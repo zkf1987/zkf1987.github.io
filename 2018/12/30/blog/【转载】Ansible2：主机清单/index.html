@@ -440,7 +440,7 @@
 <p>直接上一个示例：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible webservers -m service -a "name=httpd state=restarted"</span><br></pre></td></tr></table></figure></p>
 <p>这里是对webservers 组或主机重启httpd服务 ，其中webservers 就是Pattern部分。而之所以上面说Pattern（模式）可以理解为正则，主要针对下面经常用到的用法而言的。</p>
 <h3 id="1、表示所有的主机可以使用all-或"><a href="#1、表示所有的主机可以使用all-或" class="headerlink" title="1、表示所有的主机可以使用all 或 *"></a>1、表示所有的主机可以使用all 或 *</h3><h3 id="2、通配符与逻辑或"><a href="#2、通配符与逻辑或" class="headerlink" title="2、通配符与逻辑或"></a>2、通配符与逻辑或</h3><p>利用通配符还可以指定一组具有规则特征的主机或主机名，冒号表示or－－－逻辑或<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">web1.yanruogu.com</span><br><span class="line">web1.yanruogu.com:web2.yanruogu.com</span><br><span class="line">192.168.1.1</span><br><span class="line">192.168.1.*</span><br></pre></td></tr></table></figure></p>
-<p>当然，这里的*通配符也可以用在前面，如：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">*.yanruogu.com</span><br><span class="line">*.com    </span><br><span class="line">webservers1[0]     </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">表示匹配 webservers1 组的第 1 个主机    webservers1[0:25]  <span class="comment">#表示匹配 webservers1 组的第 1 个到第 25 个主机（官网文档是":"表示范围，测试发现应该使用"-",注意不要和匹配多个主机组混淆）</span></span></span><br></pre></td></tr></table></figure></p>
+<p>当然，这里的*通配符也可以用在前面，如：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">*.yanruogu.com</span><br><span class="line">*.com    </span><br><span class="line">webservers1[0]     </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>表示匹配 webservers1 组的第 1 个主机    webservers1[0:25]  #表示匹配 webservers1 组的第 1 个到第 25 个主机（官网文档是":"表示范围，测试发现应该使用"-",注意不要和匹配多个主机组混淆）</span><br></pre></td></tr></table></figure></p>
 <p>上面的用法，在多个组之间同样适用 ，如：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">webservers</span><br><span class="line">webservers:dbservers  #表示两个组中所有的主机</span><br></pre></td></tr></table></figure></p>
 <h3 id="3、逻辑非与逻辑and"><a href="#3、逻辑非与逻辑and" class="headerlink" title="3、逻辑非与逻辑and"></a>3、逻辑非与逻辑and</h3><p>非的表达式，如，目标主机必须在组webservers但不在phoenix组中</p>
 <pre><code>webserver:!phoenix
@@ -586,7 +586,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -666,7 +666,7 @@
         <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
