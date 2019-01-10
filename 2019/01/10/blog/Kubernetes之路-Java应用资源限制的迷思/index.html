@@ -1,0 +1,1044 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="docker,Kubernetes,yml,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="描述随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。">
+<meta name="keywords" content="docker,Kubernetes,yml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes之路-Java应用资源限制的迷思">
+<meta property="og:url" content="http://yoursite.com/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/index.html">
+<meta property="og:site_name" content="这家伙真懒">
+<meta property="og:description" content="描述随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132531h7qkkctnt7unpygt.png">
+<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532ayrwsmufxbsbr6s5.png">
+<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532h5tt3ylvybzyyyjo.png">
+<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532uuy5uhiu3h1935wh.png">
+<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532b1zg81p3lgrr8xpg.png">
+<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532o1bdqyv9q7zi2b6n.png">
+<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132533vid2lyeysy4t7ilm.png">
+<meta property="og:updated_time" content="2019-01-10T02:22:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes之路-Java应用资源限制的迷思">
+<meta name="twitter:description" content="描述随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。">
+<meta name="twitter:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132531h7qkkctnt7unpygt.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/">
+
+
+
+
+
+  <title> Kubernetes之路-Java应用资源限制的迷思 | 这家伙真懒 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这家伙真懒</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">mooon</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-xinyang">
+          <a href="/xinyang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            告白
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input">
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'bRi9SMH65fh2yRbuHHKj','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes之路-Java应用资源限制的迷思
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T10:22:11+08:00">
+                2019-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/" class="leancloud_visitors" data-flag-title="Kubernetes之路-Java应用资源限制的迷思">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。<br><a id="more"></a></p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>有些同学反映：自己设置了容器的资源限制，但是Java应用容器在运行中还是会莫名奇妙地被OOM Killer干掉。</p>
+<p>这背后一个非常常见的原因是：没有正确设置容器的资源限制以及对应的JVM的堆空间大小。</p>
+<p>我们拿一个tomcat应用为例，其实例代码和Kubernetes部署文件可以从Github中获得。<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132531h7qkkctnt7unpygt.png" alt="avatar"></p>
+<p>下面是一个Kubernetes的Pod的定义描述：</p>
+<p>1、Pod中的app是一个初始化容器，负责把一个JSP应用拷贝到 tomcat 容器的 “webapps”目录下。注： 镜像中JSP应用index.jsp用于显示JVM和系统资源信息。<br>2、tomcat 容器会保持运行，而且我们限制了容器最大的内存用量为256MB内存。<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532ayrwsmufxbsbr6s5.png" alt="avatar"></p>
+<p>我们执行如下命令来部署、测试应用<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532h5tt3ylvybzyyyjo.png" alt="avatar"></p>
+<p>我们可以看到HTML格式的系统CPU/Memory等信息，我们也可以用 html2text 命令将其转化成为文本格式。</p>
+<p>注意：本文是在一个 2C 4G的节点上进行的测试，在不同环境中测试输出的结果会有所不同<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532uuy5uhiu3h1935wh.png" alt="avatar"></p>
+<p>我们可以发现，容器中看到的系统内存是 3951MB，而JVM Heap Size最大是 878MB。纳尼？！我们不是设置容器资源的容量为256MB了吗？如果这样，当应用内存的用量超出了256MB，JVM还没对其进行GC，而JVM进程就会被系统直接OOM干掉了。</p>
+<h2 id="问题的根源在于："><a href="#问题的根源在于：" class="headerlink" title="问题的根源在于："></a>问题的根源在于：</h2><p>对于JVM而言，如果没有设置Heap Size，就会按照宿主机环境的内存大小缺省设置自己的最大堆大小。<br>Docker容器利用CGroup对进程使用的资源进行限制，而在容器中的JVM依然会利用宿主机环境的内存大小和CPU核数进行缺省设置，这导致了JVM Heap的错误计算。<br>类似，JVM缺省的GC、JIT编译线程数量取决于宿主机CPU核数。如果我们在一个节点上运行多个Java应用，即使我们设置了CPU的限制，应用之间依然有可能因为GC线程抢占切换，导致应用性能收到影响。</p>
+<p>了解了问题的根源，我们就可以非常简单地解决问题了</p>
+<h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><h3 id="开启CGroup资源感知"><a href="#开启CGroup资源感知" class="headerlink" title="开启CGroup资源感知"></a>开启CGroup资源感知</h3><p>Java社区也关注到这个问题，并在JavaSE8u131+和JDK9 支持了对容器资源限制的自动感知能力 <a href="https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits" target="_blank" rel="noopener">https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits</a></p>
+<p>其用法就是添加如下参数<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532b1zg81p3lgrr8xpg.png" alt="avatar"></p>
+<p>我们在上文示例的tomcat容器添加环境变量 “JAVA_OPTS”参数<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532o1bdqyv9q7zi2b6n.png" alt="avatar"></p>
+<p>我们部署一个新的Pod，并重复相应的测试<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132533vid2lyeysy4t7ilm.png" alt="avatar"></p>
+<p>我们看到JVM最大的Heap大小变成了112MB，这很不错，这样就能保证我们的应用不会轻易被OOM了。随后问题又来了，为什么我们设置了容器最大内存限制是256MB，而JVM只给Heap设置了112MB的最大值呢？</p>
+<p>这就涉及到JVM的内存管理的细节了，JVM中的内存消耗包含Heap和Non-Heap两类；类似Class的元信息，JIT编译过的代码，线程堆栈(thread stack)，GC需要的内存空间等都属于Non-Heap内存，所以JVM还会根据CGroup的资源限制预留出部分内存给Non Heap，来保障系统的稳定。（在上面的示例中我们可以看到，tomcat启动后Non Heap占用了近32MB的内存）</p>
+<p>在最新的JDK 10中，又对JVM在容器中运行做了进一步的优化和增强。</p>
+<h2 id="容器内部感知CGroup资源限制"><a href="#容器内部感知CGroup资源限制" class="headerlink" title="容器内部感知CGroup资源限制"></a>容器内部感知CGroup资源限制</h2><p>如果无法利用JDK 8/9的新特性，比如还在使用JDK6的老应用，我们还可以在容器内部利用脚本来获取容器的CGroup资源限制，并通过设置JVM的Heap大小。</p>
+<p>Docker1.7开始将容器cgroup信息挂载到容器中，所以应用可以从 /sys/fs/cgroup/memory/memory.limit_in_bytes 等文件获取内存、 CPU等设置，在容器的应用启动命令中根据Cgroup配置正确的资源设置 -Xmx, -XX:ParallelGCThreads等参数</p>
+<p>在 <a href="https://yq.aliyun.com/articles/18037?spm=a2c41.11181499.0.0" target="_blank" rel="noopener">https://yq.aliyun.com/articles/18037?spm=a2c41.11181499.0.0</a> 一文中已经有相应的示例和代码，本文不再赘述</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文分析了Java应用在容器使用中一个常见Heap设置的问题。容器与虚拟机不同，其资源限制通过CGroup来实现。而容器内部进程如果不感知CGroup的限制，就进行内存、CPU分配可能导致资源冲突和问题。</p>
+<p>我们可以非常简单地利用JVM的新特性和自定义脚本来正确设置资源限制。这个可以解决绝大多数资源限制的问题。</p>
+<p>关于容器应用中资源限制还有一类问题是，一些比较老的监控工具或者free/top等系统命令，在容器中运行时依然会获取到宿主机的CPU和内存，这导致了一些监控工具在容器中运行时无法正常计算资源消耗。社区中常见的做法是利用 lxcfs 来让容器在资源可见性的行为和虚机保持一致，后续文章会介绍其在Kubernetes上的使用方案。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+            <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+          
+            <a href="/tags/yml/" rel="tag"># yml</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/09/blog/全盘掌控堆空间的大小/" rel="next" title="全盘掌控堆空间的大小">
+                <i class="fa fa-chevron-left"></i> 全盘掌控堆空间的大小
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg" alt="这家伙真懒">
+          <p class="site-author-name" itemprop="name">这家伙真懒</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">60</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题的根源在于："><span class="nav-number">3.</span> <span class="nav-text">问题的根源在于：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决思路"><span class="nav-number">4.</span> <span class="nav-text">解决思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开启CGroup资源感知"><span class="nav-number">4.1.</span> <span class="nav-text">开启CGroup资源感知</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器内部感知CGroup资源限制"><span class="nav-number">5.</span> <span class="nav-text">容器内部感知CGroup资源限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">这家伙真懒</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("zsiNfRfGxHuzfd3jhKcQpFPd-gzGzoHsz", "TGYb1Fm9SJyIApoiuROTP72s");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
