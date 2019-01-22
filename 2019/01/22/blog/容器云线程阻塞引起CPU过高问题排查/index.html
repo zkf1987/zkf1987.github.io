@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="docker,Kubernetes,yml,">
+  <meta name="keywords" content="shell,kubernetes,">
 
 
 
@@ -87,26 +87,18 @@
 
 
 
-<meta name="description" content="描述随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。">
-<meta name="keywords" content="docker,Kubernetes,yml">
+<meta name="description" content="描述解决因线程阻塞导致主机CPU出现IO等待问题。 情况描述主机上出现CPU总体使用率到达约35%，并且wa 持续在18%以上的情况；">
+<meta name="keywords" content="shell,kubernetes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kubernetes之路-Java应用资源限制的迷思">
-<meta property="og:url" content="http://yoursite.com/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/index.html">
+<meta property="og:title" content="容器云线程阻塞引起CPU过高问题排查">
+<meta property="og:url" content="http://yoursite.com/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/index.html">
 <meta property="og:site_name" content="这家伙真懒">
-<meta property="og:description" content="描述随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。">
+<meta property="og:description" content="描述解决因线程阻塞导致主机CPU出现IO等待问题。 情况描述主机上出现CPU总体使用率到达约35%，并且wa 持续在18%以上的情况；">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132531h7qkkctnt7unpygt.png">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532ayrwsmufxbsbr6s5.png">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532h5tt3ylvybzyyyjo.png">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532uuy5uhiu3h1935wh.png">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532b1zg81p3lgrr8xpg.png">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532o1bdqyv9q7zi2b6n.png">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132533vid2lyeysy4t7ilm.png">
-<meta property="og:updated_time" content="2019-01-10T02:22:11.000Z">
+<meta property="og:updated_time" content="2019-01-22T03:27:28.685Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kubernetes之路-Java应用资源限制的迷思">
-<meta name="twitter:description" content="描述随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。">
-<meta name="twitter:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132531h7qkkctnt7unpygt.png">
+<meta name="twitter:title" content="容器云线程阻塞引起CPU过高问题排查">
+<meta name="twitter:description" content="描述解决因线程阻塞导致主机CPU出现IO等待问题。 情况描述主机上出现CPU总体使用率到达约35%，并且wa 持续在18%以上的情况；">
 
 
 
@@ -134,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/">
 
 
 
 
 
-  <title> Kubernetes之路-Java应用资源限制的迷思 | 这家伙真懒 </title>
+  <title> 容器云线程阻塞引起CPU过高问题排查 | 这家伙真懒 </title>
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -319,7 +311,7 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="这家伙真懒">
@@ -340,7 +332,7 @@
             
             
               
-                Kubernetes之路-Java应用资源限制的迷思
+                容器云线程阻塞引起CPU过高问题排查
               
             
           </h1>
@@ -355,8 +347,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T10:22:11+08:00">
-                2019-01-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T11:14:36+08:00">
+                2019-01-22
               </time>
             
 
@@ -395,7 +387,7 @@
 
           
           
-             <span id="/2019/01/10/blog/Kubernetes之路-Java应用资源限制的迷思/" class="leancloud_visitors" data-flag-title="Kubernetes之路-Java应用资源限制的迷思">
+             <span id="/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/" class="leancloud_visitors" data-flag-title="容器云线程阻塞引起CPU过高问题排查">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -424,31 +416,16 @@
       
 
       
-        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>随着容器技术的成熟，越来越多的企业客户在企业中选择Docker和Kubernetes作为应用平台的基础。然而在实践过程中，还会遇到很多具体问题。本系列文章会记录阿里云容器服务团队在支持客户中的一些心得体会和最佳实践。我们也欢迎您通过邮件和钉钉群和我们联系，分享您的思路和遇到的问题。<br><a id="more"></a></p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>有些同学反映：自己设置了容器的资源限制，但是Java应用容器在运行中还是会莫名奇妙地被OOM Killer干掉。</p>
-<p>这背后一个非常常见的原因是：没有正确设置容器的资源限制以及对应的JVM的堆空间大小。</p>
-<p>我们拿一个tomcat应用为例，其实例代码和Kubernetes部署文件可以从Github中获得。<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132531h7qkkctnt7unpygt.png" alt="avatar"></p>
-<p>下面是一个Kubernetes的Pod的定义描述：</p>
-<p>1、Pod中的app是一个初始化容器，负责把一个JSP应用拷贝到 tomcat 容器的 “webapps”目录下。注： 镜像中JSP应用index.jsp用于显示JVM和系统资源信息。<br>2、tomcat 容器会保持运行，而且我们限制了容器最大的内存用量为256MB内存。<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532ayrwsmufxbsbr6s5.png" alt="avatar"></p>
-<p>我们执行如下命令来部署、测试应用<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532h5tt3ylvybzyyyjo.png" alt="avatar"></p>
-<p>我们可以看到HTML格式的系统CPU/Memory等信息，我们也可以用 html2text 命令将其转化成为文本格式。</p>
-<p>注意：本文是在一个 2C 4G的节点上进行的测试，在不同环境中测试输出的结果会有所不同<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532uuy5uhiu3h1935wh.png" alt="avatar"></p>
-<p>我们可以发现，容器中看到的系统内存是 3951MB，而JVM Heap Size最大是 878MB。纳尼？！我们不是设置容器资源的容量为256MB了吗？如果这样，当应用内存的用量超出了256MB，JVM还没对其进行GC，而JVM进程就会被系统直接OOM干掉了。</p>
-<h2 id="问题的根源在于："><a href="#问题的根源在于：" class="headerlink" title="问题的根源在于："></a>问题的根源在于：</h2><p>对于JVM而言，如果没有设置Heap Size，就会按照宿主机环境的内存大小缺省设置自己的最大堆大小。<br>Docker容器利用CGroup对进程使用的资源进行限制，而在容器中的JVM依然会利用宿主机环境的内存大小和CPU核数进行缺省设置，这导致了JVM Heap的错误计算。<br>类似，JVM缺省的GC、JIT编译线程数量取决于宿主机CPU核数。如果我们在一个节点上运行多个Java应用，即使我们设置了CPU的限制，应用之间依然有可能因为GC线程抢占切换，导致应用性能收到影响。</p>
-<p>了解了问题的根源，我们就可以非常简单地解决问题了</p>
-<h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><h3 id="开启CGroup资源感知"><a href="#开启CGroup资源感知" class="headerlink" title="开启CGroup资源感知"></a>开启CGroup资源感知</h3><p>Java社区也关注到这个问题，并在JavaSE8u131+和JDK9 支持了对容器资源限制的自动感知能力 <a href="https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits" target="_blank" rel="noopener">https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits</a></p>
-<p>其用法就是添加如下参数<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532b1zg81p3lgrr8xpg.png" alt="avatar"></p>
-<p>我们在上文示例的tomcat容器添加环境变量 “JAVA_OPTS”参数<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132532o1bdqyv9q7zi2b6n.png" alt="avatar"></p>
-<p>我们部署一个新的Pod，并重复相应的测试<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201803/29/132533vid2lyeysy4t7ilm.png" alt="avatar"></p>
-<p>我们看到JVM最大的Heap大小变成了112MB，这很不错，这样就能保证我们的应用不会轻易被OOM了。随后问题又来了，为什么我们设置了容器最大内存限制是256MB，而JVM只给Heap设置了112MB的最大值呢？</p>
-<p>这就涉及到JVM的内存管理的细节了，JVM中的内存消耗包含Heap和Non-Heap两类；类似Class的元信息，JIT编译过的代码，线程堆栈(thread stack)，GC需要的内存空间等都属于Non-Heap内存，所以JVM还会根据CGroup的资源限制预留出部分内存给Non Heap，来保障系统的稳定。（在上面的示例中我们可以看到，tomcat启动后Non Heap占用了近32MB的内存）</p>
-<p>在最新的JDK 10中，又对JVM在容器中运行做了进一步的优化和增强。</p>
-<h2 id="容器内部感知CGroup资源限制"><a href="#容器内部感知CGroup资源限制" class="headerlink" title="容器内部感知CGroup资源限制"></a>容器内部感知CGroup资源限制</h2><p>如果无法利用JDK 8/9的新特性，比如还在使用JDK6的老应用，我们还可以在容器内部利用脚本来获取容器的CGroup资源限制，并通过设置JVM的Heap大小。</p>
-<p>Docker1.7开始将容器cgroup信息挂载到容器中，所以应用可以从 /sys/fs/cgroup/memory/memory.limit_in_bytes 等文件获取内存、 CPU等设置，在容器的应用启动命令中根据Cgroup配置正确的资源设置 -Xmx, -XX:ParallelGCThreads等参数</p>
-<p>在 <a href="https://yq.aliyun.com/articles/18037?spm=a2c41.11181499.0.0" target="_blank" rel="noopener">https://yq.aliyun.com/articles/18037?spm=a2c41.11181499.0.0</a> 一文中已经有相应的示例和代码，本文不再赘述</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文分析了Java应用在容器使用中一个常见Heap设置的问题。容器与虚拟机不同，其资源限制通过CGroup来实现。而容器内部进程如果不感知CGroup的限制，就进行内存、CPU分配可能导致资源冲突和问题。</p>
-<p>我们可以非常简单地利用JVM的新特性和自定义脚本来正确设置资源限制。这个可以解决绝大多数资源限制的问题。</p>
-<p>关于容器应用中资源限制还有一类问题是，一些比较老的监控工具或者free/top等系统命令，在容器中运行时依然会获取到宿主机的CPU和内存，这导致了一些监控工具在容器中运行时无法正常计算资源消耗。社区中常见的做法是利用 lxcfs 来让容器在资源可见性的行为和虚机保持一致，后续文章会介绍其在Kubernetes上的使用方案。</p>
+        <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>解决因线程阻塞导致主机CPU出现IO等待问题。</p>
+<h2 id="情况描述"><a href="#情况描述" class="headerlink" title="情况描述"></a>情况描述</h2><p>主机上出现CPU总体使用率到达约35%，并且wa 持续在18%以上的情况；<br><a id="more"></a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">top </span><br><span class="line">top - 15:56:04 up 125 days,  5:19,  2 users,  load average: 25.54, 26.08, 26.86</span><br><span class="line">Tasks: 1655 total,   4 running, 1651 sleeping,   0 stopped,   0 zombie</span><br><span class="line"><span class="meta">%</span>Cpu(s):  7.4 us,  5.6 sy,  0.0 ni, 68.2 id, 18.5 wa,  0.0 hi,  0.2 si,  0.0 st</span><br><span class="line">KiB Mem : 39454579+total, 31070960+free, 44192168 used, 39644028 buff/cache</span><br><span class="line">KiB Swap: 32767996 total, 31950172 free,   817824 used. 34117923+avail Mem</span><br></pre></td></tr></table></figure>
+<p>通过分析，发现其中7个核因IO wait导致CPU占用到达近100%；<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">mpstat -P ALL 1 3 </span><br><span class="line">Average:     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle</span><br><span class="line">Average:     all    2.84    0.01    5.44   18.09    0.00    0.36    0.00    0.00    0.00   73.26</span><br><span class="line">Average:       0    6.09    0.00    5.38   87.46    0.00    1.08    0.00    0.00    0.00    0.00</span><br><span class="line">Average:       1    4.15    0.00    3.46    0.35    0.00    0.35    0.00    0.00    0.00   91.70</span><br><span class="line">Average:       2    6.16    0.00    7.88   84.93    0.00    1.03    0.00    0.00    0.00    0.00</span><br><span class="line">Average:       3    5.84    0.00    5.50    0.00    0.00    1.72    0.00    0.00    0.00   86.94</span><br><span class="line">Average:       4    5.84    0.00    4.12    0.00    0.00    1.03    0.00    0.00    0.00   89.00</span><br><span class="line">Average:       5    6.16    0.00    5.48    0.00    0.00    1.03    0.00    0.00    0.00   87.33</span><br><span class="line">Average:       6   10.17    0.00    4.41    0.00    0.00    1.36    0.00    0.00    0.00   84.07</span><br><span class="line">Average:       7    5.88    0.00    4.15    0.00    0.00    1.04    0.00    0.00    0.00   88.93</span><br><span class="line">Average:       8    4.78    0.00    6.83    0.00    0.00    1.02    0.00    0.00    0.00   87.37</span><br><span class="line">Average:       9    4.79    0.00    8.22   86.30    0.00    0.68    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      10    6.85    0.00    5.14    0.00    0.00    1.03    0.00    0.00    0.00   86.99</span><br><span class="line">Average:      11    7.17    0.00    4.10   87.03    0.00    1.71    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      12    1.01    0.00    6.42    0.00    0.00    0.00    0.00    0.00    0.00   92.57</span><br><span class="line">Average:      13    1.36    0.00   10.51    0.00    0.00    0.00    0.00    0.00    0.00   88.14</span><br><span class="line">Average:      14    1.68    0.00   15.49    0.34    0.00    0.00    0.00    0.00    0.00   82.49</span><br><span class="line">Average:      15    1.02    0.00    3.06   95.92    0.00    0.00    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      16    1.01    0.00    3.03    0.34    0.00    0.00    0.00    0.00    0.00   95.62</span><br><span class="line">Average:      17    1.02    0.00    3.05    0.34    0.00    0.00    0.00    0.00    0.00   95.59</span><br><span class="line">Average:      18    1.01    0.00    2.70    0.00    0.00    0.00    0.00    0.00    0.00   96.28</span><br><span class="line">Average:      19    1.02    0.00    2.72   96.26    0.00    0.00    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      20    1.36    0.00    4.76    0.00    0.00    0.00    0.00    0.00    0.00   93.88</span><br><span class="line">Average:      21    0.68    0.00    3.39    0.00    0.00    0.00    0.00    0.00    0.00   95.93</span><br><span class="line">Average:      22    1.69    0.00    2.71    0.00    0.00    0.00    0.00    0.00    0.00   95.59</span><br><span class="line">Average:      23    1.36    0.00    3.05    0.00    0.00    0.00    0.00    0.00    0.00   95.59</span><br><span class="line">Average:      24    4.73    0.00    3.38    0.00    0.00    0.68    0.00    0.00    0.00   91.22</span><br><span class="line">Average:      25    8.70    0.00   36.12   55.18    0.00    0.00    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      26    4.73    0.00    7.09   87.50    0.00    0.68    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      27    1.34    0.00    2.68    0.00    0.00    0.33    0.00    0.00    0.00   95.65</span><br><span class="line">Average:      28    3.04    0.00    3.38    0.00    0.00    0.34    0.00    0.00    0.00   93.24</span><br><span class="line">Average:      29    2.35    0.00    2.35    0.00    0.00    0.34    0.00    0.00    0.00   94.97</span><br><span class="line">Average:      30    2.01    0.00    3.34   94.31    0.00    0.33    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      31    2.01    0.00    2.35    0.00    0.00    0.34    0.00    0.00    0.00   95.30</span><br><span class="line">Average:      32    2.02    0.00    8.75    0.00    0.00    0.67    0.00    0.00    0.00   88.55</span><br><span class="line">Average:      33    1.34    0.00   24.83    0.00    0.00    0.67    0.00    0.00    0.00   73.15</span><br><span class="line">Average:      34    4.73    0.00    2.03    0.00    0.00    0.34    0.00    0.00    0.00   92.91</span><br><span class="line">Average:      35    2.01    0.00    2.68    0.00    0.00    0.34    0.00    0.00    0.00   94.97</span><br><span class="line">Average:      36    0.67    0.00    2.68    0.00    0.00    0.00    0.00    0.00    0.00   96.66</span><br><span class="line">Average:      37    0.00    0.00    2.01   97.99    0.00    0.00    0.00    0.00    0.00    0.00</span><br><span class="line">Average:      38    1.00    0.00   11.33    0.00    0.00    0.00    0.00    0.00    0.00   87.67</span><br><span class="line">Average:      39    0.33    0.00    2.67    0.00    0.00    0.00    0.00    0.00    0.00   97.00</span><br><span class="line">Average:      40    0.67    0.33    2.68    0.00    0.00    0.00    0.00    0.00    0.00   96.32</span><br><span class="line">Average:      41    0.33    0.00    2.33    0.00    0.00    0.00    0.00    0.00    0.00   97.33</span><br><span class="line">Average:      42    0.67    0.00    2.34    0.00    0.00    0.00    0.00    0.00    0.00   96.99</span><br><span class="line">Average:      43    0.67    0.00    1.67    0.00    0.00    0.33    0.00    0.00    0.00   97.33</span><br><span class="line">Average:      44    0.33    0.00    2.00    0.00    0.00    0.00    0.00    0.00    0.00   97.67</span><br><span class="line">Average:      45    0.67    0.00    2.01    0.00    0.00    0.00    0.00    0.00    0.00   97.32</span><br><span class="line">Average:      46    0.33    0.00    2.33    0.00    0.00    0.00    0.00    0.00    0.00   97.33</span><br><span class="line">Average:      47    2.68    0.00    2.68    0.00    0.00    0.00    0.00    0.00    0.00   94.65</span><br></pre></td></tr></table></figure></p>
+<p>进一步问题定位，该主机存在17个阻塞线程，因此怀疑，主机上存在经常出现阻塞的进程<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vmstat 1 2</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 4 17 817824 310717472   5868 39639032    1    1     1     9    0    0  0  2 91  7  0</span><br><span class="line"> 4 17 817824 310716000   5868 39639172    0    0     0  1568 52662 261199  2  5 74 19  0</span><br></pre></td></tr></table></figure></p>
+<p>通过以下命令查出主机阻塞进程，且CPU占用量异常高，PID为： 52726。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ps -eo ppid,pid,user,stat,pcpu.comm,wchan | grep D</span><br><span class="line">PPID    PID USER    STAT    %CPU    COMMAND     WCHAN   </span><br><span class="line">52726   52726   root    DS      475493    sh                    vmpressure</span><br></pre></td></tr></table></figure></p>
+<p>并通过以下方式进一步判断，发现该进程占用的CPU为异常IO wait的核。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">while : ; do ps -eo pid,ni,pri,pcpu,psr,comm |grep "52726" ; sleep 1 ; done</span><br><span class="line">52726   0   19      475510  42  sh</span><br><span class="line">52726   0   19      475510  8  sh</span><br><span class="line">52726   0   19      475510  8  sh</span><br><span class="line">52726   0   19      475510  9  sh</span><br><span class="line">52726   0   19      475510  19  sh</span><br></pre></td></tr></table></figure></p>
+<p>进一步确定该进程信息，通过查看命名空间下的pod，发现一直是terminating的状态；<br>通过该命令强制删除<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"> <span class="string">kubectl</span> <span class="string">delete</span> <span class="string">pods</span> <span class="string">mq-consumer-597b4cbb5-5hwx2</span>  <span class="bullet">--grace-period=0</span> <span class="bullet">--force</span></span><br></pre></td></tr></table></figure></p>
+<p>说明：强制删除会出现一个告警<br>警告：立即删除不等待确认正在运行的资源已终止。资源可能会无限期地继续在集群上运行。</p>
+<p>登录到主机上，发现52726进程依然存在，最后通过kill -9 52726 52707 52739删除相关进程，并发现所有CPU核恢复正常。</p>
 
       
     </div>
@@ -478,11 +455,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/docker/" rel="tag"># docker</a>
+            <a href="/tags/shell/" rel="tag"># shell</a>
           
-            <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
-          
-            <a href="/tags/yml/" rel="tag"># yml</a>
+            <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
           
         </div>
       
@@ -495,8 +470,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/09/blog/全盘掌控堆空间的大小/" rel="next" title="全盘掌控堆空间的大小">
-                <i class="fa fa-chevron-left"></i> 全盘掌控堆空间的大小
+              <a href="/2019/01/18/blog/如何发现linux中引起高io等待的进程/" rel="next" title="如何发现linux中引起高io等待的进程">
+                <i class="fa fa-chevron-left"></i> 如何发现linux中引起高io等待的进程
               </a>
             
           </div>
@@ -504,10 +479,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/17/blog/Kubernetes master服务高可用方案/" rel="prev" title="Kubernetes master服务高可用方案">
-                Kubernetes master服务高可用方案 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -634,7 +605,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题的根源在于："><span class="nav-number">3.</span> <span class="nav-text">问题的根源在于：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决思路"><span class="nav-number">4.</span> <span class="nav-text">解决思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开启CGroup资源感知"><span class="nav-number">4.1.</span> <span class="nav-text">开启CGroup资源感知</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器内部感知CGroup资源限制"><span class="nav-number">5.</span> <span class="nav-text">容器内部感知CGroup资源限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#情况描述"><span class="nav-number">2.</span> <span class="nav-text">情况描述</span></a></li></ol></div>
             
 
           </div>
