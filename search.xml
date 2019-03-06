@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[基于overlay2存储驱动的理解]]></title>
+    <url>%2F2019%2F03%2F06%2Fblog%2F%E5%9F%BA%E4%BA%8Eoverlay2%E5%AD%98%E5%82%A8%E9%A9%B1%E5%8A%A8%E7%9A%84%E7%90%86%E8%A7%A3%2F</url>
+    <content type="text"><![CDATA[描述我用的是overlay2（默认）的存储驱动，所以容器存储在/var/lib/docker/overlay2目录下，可以看见这个目录有一堆名字很长的文件夹。而且这些和我们的容器的名字和镜像的名字都不一样。 下面用一些例子来加深对docker容器技术的理解 1、启动一个容器 2、进入/var/lib/docker/image/overlay2/layerdb/mounts目录，根据容器ID，进入容器目录mount-id的文件内容如下：这一串字符就是表示我们刚才创建的容器目录，在/var/lib/docker/overlay2下，内容如下：其中merged是容器的挂载点，diff目录是容器的可读可写层，初始为空，下面是merged、容器层（upperdir）、镜像层（lowerdir）之间的关系。 link文件的内容如下：这个对应了/var/lib/docker/overlay2/l 文件夹下的目录对应的文件夹名称。据说他保存了镜像层的短标识，用于解决mount参数中长字符超过页大小限制的问题。测试：在打开的容器中，创建一个文件 这时再查看diff文件夹和merged文件夹，就能发现多了个文件，其实这两个文件就是同一个，因为diff（可读写层）是挂载到merged目录中的。可以直接手动在diff文件中新建一个文件，再去merged中查看验证一下。]]></content>
+      <categories>
+        <category>技术文章</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>overlay2</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[CVE-2019-5736 runc容器逃逸漏洞分析]]></title>
     <url>%2F2019%2F03%2F01%2Fblog%2FCVE-2019-5736%20runc%E5%AE%B9%E5%99%A8%E9%80%83%E9%80%B8%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%2F</url>
     <content type="text"><![CDATA[漏洞编号CVE-2019-5736 漏洞简介runc是一个根据OCI(Open Container Initiative)标准创建并运行容器的CLI tool，目前Docker、Containerd和CRI-O等容器都运行在runc之上。 该漏洞允许恶意容器（以最少的用户交互）覆盖主机上的runc二进制文件，从而获得root权限在主机上执行代码。漏洞可能影响通过受影响版本Docker部署的应用、虚拟主机、云服务器。K8s集群，含有受影响runc版本的Linux发行版等。 漏洞影响Ubuntu：runc 1.0.0~rc4+dfsg1-6ubuntu0.18.10.1之前版本Debian：runc 0.1.1+dfsg1-2 之前版本RedHat Enterprise Linux： docker 1.13.1-91.git07f3374.el7之前版本Amazon Linux：docker 18.06.1ce-7.25.amzn1.x86_64之前版本CoreOS：2051.0.0之前版本Kops Debian 所有版本（正在修复）Docker：18.09.2之前版本 利用条件使用攻击者控制的镜像创建新容器攻击者具有某容器的写入权限，通过docker exec或其他方式进入容器中 runc代码修复当前docker 版本信息Docker version： 17.03.1-ceDocker-runc version： 1.0.0-rc2Docker-runc commit： 54296cf40ad8143b62dbcaa1d90e520a2136ddfe 当前已有基于1.0.0-rc2修复逃逸漏洞的开源代码当前修复版本github地址：https://github.com/rancher/runc-cve/tree/release-v17.03.2 Docker-runc 修复版本下载地址https://github.com/rancher/runc-cve/releases/download/CVE-2019-5736-build3/runc-v17.03.2-amd64-no-memfd_create 说明：通过查看docker发行版本，发现docker并没有对runc代码做改动 漏洞复现1、拉取github poc 源码，构建高危镜像1git clone https://github.com/twistlock/RunC-CVE-2019-5736.git&lt;br/&gt; 2、构建镜像12cd malicious_image_POC docker built -t maliciouspoc:0.1 . 3、漏洞测试测试主机：172.22.242.172,查看当前docker-runc的版本 启动poc容器 查看docker-runc版本，发现docker-runc已经被篡改，如下提示： 修复方法下载docker-runc 修复版本，进行主机上docker-runc替换; 执行以下命令定位docker-runc。 执行以下命令备份原有的runc1cp /usr/bin/docker-runc /root/soft/docker-runc.bak 将新版本的runc拷贝到 /usr/bin/ 目录下 验证漏洞是否修复：执行docker run maliciouspoc:0.1镜像，发现runc不会被覆盖，成功修复！ 第5章 参考连接https://asciinema.org/a/228625http://x3fwy.bitcron.com/post/runc-malicious-container-escapehttps://github.com/rancher/runc-cve/tree/release-v17.03.2https://blog.aquasec.com/runc-vulnerability-cve-2019-5736https://github.com/twistlock/RunC-CVE-2019-5736]]></content>
@@ -55,8 +67,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>shell</tag>
         <tag>kubernetes</tag>
+        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
@@ -67,8 +79,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>shell</tag>
         <tag>kubernetes</tag>
+        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
@@ -79,8 +91,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>shell</tag>
         <tag>kubernetes</tag>
+        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
@@ -103,8 +115,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>docker</tag>
         <tag>Kubernetes</tag>
+        <tag>docker</tag>
         <tag>yml</tag>
       </tags>
   </entry>
@@ -116,8 +128,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>docker</tag>
         <tag>Kubernetes</tag>
+        <tag>docker</tag>
         <tag>yml</tag>
       </tags>
   </entry>
@@ -129,8 +141,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>docker</tag>
         <tag>Kubernetes</tag>
+        <tag>docker</tag>
         <tag>yml</tag>
       </tags>
   </entry>
@@ -246,8 +258,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>自动化运维</tag>
         <tag>JAVA</tag>
+        <tag>自动化运维</tag>
       </tags>
   </entry>
   <entry>
@@ -412,8 +424,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>hadoop</tag>
         <tag>java</tag>
+        <tag>hadoop</tag>
       </tags>
   </entry>
   <entry>
@@ -476,9 +488,9 @@
       <tags>
         <tag>虚拟化</tag>
         <tag>云计算</tag>
+        <tag>shell</tag>
         <tag>hadoop</tag>
         <tag>hdfs</tag>
-        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
@@ -503,9 +515,9 @@
       <tags>
         <tag>虚拟化</tag>
         <tag>云计算</tag>
+        <tag>shell</tag>
         <tag>hadoop</tag>
         <tag>hdfs</tag>
-        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
@@ -627,8 +639,8 @@
       </categories>
       <tags>
         <tag>was</tag>
-        <tag>jdk</tag>
         <tag>python</tag>
+        <tag>jdk</tag>
         <tag>安全漏洞</tag>
       </tags>
   </entry>
@@ -641,8 +653,8 @@
       </categories>
       <tags>
         <tag>was</tag>
-        <tag>jdk</tag>
         <tag>python</tag>
+        <tag>jdk</tag>
       </tags>
   </entry>
   <entry>
@@ -692,17 +704,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[k8s中node的隔离与恢复]]></title>
-    <url>%2F2018%2F10%2F17%2Fblog%2Fk8s%E4%B8%ADnode%E7%9A%84%E9%9A%94%E7%A6%BB%E4%B8%8E%E6%81%A2%E5%A4%8D%2F</url>
-    <content type="text"><![CDATA[描述在硬件升级、硬件维护等情况下，我们需要将某些Node进行隔离，脱离Kubernetes集群的调度范围。Kubernetes提供了一种机制，既可以将Node纳入调度范围，也可以将Node脱离调度范围。 方案一创建配置文件unschedule_node.yaml，在spec部分指定unschedulable为true：12345678apiVersion: v1kind: Nodemetadata: name: kubernetes-minion1 labels: kubernetes.io/hostname: kubernetes-minion1spec: unschedulable: true 然后，通过kubectl replace命令完成对Node状态的修改：12$ kubectl replace -f unschedule_node.yaml nodes/kubernetes-minion1 查看Node的状态，可以观察到在Node的状态中增加了一项SchedulingDisabled：123$ kubectl get nodesNAME LABELS STATUSkubernetes-minion1 kubernetes.io/hostname=kubernetes-minion1 Ready, SchedulingDisabled 对于后续创建的Pod，系统将不会再向该Node进行调度。另一种方法是不使用配置文件，直接使用kubectl patch命令完成：1$ kubectl patch node kubernetes-minion1 -p '&#123;＂spec＂:&#123;＂unschedulable＂:true&#125;&#125;' 需要注意的是，将某个Node脱离调度范围时，在其上运行的Pod并不会自动停止，管理员需要手动停止在该Node上运行的Pod。 同样，如果需要将某个Node重新纳入集群调度范围，则将unschedulable设置为false，再次执行kubectl replace或kubectl patch命令就能恢复系统对该Node的调度。 方案二通用kubectl提供的API实现NODE的隔离与恢复隔离12kubectl cordon [nodename]kubectl get nodes 恢复12kubectl uncordon [nodename]kubectl get nodes 挤压——把需要挤压的节点上的PODS清除123kubectl drain [nodename] --ignore-daemonsetskubectl get nodeskubectl get pods -o wide 可以发现，该节点上的POD都清除了 节点清除之后，可以对节点进行删除操作]]></content>
-      <categories>
-        <category>技术文章</category>
-      </categories>
-      <tags>
-        <tag>Kubernetes</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[kubernetes部署nginx镜像]]></title>
     <url>%2F2018%2F10%2F17%2Fblog%2Fkubernetes%E9%83%A8%E7%BD%B2nginx%E9%95%9C%E5%83%8F%2F</url>
     <content type="text"><![CDATA[描述说明：本次测试是在kubernetes中部署nginx服务，前提是需要节点上已经存在了nginx镜像。 准备开始系统环境修改 hosts文件主备机都要关闭防火墙12345[root@redhat-master ~]# systemctl disable firewalld.service[root@redhat-master ~]# systemctl status firewalld.servicefirewalld.service - firewalld - dynamic firewall daemon Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled) Active: inactive (dead) 软件安装请参考之前写的一篇文章《kubernetes通过yum安装配置》1http://mooon.top/2017/04/28/blog/kubernetes%E9%80%9A%E8%BF%87yum%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/ 测试集群是否工作在 master 节点上运行1kubectl get nodes 若正常工作，可获取工作节点信息及运行状态为Ready，如下图 发布nginx服务创建pod : nginx-pod.yaml123456789101112apiVersion: v1kind: Podmetadata: name: nginx-pod labels: name: nginx-podspec: containers: - name: nginx image: nginx ports: - containerPort: 80 运行：1kubectl create -f nging-pod.yaml 查看pod的状态在节点上查看运行的DOCKER镜像 创建replicationController : nginx-rc.yaml123456789101112131415161718apiVersion: v1kind: ReplicationControllermetadata: name: nginx-rcspec: replicas: 1 selector: name: nginx-pod template: metadata: labels: name: nginx-pod spec: containers: - name: nginx-pod image: nginx ports: - containerPort: 80 运行：1kubectl create -f nginx-rc.yaml 查看ReplicationController状况 创建service : nginx-service.yaml1234567891011apiVersion: v1kind: Servicemetadata: name: nginx-servicespec: type: NodePort ports: - port: 80 nodePort: 30001 selector: name: nginx-pod 运行：1kubectl create -f nginx-service.yaml 说明：其中Kubernetes服务为Kube系统自带服务，无需理会 测试发布的nginx服务使用curl工具使用其他机器的浏览器访问node1机器的30001端口 备注查看service的详细描述 kubernetes入门之kube-proxy实现原理service是一组pod的服务抽象，相当于一组pod的LB，负责将请求分发给对应的pod。service会为这个LB提供一个IP，一般称为cluster IP。kube-proxy的作用主要是负责service的实现，具体来说，就是实现了内部从pod到service和外部的从node port向service的访问。 举个例子，现在有podA，podB，podC和serviceAB。serviceAB是podA，podB的服务抽象(service)。那么kube-proxy的作用就是可以将pod(不管是podA，podB或者podC)向serviceAB的请求，进行转发到service所代表的一个具体pod(podA或者podB)上。请求的分配方法一般分配是采用轮询方法进行分配。 另外，kubernetes还提供了一种在node节点上暴露一个端口，从而提供从外部访问service的方式。 比如我们使用这样的一个manifest来创建service1234567891011apiVersion: v1kind: Servicemetadata: name: nginx-servicespec: type: NodePort ports: - port: 80 nodePort: 30001 selector: name: nginx-pod 他的含义是在node上暴露出30001端口。当访问node上的30001端口时，其请求会转发到service对应的cluster IP的80端口，并进一步转发到pod的80端口。 kuer-proxy目前有userspace和iptables两种实现方式。 userspace是在用户空间，通过kuber-proxy实现LB的代理服务。这个是kube-proxy的最初的版本，较为稳定，但是效率也自然不太高。 另外一种方式是iptables的方式。是纯采用iptables来实现LB。是目前一般kube默认的方式。 userspace这里具体举个例子，以nginx-service为例，kube为其分配了一个clusterIP。分配clusterIP的作用还是如上文所说，是方便pod到service的数据访问使用describe可以查看到详细信息。可以看到暴露出来的NodePort端口30001。 nodePort的工作原理与clusterIP大致相同，是发送到node上指定端口的数据，通过iptables重定向到kube-proxy对应的端口上。然后由kube-proxy进一步把数据发送到其中的一个pod上。运行以下命令查看路由1iptables -S -t nat 12345678910111213141516171819202122[root@redhat-minion-1 ~]# iptables -S -t nat-P PREROUTING ACCEPT-P INPUT ACCEPT-P OUTPUT ACCEPT-P POSTROUTING ACCEPT-N DOCKER-N KUBE-NODEPORT-CONTAINER-N KUBE-NODEPORT-HOST-N KUBE-PORTALS-CONTAINER-N KUBE-PORTALS-HOST-A PREROUTING -m comment --comment "handle ClusterIPs; NOTE: this must be before the NodePort rules" -j KUBE-PORTALS-CONTAINER-A PREROUTING -m addrtype --dst-type LOCAL -m comment --comment "handle service NodePorts; NOTE: this must be the last rule in the chain" -j KUBE-NODEPORT-CONTAINER-A OUTPUT -m comment --comment "handle ClusterIPs; NOTE: this must be before the NodePort rules" -j KUBE-PORTALS-HOST-A OUTPUT -m addrtype --dst-type LOCAL -m comment --comment "handle service NodePorts; NOTE: this must be the last rule in the chain" -j KUBE-NODEPORT-HOST-A OUTPUT ! -d 127.0.0.0/8 -m addrtype --dst-type LOCAL -j DOCKER-A POSTROUTING -s 172.17.41.0/24 ! -o docker0 -j MASQUERADE-A KUBE-NODEPORT-CONTAINER -p tcp -m comment --comment "default/nginx-service:" -m tcp --dport 30001 -j REDIRECT --to-ports 49441-A KUBE-NODEPORT-HOST -p tcp -m comment --comment "default/nginx-service:" -m tcp --dport 30001 -j DNAT --to-destination 192.168.10.88:49441-A KUBE-PORTALS-CONTAINER -d 10.254.0.1/32 -p tcp -m comment --comment "default/kubernetes:" -m tcp --dport 443 -j REDIRECT --to-ports 42991-A KUBE-PORTALS-CONTAINER -d 10.254.95.63/32 -p tcp -m comment --comment "default/nginx-service:" -m tcp --dport 80 -j REDIRECT --to-ports 49441-A KUBE-PORTALS-HOST -d 10.254.0.1/32 -p tcp -m comment --comment "default/kubernetes:" -m tcp --dport 443 -j DNAT --to-destination 192.168.10.88:42991-A KUBE-PORTALS-HOST -d 10.254.95.63/32 -p tcp -m comment --comment "default/nginx-service:" -m tcp --dport 80 -j DNAT --to-destination 192.168.10.88:49441 参考文章12http://www.cnblogs.com/xuxinkun/p/5799986.htmlhttp://blog.csdn.net/u013760355/article/details/68061976]]></content>
@@ -718,6 +719,17 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[k8s中node的隔离与恢复]]></title>
+    <url>%2F2018%2F10%2F17%2Fblog%2Fk8s%E4%B8%ADnode%E7%9A%84%E9%9A%94%E7%A6%BB%E4%B8%8E%E6%81%A2%E5%A4%8D%2F</url>
+    <content type="text"><![CDATA[描述在硬件升级、硬件维护等情况下，我们需要将某些Node进行隔离，脱离Kubernetes集群的调度范围。Kubernetes提供了一种机制，既可以将Node纳入调度范围，也可以将Node脱离调度范围。 方案一创建配置文件unschedule_node.yaml，在spec部分指定unschedulable为true：12345678apiVersion: v1kind: Nodemetadata: name: kubernetes-minion1 labels: kubernetes.io/hostname: kubernetes-minion1spec: unschedulable: true 然后，通过kubectl replace命令完成对Node状态的修改：12$ kubectl replace -f unschedule_node.yaml nodes/kubernetes-minion1 查看Node的状态，可以观察到在Node的状态中增加了一项SchedulingDisabled：123$ kubectl get nodesNAME LABELS STATUSkubernetes-minion1 kubernetes.io/hostname=kubernetes-minion1 Ready, SchedulingDisabled 对于后续创建的Pod，系统将不会再向该Node进行调度。另一种方法是不使用配置文件，直接使用kubectl patch命令完成：1$ kubectl patch node kubernetes-minion1 -p '&#123;＂spec＂:&#123;＂unschedulable＂:true&#125;&#125;' 需要注意的是，将某个Node脱离调度范围时，在其上运行的Pod并不会自动停止，管理员需要手动停止在该Node上运行的Pod。 同样，如果需要将某个Node重新纳入集群调度范围，则将unschedulable设置为false，再次执行kubectl replace或kubectl patch命令就能恢复系统对该Node的调度。 方案二通用kubectl提供的API实现NODE的隔离与恢复隔离12kubectl cordon [nodename]kubectl get nodes 恢复12kubectl uncordon [nodename]kubectl get nodes 挤压——把需要挤压的节点上的PODS清除123kubectl drain [nodename] --ignore-daemonsetskubectl get nodeskubectl get pods -o wide 可以发现，该节点上的POD都清除了 节点清除之后，可以对节点进行删除操作]]></content>
+      <categories>
+        <category>技术文章</category>
+      </categories>
+      <tags>
+        <tag>Kubernetes</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[kubernetes1.6集群搭建]]></title>
     <url>%2F2018%2F09%2F17%2Fblog%2Fkubernetes1.6%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%2F</url>
     <content type="text"><![CDATA[描述开始之前关闭防火墙： systemctl disable firewalld修改主机机：hostnamectl set-hostname kube-node12192.168.10.33 kube-node192.168.10.34 kube-master kubernate1.6.4 集群环境搭建master:192.168.10.34node:192.168.10.33 安装kubelet和kubeadm下载RPM包https://github.com/huangjiasingle/k8s-rpm 选择最新版本1.6.4 ，下载之后进行安装 说明：安装之前需要装socat 包 然后安装：1yum loaclinstall -y *.rpm 注意:主备节点都需要安装，切记 然后在主备节点上安装docker,安装完之后，启动服务：123456789101112131415161718systemctl start docker [root@kube-node ~]# docker versionClient: Version: 1.10.3 API version: 1.22 Go version: go1.5.3 Git commit: 20f81dd Built: Thu Mar 10 16:08:02 2016 OS/Arch: linux/amd64Server: Version: 1.10.3 API version: 1.22 Go version: go1.5.3 Git commit: 20f81dd Built: Thu Mar 10 16:08:02 2016 OS/Arch: linux/amd64 load 镜像可以pull镜像也可以直接load镜像，前提是要有导出好的镜像文件 docker命令自己学习补充 导入的镜像列表如下： 初始化集群 master启动之后初始化集群 1kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=v1.6.4 执行的时候，如果出现如下报错：1Jun 8 22:55:33 kube-master kubelet: error: failed to run Kubelet: failed to create kubelet: misconfiguration: kubelet cgroup driver: "systemd" is different from docker cgroup driver: "cgroupfs" 需要修改 NODE上也需要改 把systemd 修改成cgroupfs12/etc/systemd/system/kubelet.service.d/10-kubeadm.confEnvironment="KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs" 启动结果：1234567891011121314151617181920212223242526272829303132333435363738394041424344[root@kube-master ~]# kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=v1.6.4[kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.[init] Using Kubernetes version: v1.6.4[init] Using Authorization mode: RBAC[preflight] Running pre-flight checks[preflight] Starting the kubelet service[certificates] Generated CA certificate and key.[certificates] Generated API server certificate and key.[certificates] API Server serving cert is signed for DNS names [kube-master kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 192.168.10.34][certificates] Generated API server kubelet client certificate and key.[certificates] Generated service account token signing key and public key.[certificates] Generated front-proxy CA certificate and key.[certificates] Generated front-proxy client certificate and key.[certificates] Valid certificates and keys now exist in "/etc/kubernetes/pki"[kubeconfig] Wrote KubeConfig file to disk: "/etc/kubernetes/admin.conf"[kubeconfig] Wrote KubeConfig file to disk: "/etc/kubernetes/kubelet.conf"[kubeconfig] Wrote KubeConfig file to disk: "/etc/kubernetes/controller-manager.conf"[kubeconfig] Wrote KubeConfig file to disk: "/etc/kubernetes/scheduler.conf"[apiclient] Created API client, waiting for the control plane to become ready[apiclient] All control plane components are healthy after 110.668938 seconds[apiclient] Waiting for at least one node to register[apiclient] First node has registered after 6.592495 seconds[token] Using token: 21b4a4.230097a80c8639a6[apiconfig] Created RBAC rules[addons] Created essential addon: kube-proxy[addons] Created essential addon: kube-dnsYour Kubernetes master has initialized successfully!To start using your cluster, you need to run (as a regular user): sudo cp /etc/kubernetes/admin.conf $HOME/ sudo chown $(id -u):$(id -g) $HOME/admin.conf export KUBECONFIG=$HOME/admin.confYou should now deploy a pod network to the cluster.Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at: http://kubernetes.io/docs/admin/addons/You can now join any number of machines by running the following on each nodeas root: kubeadm join --token 21b4a4.230097a80c8639a6 192.168.10.34:6443 在master上执行123sudo cp /etc/kubernetes/admin.conf $HOME/ sudo chown $(id -u):$(id -g) $HOME/admin.conf export KUBECONFIG=$HOME/admin.conf 在node 上执行：123456789101112131415161718192021[root@kube-node ~]# kubeadm join --token 21b4a4.230097a80c8639a6 192.168.10.34:6443[kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.[preflight] Running pre-flight checks[preflight] WARNING: kubelet service is not enabled, please run 'systemctl enable kubelet.service'[preflight] Starting the kubelet service[discovery] Trying to connect to API Server "192.168.10.34:6443"[discovery] Created cluster-info discovery client, requesting info from "https://192.168.10.34:6443"[discovery] Cluster info signature and contents are valid, will use API Server "https://192.168.10.34:6443"[discovery] Successfully established connection with API Server "192.168.10.34:6443"[bootstrap] Detected server version: v1.6.4[bootstrap] The server supports the Certificates API (certificates.k8s.io/v1beta1)[csr] Created API client to obtain unique certificate for this node, generating keys and certificate signing request[csr] Received signed certificate from the API server, generating KubeConfig...[kubeconfig] Wrote KubeConfig file to disk: "/etc/kubernetes/kubelet.conf"Node join complete:* Certificate signing request sent to master and response received.* Kubelet informed of new secure connection details.Run 'kubectl get nodes' on the master to see this machine join. 配置网络下载地址：https://github.com/coreos/flannel/tree/master/Documentationkube-flannel.yml kube-flannel-rbac.yml1234567[root@kube-master ~]# kubectl apply -f kube-flannel.ymlserviceaccount "flannel" createdconfigmap "kube-flannel-cfg" createddaemonset "kube-flannel-ds" created[root@kube-master ~]# kubectl apply -f kube-flannel-rbac.ymlclusterrole "flannel" createdclusterrolebinding "flannel" created 查看POD 查看NODE1234[root@kube-master ~]# kubectl get nodesNAME STATUS AGE VERSIONkube-master Ready 32m v1.6.4kube-node Ready 35s v1.6.4 查看DOCKERmaster1234567891011121314151617181920[root@kube-master ~]# docker psCONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMEScef090fe8ae6 fc5e302d8309 "/sidecar --v=2 --log" 5 minutes ago Up 5 minutes k8s_sidecar_kube-dns-3913472980-3ngkv_kube-system_5e85ea3e-4cc1-11e7-87d2-0800273ed16a_06e27e0c912ca 1091847716ec "/dnsmasq-nanny -v=2 " 5 minutes ago Up 5 minutes k8s_dnsmasq_kube-dns-3913472980-3ngkv_kube-system_5e85ea3e-4cc1-11e7-87d2-0800273ed16a_052e1b1c62347 f8363dbf447b "/kube-dns --domain=c" 5 minutes ago Up 5 minutes k8s_kubedns_kube-dns-3913472980-3ngkv_kube-system_5e85ea3e-4cc1-11e7-87d2-0800273ed16a_07ed8933be29b gcr.io/google_containers/pause-amd64:3.0 "/pause" 5 minutes ago Up 5 minutes k8s_POD_kube-dns-3913472980-3ngkv_kube-system_5e85ea3e-4cc1-11e7-87d2-0800273ed16a_0d513c3e80f00 cd4ae0be5e1b "/opt/bin/flanneld --" 6 minutes ago Up 6 minutes k8s_kube-flannel_kube-flannel-ds-rkvk4_kube-system_1f0dda6a-4cc5-11e7-87d2-0800273ed16a_13e7a1ae91d2a cd4ae0be5e1b "/bin/sh -c 'set -e -" 6 minutes ago Up 6 minutes k8s_install-cni_kube-flannel-ds-rkvk4_kube-system_1f0dda6a-4cc5-11e7-87d2-0800273ed16a_035388a791345 gcr.io/google_containers/pause-amd64:3.0 "/pause" 6 minutes ago Up 6 minutes k8s_POD_kube-flannel-ds-rkvk4_kube-system_1f0dda6a-4cc5-11e7-87d2-0800273ed16a_0ee581272c23b e073a55c288b "/usr/local/bin/kube-" 33 minutes ago Up 33 minutes k8s_kube-proxy_kube-proxy-t230v_kube-system_5e7e7561-4cc1-11e7-87d2-0800273ed16a_057acdbcbbc8e gcr.io/google_containers/pause-amd64:3.0 "/pause" 33 minutes ago Up 33 minutes k8s_POD_kube-proxy-t230v_kube-system_5e7e7561-4cc1-11e7-87d2-0800273ed16a_0274052fa35fe 4e3810a19a64 "kube-apiserver --kub" 33 minutes ago Up 33 minutes k8s_kube-apiserver_kube-apiserver-kube-master_kube-system_e215197843d67464823d0c66610eb358_0f1d34b8914f9 0ea16a85ac34 "kube-controller-mana" 33 minutes ago Up 33 minutes k8s_kube-controller-manager_kube-controller-manager-kube-master_kube-system_7400b523ee1c1e62e195a8abf7fb80e7_018d64034d9a7 1fab9be555e1 "kube-scheduler --add" 33 minutes ago Up 33 minutes k8s_kube-scheduler_kube-scheduler-kube-master_kube-system_3145edd89dab0492bdacc0dd589d0e90_0ee9793637c66 243830dae7dd "etcd --listen-client" 33 minutes ago Up 33 minutes k8s_etcd_etcd-kube-master_kube-system_7075157cfd4524dbe0951e00a8e3129e_09875990dd959 gcr.io/google_containers/pause-amd64:3.0 "/pause" 33 minutes ago Up 33 minutes k8s_POD_kube-apiserver-kube-master_kube-system_e215197843d67464823d0c66610eb358_0fd9f23fe3826 gcr.io/google_containers/pause-amd64:3.0 "/pause" 33 minutes ago Up 33 minutes k8s_POD_kube-scheduler-kube-master_kube-system_3145edd89dab0492bdacc0dd589d0e90_07a123d72f0c0 gcr.io/google_containers/pause-amd64:3.0 "/pause" 33 minutes ago Up 33 minutes k8s_POD_kube-controller-manager-kube-master_kube-system_7400b523ee1c1e62e195a8abf7fb80e7_0dcb214b77c62 gcr.io/google_containers/pause-amd64:3.0 "/pause" 33 minutes ago Up 33 minutes k8s_POD_etcd-kube-master_kube-system_7075157cfd4524dbe0951e00a8e3129e_0 查看node12345678[root@kube-node kubelet.service.d]# docker psCONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMESe25e2f8b675a cd4ae0be5e1b "/opt/bin/flanneld --" 28 seconds ago Up 26 seconds k8s_kube-flannel_kube-flannel-ds-l480m_kube-system_c2a99b0b-4cc5-11e7-87d2-0800273ed16a_1f84fc813883f cd4ae0be5e1b "/bin/sh -c 'set -e -" 32 seconds ago Up 30 seconds k8s_install-cni_kube-flannel-ds-l480m_kube-system_c2a99b0b-4cc5-11e7-87d2-0800273ed16a_00ff63bb1ccf9 e073a55c288b "/usr/local/bin/kube-" 35 seconds ago Up 32 seconds k8s_kube-proxy_kube-proxy-8c4r8_kube-system_c2b07bb5-4cc5-11e7-87d2-0800273ed16a_0925df18507da gcr.io/google_containers/pause-amd64:3.0 "/pause" 36 seconds ago Up 34 seconds k8s_POD_kube-flannel-ds-l480m_kube-system_c2a99b0b-4cc5-11e7-87d2-0800273ed16a_0a57cdf6cec13 gcr.io/google_containers/pause-amd64:3.0 "/pause" 36 seconds ago Up 34 seconds k8s_POD_kube-proxy-8c4r8_kube-system_c2b07bb5-4cc5-11e7-87d2-0800273ed16a_0 问题解答1、the connection to the server localhost:8080 was refused - did you specify the right host or port?12345sudo cp /etc/kubernetes/admin.conf $HOME/sudo chown $(id -u):$(id -g) $HOME/admin.confexport KUBECONFIG=$HOME/admin.conf然后在执行：kubectl get - -all 或者123456789101112vi /etc/kubernetes/manifests/kube-apiserver.yaml找到文件中有个叫- - -insecure-port默认是0,就是不开启http的访问方式 所以你的8080访问不到 - - -insecure-port=8080- - -insecure-bind-address=127.0.0.1重启kubelet服务 master上的 2、获取token123kubeadm token list获取之后可以加入到集群kubeadm join --token=a022f1.a6340056ead7e466 192.168.10.56:6443]]></content>
@@ -725,8 +737,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>docker</tag>
         <tag>Kubernetes</tag>
+        <tag>docker</tag>
         <tag>yml</tag>
       </tags>
   </entry>
@@ -740,6 +752,18 @@
       <tags>
         <tag>k8s</tag>
         <tag>高可用</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[etcd常用操作]]></title>
+    <url>%2F2018%2F08%2F17%2Fblog%2Fetcd%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%2F</url>
+    <content type="text"><![CDATA[描述etcd是一个分布式键值存储，它提供了一种可靠的方式来存储跨机器集群的数据。它是开源的，可以在GitHub上找到。etcd优雅地处理网络分区期间的领导选举，并容忍包括领导者在内的机器故障。 您的应用程序可以读取和写入数据到etcd。一个简单的用例是将数据库连接详细信息或功能标志作为关键值对存储在etcd中。可以监视这些值，允许您的应用在更改时自行重新配置。 高级应用程序利用一致性保证来实现数据库领导者选举或对一群工作人员进行分布式锁定。 打印成员列表12345678./etcdctl --write-out=table --endpoints=localhost:2379 member list+------------------+---------+--------+----------------------------+----------------------------+| ID | STATUS | NAME | PEER ADDRS | CLIENT ADDRS |+------------------+---------+--------+----------------------------+----------------------------+| ba78e54b36d36c50 | started | infra1 | http://192.168.21.151:2380 | http://192.168.21.151:2379 || c6a63eef7452c8b1 | started | infra0 | http://192.168.21.149:2380 | http://192.168.21.149:2379 || efd972cb002e70bc | started | infra2 | http://192.168.21.153:2380 | http://192.168.21.153:2379 |+------------------+---------+--------+----------------------------+----------------------------+ 更新peerURLs12./etcdctl member update &lt;memberID&gt; &lt;peerURLs&gt;./etcdctl member update efd972cb002e70bc http://127.0.0.1:2380 删除成员12$ etcdctl member remove a8266ecf031671f3Removed member a8266ecf031671f3 from cluster 添加成员（扩容）添加成员是一个两步过程： 1、通过成员API或etcdctl member add命令将新成员添加到集群。 说明：全部操作使用etcd V3 12345etcdctl member add infra3 --peer-urls=http://192.168.21.202:2380 export ETCD_NAME="infra3"export ETCD_INITIAL_CLUSTER="infra3=http://192.168.21.202:2380,infra1=http://192.168.21.151:2380,infra0=http://192.168.21.149:2380,infra2=http://192.168.21.153:2380"export ETCD_INITIAL_CLUSTER_STATE="existing" 2、使用新群集配置启动新成员，包括已更新成员（现有成员+新成员）的列表。 etcdctl已通知集群有关新成员的信息，并打印出成功启动它所需的环境变量。现在使用新成员的相关标志启动新的etcd进程：12345export ETCD_NAME="infra3"export ETCD_INITIAL_CLUSTER="infra0=http://10.0.1.10:2380,infra1=http://10.0.1.11:2380,infra2=http://10.0.1.12:2380,infra3=http://10.0.1.13:2380"export ETCD_INITIAL_CLUSTER_STATE=existing./etcd --initial-advertise-peer-urls http://192.168.21.202:2380 --listen-peer-urls http://192.168.21.202:2380 --listen-client-urls http://192.168.21.202:2379,http://127.0.0.1:2379 --advertise-client-urls http://192.168.21.202:2379 --initial-cluster-token etcd-cluster-1 --data-dir infra3 3、查看状态1234567891011121314151617root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl member list --endpoints=192.168.21.149:2379,192.168.21.151:2379,192.168.21.153:2379,192.168.21.202:2379 75499131c19cbbbd, started, infra3, http://192.168.21.202:2380, http://192.168.21.202:237982aa79e98a2686d6, started, infra2, http://192.168.21.153:2380, http://192.168.21.153:2379ba78e54b36d36c50, started, infra1, http://192.168.21.151:2380, http://192.168.21.151:2379c6a63eef7452c8b1, started, infra0, http://192.168.21.149:2380, http://192.168.21.149:2379root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64] ./etcdctl endpoint status --endpoints=192.168.21.149:2379,192.168.21.151:2379,192.168.21.153:2379,192.168.21.202:2379192.168.21.149:2379, c6a63eef7452c8b1, 3.2.16, 2.6 MB, true, 4, 27392192.168.21.151:2379, ba78e54b36d36c50, 3.2.16, 2.6 MB, false, 4, 27392192.168.21.153:2379, 82aa79e98a2686d6, 3.2.16, 2.6 MB, false, 4, 27392192.168.21.202:2379, 75499131c19cbbbd, 3.2.16, 3.2 MB, false, 4, 27392root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl endpoint health --endpoints=192.168.21.149:2379,192.168.21.151:2379,192.168.21.153:2379,192.168.21.202:2379192.168.21.149:2379 is healthy: successfully committed proposal: took = 1.302649ms192.168.21.151:2379 is healthy: successfully committed proposal: took = 1.457264ms192.168.21.153:2379 is healthy: successfully committed proposal: took = 1.48595ms192.168.21.202:2379 is healthy: successfully committed proposal: took = 1.453579ms 4、数据测试123456789101112131415#在一台节点上增加一条数据，数据是否会同步到其他节点root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl put hello worldOKroot@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl get hellohelloworldroot@zyzx-node2:[/root/etcd-v3.2.16-linux-amd64]./etcdctl get hellohelloworldroot@LY1F-R020510-VM12:[/root/etcd-v3.2.16-linux-amd64]./etcdctl get hellohelloworld 备份与恢复1、备份操作12#保存快照./etcdctl --endpoints=$ENDPOINTS snapshot save snapshot-test.db 2、恢复操作12345./etcdctl snapshot restore snapshot.db --name m3 --data-dir=/home/etcd_data恢复后的文件需要修改权限为 etcd:etcd--name:重新指定一个数据目录，可以不指定，默认为 default.etcd--data-dir：指定数据目录建议使用时不指定 name 但指定 data-dir，并将 data-dir 对应于 etcd 服务中配置的 data-dir etcd配置参数https://skyao.gitbooks.io/learning-etcd3/content/documentation/op-guide/configuration.html]]></content>
+      <categories>
+        <category>技术文章</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>k8s</tag>
       </tags>
   </entry>
   <entry>
@@ -767,31 +791,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[etcd常用操作]]></title>
-    <url>%2F2018%2F08%2F17%2Fblog%2Fetcd%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%2F</url>
-    <content type="text"><![CDATA[描述etcd是一个分布式键值存储，它提供了一种可靠的方式来存储跨机器集群的数据。它是开源的，可以在GitHub上找到。etcd优雅地处理网络分区期间的领导选举，并容忍包括领导者在内的机器故障。 您的应用程序可以读取和写入数据到etcd。一个简单的用例是将数据库连接详细信息或功能标志作为关键值对存储在etcd中。可以监视这些值，允许您的应用在更改时自行重新配置。 高级应用程序利用一致性保证来实现数据库领导者选举或对一群工作人员进行分布式锁定。 打印成员列表12345678./etcdctl --write-out=table --endpoints=localhost:2379 member list+------------------+---------+--------+----------------------------+----------------------------+| ID | STATUS | NAME | PEER ADDRS | CLIENT ADDRS |+------------------+---------+--------+----------------------------+----------------------------+| ba78e54b36d36c50 | started | infra1 | http://192.168.21.151:2380 | http://192.168.21.151:2379 || c6a63eef7452c8b1 | started | infra0 | http://192.168.21.149:2380 | http://192.168.21.149:2379 || efd972cb002e70bc | started | infra2 | http://192.168.21.153:2380 | http://192.168.21.153:2379 |+------------------+---------+--------+----------------------------+----------------------------+ 更新peerURLs12./etcdctl member update &lt;memberID&gt; &lt;peerURLs&gt;./etcdctl member update efd972cb002e70bc http://127.0.0.1:2380 删除成员12$ etcdctl member remove a8266ecf031671f3Removed member a8266ecf031671f3 from cluster 添加成员（扩容）添加成员是一个两步过程： 1、通过成员API或etcdctl member add命令将新成员添加到集群。 说明：全部操作使用etcd V3 12345etcdctl member add infra3 --peer-urls=http://192.168.21.202:2380 export ETCD_NAME="infra3"export ETCD_INITIAL_CLUSTER="infra3=http://192.168.21.202:2380,infra1=http://192.168.21.151:2380,infra0=http://192.168.21.149:2380,infra2=http://192.168.21.153:2380"export ETCD_INITIAL_CLUSTER_STATE="existing" 2、使用新群集配置启动新成员，包括已更新成员（现有成员+新成员）的列表。 etcdctl已通知集群有关新成员的信息，并打印出成功启动它所需的环境变量。现在使用新成员的相关标志启动新的etcd进程：12345export ETCD_NAME="infra3"export ETCD_INITIAL_CLUSTER="infra0=http://10.0.1.10:2380,infra1=http://10.0.1.11:2380,infra2=http://10.0.1.12:2380,infra3=http://10.0.1.13:2380"export ETCD_INITIAL_CLUSTER_STATE=existing./etcd --initial-advertise-peer-urls http://192.168.21.202:2380 --listen-peer-urls http://192.168.21.202:2380 --listen-client-urls http://192.168.21.202:2379,http://127.0.0.1:2379 --advertise-client-urls http://192.168.21.202:2379 --initial-cluster-token etcd-cluster-1 --data-dir infra3 3、查看状态1234567891011121314151617root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl member list --endpoints=192.168.21.149:2379,192.168.21.151:2379,192.168.21.153:2379,192.168.21.202:2379 75499131c19cbbbd, started, infra3, http://192.168.21.202:2380, http://192.168.21.202:237982aa79e98a2686d6, started, infra2, http://192.168.21.153:2380, http://192.168.21.153:2379ba78e54b36d36c50, started, infra1, http://192.168.21.151:2380, http://192.168.21.151:2379c6a63eef7452c8b1, started, infra0, http://192.168.21.149:2380, http://192.168.21.149:2379root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64] ./etcdctl endpoint status --endpoints=192.168.21.149:2379,192.168.21.151:2379,192.168.21.153:2379,192.168.21.202:2379192.168.21.149:2379, c6a63eef7452c8b1, 3.2.16, 2.6 MB, true, 4, 27392192.168.21.151:2379, ba78e54b36d36c50, 3.2.16, 2.6 MB, false, 4, 27392192.168.21.153:2379, 82aa79e98a2686d6, 3.2.16, 2.6 MB, false, 4, 27392192.168.21.202:2379, 75499131c19cbbbd, 3.2.16, 3.2 MB, false, 4, 27392root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl endpoint health --endpoints=192.168.21.149:2379,192.168.21.151:2379,192.168.21.153:2379,192.168.21.202:2379192.168.21.149:2379 is healthy: successfully committed proposal: took = 1.302649ms192.168.21.151:2379 is healthy: successfully committed proposal: took = 1.457264ms192.168.21.153:2379 is healthy: successfully committed proposal: took = 1.48595ms192.168.21.202:2379 is healthy: successfully committed proposal: took = 1.453579ms 4、数据测试123456789101112131415#在一台节点上增加一条数据，数据是否会同步到其他节点root@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl put hello worldOKroot@zyzx-node1:[/root/etcd-v3.2.16-linux-amd64]./etcdctl get hellohelloworldroot@zyzx-node2:[/root/etcd-v3.2.16-linux-amd64]./etcdctl get hellohelloworldroot@LY1F-R020510-VM12:[/root/etcd-v3.2.16-linux-amd64]./etcdctl get hellohelloworld 备份与恢复1、备份操作12#保存快照./etcdctl --endpoints=$ENDPOINTS snapshot save snapshot-test.db 2、恢复操作12345./etcdctl snapshot restore snapshot.db --name m3 --data-dir=/home/etcd_data恢复后的文件需要修改权限为 etcd:etcd--name:重新指定一个数据目录，可以不指定，默认为 default.etcd--data-dir：指定数据目录建议使用时不指定 name 但指定 data-dir，并将 data-dir 对应于 etcd 服务中配置的 data-dir etcd配置参数https://skyao.gitbooks.io/learning-etcd3/content/documentation/op-guide/configuration.html]]></content>
-      <categories>
-        <category>技术文章</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-        <tag>k8s</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[kubernetes通过yum安装配置]]></title>
-    <url>%2F2018%2F07%2F17%2Fblog%2Fkubernetes%E9%80%9A%E8%BF%87yum%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%2F</url>
-    <content type="text"><![CDATA[先决条件在REDHAT7.1下安装配置Kubernetes，你需要一个主机作为master，和一个或多个主机作为群集node 开始创建集群系统信息在/etc/hosts 中配置需要用到的主机IP和主机名，确保机器之前能互相PING通12redhat-master = 192.168.10.99redhat-minion-1 = 192.168.10.88 配置YUM源进入 /etc/yum.repos.d目录，新建 redhat.repo1234[virt7-docker-common-release]name=virt7-docker-common-releasebaseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/gpgcheck=0 开始安装 master和minion 都需要安装1yum -y install --enablerepo=virt7-docker-common-release kubernetes etcd flannel 注意：安装kubernetes的时候需要主机安装 socat 如果没有安装，则提示异常退出 修改 /etc/kubernetes/config文件如下： 注意：需要禁用防火墙 在 master 节点配置kubernetes服务 编译/etc/etcd/etcd.conf1234567# [member]ETCD_NAME=defaultETCD_DATA_DIR="/var/lib/etcd/default.etcd"ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"#[cluster]ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379" 编辑/etc/kubernetes/apiserver1234567891011121314151617# The address on the local server to listen to.KUBE_API_ADDRESS="--address=0.0.0.0"# The port on the local server to listen on.KUBE_API_PORT="--port=8080"# Port kubelets listen onKUBELET_PORT="--kubelet-port=10250"# Comma separated list of nodes in the etcd clusterKUBE_ETCD_SERVERS="--etcd-servers=http://redhat-master:2379"# Address range to use for servicesKUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"# Add your own!KUBE_API_ARGS="" 启动etcd服务123systemctl start etcdetcdctl mkdir /kube-centos/networketcdctl mk /kube-centos/network/config "&#123; \"Network\": \"172.30.0.0/16\", \"SubnetLen\": 24, \"Backend\": &#123; \"Type\": \"vxlan\" &#125; &#125;" 特别注意：/kube-centos/network与下面的Flannel配置中的FLANNEL_ETCD_PREFIX对应 配置/etc/sysconfig/flanneld 服务：master和minion 都需要配置1234567891011# Flanneld configuration options# etcd url location. Point this to the server where etcd runsFLANNEL_ETCD_ENDPOINTS="http://redhat-master:2379"# etcd config key. This is the configuration key that flannel queries# For address range assignmentFLANNEL_ETCD_PREFIX="/kube-redhat/network"# Any additional options that you want to pass#FLANNEL_OPTIONS="" 特别注意：FLANNEL_ETCD_PREFIX=”/kube-redhat/network”与上面的etcd配置中的Network对应 在master主机上启动服务12345for SERVICES in etcd kube-apiserver kube-controller-manager kube-scheduler flanneld; do systemctl restart $SERVICES systemctl enable $SERVICES systemctl status $SERVICESdone 在节点上配置Kubernetes服务。我们需要配置kubelet开始kubelet和代理 编辑/etc/kubernetes/kubelet123456789101112131415# The address for the info server to serve onKUBELET_ADDRESS="--address=0.0.0.0"# The port for the info server to serve onKUBELET_PORT="--port=10250"# You may leave this blank to use the actual hostname# Check the node number!KUBELET_HOSTNAME="--hostname-override=redhat-minion-n"# Location of the api-serverKUBELET_API_SERVER="--api-servers=http://redhat-master:8080"# Add your own!KUBELET_ARGS="" 配置/etc/sysconfig/flanneld (in all the nodes)1234567891011# Flanneld configuration options# etcd url location. Point this to the server where etcd runsFLANNEL_ETCD_ENDPOINTS="http://redhat-master:2379"# etcd config key. This is the configuration key that flannel queries# For address range assignmentFLANNEL_ETCD_PREFIX="/kube-redhat/network"# Any additional options that you want to pass#FLANNEL_OPTIONS="" 在minion主机上启动服务12345for SERVICES in kube-proxy kubelet flanneld docker; do systemctl restart $SERVICES systemctl enable $SERVICES systemctl status $SERVICESdone 安装配置完成，进行验证：]]></content>
-      <categories>
-        <category>技术文章</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-        <tag>Kubernetes</tag>
-        <tag>yml</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[Kubernetes资源创建yml语法]]></title>
     <url>%2F2018%2F07%2F17%2Fblog%2FKubernetes%E8%B5%84%E6%BA%90%E5%88%9B%E5%BB%BAyml%E8%AF%AD%E6%B3%95%2F</url>
     <content type="text"><![CDATA[描述在是用kubernetes中，我们对资源的创建大部分都是通过1kubelet create -f RESOURCE.yaml 刚开看的时候不免有一些迷茫，看不懂语法，不知道怎么写；今天本文就介绍一下kubernetes construct语法。 Construct语法其实就是由kubelet格式化成API的post data，提交给apiserver，因此这里支持yaml，json两种数据结构的文件。 Pod资源1234567891011121314151617181920212223242526272829apiVersion: v1 指定api版本，此值必须在kubectl apiversion中kind: Pod 指定创建资源的角色/类型metadata: 资源的元数据/属性 name: test 资源的名字，在同一个namespace中必须唯一 labels: 设定资源的标签 sex: boy 标签以key/value的结构存在 age: 18spec: #specification of the resource content 指定该资源的内容 restartPolicy: Never 表明改容器仅仅运行一次，默认k8s的策略，在此容器退出后，会立即创建一个相同的容器 volumes: 定义一组挂载设备 - name: volume 定义一个挂载设备的名字 hostPath: /data/www/html 挂载设备类型为hostPath，路径为宿主机下的/data/www/html,这里设备类型支持很多种 containers: 指定资源中的容器 - name: container1 容器的名字 image: “docker.coocla.org/ubuntu:last” 容器使用的镜像地址 volumeMounts: - mountPath: /mnt 挂载到容器的某个路径下 name: volume 挂载设备的名字，与volumes[*].name 需要对应 livenessProbe: 容器健康监测 httpGet: http形式监测，返回200-399之间，则认为容器正常 path: /health port: 8080 initialDelaySeconds: 15 表明第一次检测在容器启动后多长时间后开始 timeoutSeconds: 1 检测的超时时间 env: 指定容器中的环境变量 - name: str 变量的名字 value: &quot;hello world” 变量的值 command: [&quot;/bin/bash&quot;, &quot;-c&quot;] 覆盖容器中的Entrypoint,对应Dockefile中的ENTRYPOINT args: [&quot;/bin/echo&quot;, &quot;$(str)&quot;] 对应Dockerfile中CMD参数 健康监测还支持另外一种方法：123456exec: 执行命令的方法进行监测，如果其退出码不为0，则认为容器正常 command: - cat - /tmp/healthinitialDelaySeconds: 15timeoutSeconds: 1 ReplicationController的语法参数1234567891011121314apiVersion: v1kind: ReplicationControllermetadata: name: nginxspec: replicas: 2 指定rc中pod的个数 template: 指定rc中pod的模板，rc中的pod都是按照这个模板来创建的 metadata: 指定rc中pod的元数据，注意这里不需要在指定pod的名字，它由rc复制生成 labels: app: nginx spec: container: - name: nginx image: nginx Service123456789101112131415apiVersion: v1kind: Servicemetadata: name: nginxsvc labels: app: nginxspec: 指定Service中的内容 ports: 映射列表 - port: 80 service的端口 porotocal: TCP 映射的协议类型，支持TCP/UDP targetPort: 80 映射到pod的端口 name: www.baidu.com 该映射的名字selector: 匹配器port: 80app: nginx 匹配label中app为nginx，port为80的pod Secret12345678910111213apiVersion: v1kind: Secretmetadata: name: mysecrettype: 0paque 定义secret的类型，这里支持三种类型 password: xxx|base64 以key/value的形式定义，value需要经过base64编码才可以，在secret被挂载到container中后，会以key作为文件名，value的值经过base64解码作为内容，以文件的形式存在于container中 username: xxx|base64---type: kubernetes.io/service-account-token 第二种secret类型，用作创建服务账号的token，用作进程间通信的认证---type: kubernetes.io/dockercfg 第三种secret类型，用作在创建container，对docker registry的认证data: .dockercfg: `cat ~/.dockercfg | base64` 以上为部分资源参数，当然还有更多的参数可以指定，及更多的资源可以通过定义construct来创建。]]></content>
@@ -799,8 +798,8 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>docker</tag>
         <tag>Kubernetes</tag>
+        <tag>docker</tag>
         <tag>yml</tag>
       </tags>
   </entry>
@@ -812,8 +811,32 @@
         <category>技术文章</category>
       </categories>
       <tags>
-        <tag>Keepalived</tag>
         <tag>自动化运维</tag>
+        <tag>Keepalived</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[kubernetes通过yum安装配置]]></title>
+    <url>%2F2018%2F07%2F17%2Fblog%2Fkubernetes%E9%80%9A%E8%BF%87yum%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%2F</url>
+    <content type="text"><![CDATA[先决条件在REDHAT7.1下安装配置Kubernetes，你需要一个主机作为master，和一个或多个主机作为群集node 开始创建集群系统信息在/etc/hosts 中配置需要用到的主机IP和主机名，确保机器之前能互相PING通12redhat-master = 192.168.10.99redhat-minion-1 = 192.168.10.88 配置YUM源进入 /etc/yum.repos.d目录，新建 redhat.repo1234[virt7-docker-common-release]name=virt7-docker-common-releasebaseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/gpgcheck=0 开始安装 master和minion 都需要安装1yum -y install --enablerepo=virt7-docker-common-release kubernetes etcd flannel 注意：安装kubernetes的时候需要主机安装 socat 如果没有安装，则提示异常退出 修改 /etc/kubernetes/config文件如下： 注意：需要禁用防火墙 在 master 节点配置kubernetes服务 编译/etc/etcd/etcd.conf1234567# [member]ETCD_NAME=defaultETCD_DATA_DIR="/var/lib/etcd/default.etcd"ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"#[cluster]ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379" 编辑/etc/kubernetes/apiserver1234567891011121314151617# The address on the local server to listen to.KUBE_API_ADDRESS="--address=0.0.0.0"# The port on the local server to listen on.KUBE_API_PORT="--port=8080"# Port kubelets listen onKUBELET_PORT="--kubelet-port=10250"# Comma separated list of nodes in the etcd clusterKUBE_ETCD_SERVERS="--etcd-servers=http://redhat-master:2379"# Address range to use for servicesKUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"# Add your own!KUBE_API_ARGS="" 启动etcd服务123systemctl start etcdetcdctl mkdir /kube-centos/networketcdctl mk /kube-centos/network/config "&#123; \"Network\": \"172.30.0.0/16\", \"SubnetLen\": 24, \"Backend\": &#123; \"Type\": \"vxlan\" &#125; &#125;" 特别注意：/kube-centos/network与下面的Flannel配置中的FLANNEL_ETCD_PREFIX对应 配置/etc/sysconfig/flanneld 服务：master和minion 都需要配置1234567891011# Flanneld configuration options# etcd url location. Point this to the server where etcd runsFLANNEL_ETCD_ENDPOINTS="http://redhat-master:2379"# etcd config key. This is the configuration key that flannel queries# For address range assignmentFLANNEL_ETCD_PREFIX="/kube-redhat/network"# Any additional options that you want to pass#FLANNEL_OPTIONS="" 特别注意：FLANNEL_ETCD_PREFIX=”/kube-redhat/network”与上面的etcd配置中的Network对应 在master主机上启动服务12345for SERVICES in etcd kube-apiserver kube-controller-manager kube-scheduler flanneld; do systemctl restart $SERVICES systemctl enable $SERVICES systemctl status $SERVICESdone 在节点上配置Kubernetes服务。我们需要配置kubelet开始kubelet和代理 编辑/etc/kubernetes/kubelet123456789101112131415# The address for the info server to serve onKUBELET_ADDRESS="--address=0.0.0.0"# The port for the info server to serve onKUBELET_PORT="--port=10250"# You may leave this blank to use the actual hostname# Check the node number!KUBELET_HOSTNAME="--hostname-override=redhat-minion-n"# Location of the api-serverKUBELET_API_SERVER="--api-servers=http://redhat-master:8080"# Add your own!KUBELET_ARGS="" 配置/etc/sysconfig/flanneld (in all the nodes)1234567891011# Flanneld configuration options# etcd url location. Point this to the server where etcd runsFLANNEL_ETCD_ENDPOINTS="http://redhat-master:2379"# etcd config key. This is the configuration key that flannel queries# For address range assignmentFLANNEL_ETCD_PREFIX="/kube-redhat/network"# Any additional options that you want to pass#FLANNEL_OPTIONS="" 在minion主机上启动服务12345for SERVICES in kube-proxy kubelet flanneld docker; do systemctl restart $SERVICES systemctl enable $SERVICES systemctl status $SERVICESdone 安装配置完成，进行验证：]]></content>
+      <categories>
+        <category>技术文章</category>
+      </categories>
+      <tags>
+        <tag>Kubernetes</tag>
+        <tag>docker</tag>
+        <tag>yml</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[docker常用命令总结]]></title>
+    <url>%2F2018%2F06%2F17%2Fblog%2Fdocker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93%2F</url>
+    <content type="text"><![CDATA[描述docker常用命令： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960#显示虚悬镜像docker images -f dangling=true#删除虚悬镜像docker rmi $(docker images -q -f dangling=true)#删除所有镜像docker rmi $(docker images -q)#删除所有容器docker rm -f -v $(docker ps -a -q)#删除/启动所有退出的容器：docker rm/start $(docker ps -qf status=exited)#列出部分镜像docker images ubuntu* 【可以跟正则表达式】#只显示特定列以冒号分割docker images --format "&#123;&#123;.ID&#125;&#125;:&#123;&#123;.Repository&#125;&#125;:&#123;&#123;.Tag&#125;&#125;"#以表格等距显示docker images --format "table&#123;&#123;.ID&#125;&#125;\t&#123;&#123;.Repository&#125;&#125;\t&#123;&#123;.Tag&#125;&#125;"#体查看镜像内的历史记录docker history tomcat:v1.0#查看容器的元数据信息docker inspect 容器IDdocker inspect -f"&#123;&#123;.HostConfig.CpuRealtimePeriod&#125;&#125;" c44ec20cef5f#更改容器中的时区时间docker run -it -e TZ='Asia/Shanghai' tom:v1.2 bash#是/etc/localtime在作怪，用户只需要将容器内部的localtime改成你想要的时区就行了。ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime #显示当前运行容器的名称docker ps --format='&#123;&#123;.Names&#125;&#125;'#输出所有容器名包含test的容器，并打印容器名docker ps -f name=test --format='&#123;&#123;.Names&#125;&#125;'#查看退出状态的容器，并打印容器名docker ps -f status=exited --format="&#123;&#123;.Names&#125;&#125;"#只列出镜像的id以及仓库名称：docker images --format "&#123;&#123;.ID&#125;&#125;: &#123;&#123;.Repository&#125;&#125;"#只列出容器的相关id,image,status和namedocker ps --format "&#123;&#123;.ID&#125;&#125;: &#123;&#123;.Image&#125;&#125; : &#123;&#123;.Status&#125;&#125; : &#123;&#123;.Names&#125;&#125;"#使用alias来预定义常用的命令alias dockerrm='docker rm -f -v'#从宿主机拷贝文件到容器docker cp yum.log ecc6160b2884:/usr/local/tomcat#从容器拷贝文件到宿主机docker cp ecc6160b2884:/usr/local/tomcat /opt]]></content>
+      <categories>
+        <category>技术文章</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
       </tags>
   </entry>
   <entry>
@@ -844,9 +867,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[docker常用命令总结]]></title>
-    <url>%2F2018%2F06%2F17%2Fblog%2Fdocker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93%2F</url>
-    <content type="text"><![CDATA[描述docker常用命令： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960#显示虚悬镜像docker images -f dangling=true#删除虚悬镜像docker rmi $(docker images -q -f dangling=true)#删除所有镜像docker rmi $(docker images -q)#删除所有容器docker rm -f -v $(docker ps -a -q)#删除/启动所有退出的容器：docker rm/start $(docker ps -qf status=exited)#列出部分镜像docker images ubuntu* 【可以跟正则表达式】#只显示特定列以冒号分割docker images --format "&#123;&#123;.ID&#125;&#125;:&#123;&#123;.Repository&#125;&#125;:&#123;&#123;.Tag&#125;&#125;"#以表格等距显示docker images --format "table&#123;&#123;.ID&#125;&#125;\t&#123;&#123;.Repository&#125;&#125;\t&#123;&#123;.Tag&#125;&#125;"#体查看镜像内的历史记录docker history tomcat:v1.0#查看容器的元数据信息docker inspect 容器IDdocker inspect -f"&#123;&#123;.HostConfig.CpuRealtimePeriod&#125;&#125;" c44ec20cef5f#更改容器中的时区时间docker run -it -e TZ='Asia/Shanghai' tom:v1.2 bash#是/etc/localtime在作怪，用户只需要将容器内部的localtime改成你想要的时区就行了。ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime #显示当前运行容器的名称docker ps --format='&#123;&#123;.Names&#125;&#125;'#输出所有容器名包含test的容器，并打印容器名docker ps -f name=test --format='&#123;&#123;.Names&#125;&#125;'#查看退出状态的容器，并打印容器名docker ps -f status=exited --format="&#123;&#123;.Names&#125;&#125;"#只列出镜像的id以及仓库名称：docker images --format "&#123;&#123;.ID&#125;&#125;: &#123;&#123;.Repository&#125;&#125;"#只列出容器的相关id,image,status和namedocker ps --format "&#123;&#123;.ID&#125;&#125;: &#123;&#123;.Image&#125;&#125; : &#123;&#123;.Status&#125;&#125; : &#123;&#123;.Names&#125;&#125;"#使用alias来预定义常用的命令alias dockerrm='docker rm -f -v'#从宿主机拷贝文件到容器docker cp yum.log ecc6160b2884:/usr/local/tomcat#从容器拷贝文件到宿主机docker cp ecc6160b2884:/usr/local/tomcat /opt]]></content>
+    <title><![CDATA[docker network namespace]]></title>
+    <url>%2F2018%2F03%2F17%2Fblog%2Fdocker%20network%20namespace%20%2F</url>
+    <content type="text"><![CDATA[描述默认情况下，当 docker 实例被创建出来后，使用 ip netns 命令无法看到容器实例对应的 network namespace。这是因为 ip netns 命令是从 /var/run/netns 文件夹中读取内容的。步骤： 1、找到容器的主进程ID123docker run -it --name=wx tomcat:6 bashdocker inspect --format '&#123;&#123;.State.Pid&#125;&#125;' wx90818 2、创建 /var/run/netns 目录以及符号连接12mkdir /var/run/netnsln -s /proc/90818/ns/net /var/run/netns/wx 3、此时可以使用 ip netns 命令了12345678910111213141516171819说明：可以使用ip netns list查看命名空间ip netnsip netns exec wx ip addr1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo valid_lft forever preferred_lft forever inet6 ::1/128 scope host valid_lft forever preferred_lft forever2: tunl0@NONE: &lt;NOARP&gt; mtu 1480 qdisc noop state DOWN link/ipip 0.0.0.0 brd 0.0.0.0336: eth0@if337: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP link/ether 02:42:ac:11:00:05 brd ff:ff:ff:ff:ff:ff link-netnsid 0 inet 172.17.0.5/24 scope global eth0 valid_lft forever preferred_lft forever inet6 fe80::42:acff:fe11:5/64 scope link valid_lft forever preferred_lft forever ip netns exec [后边可以执行容器中的命令]]]></content>
       <categories>
         <category>技术文章</category>
       </categories>
@@ -858,17 +881,6 @@
     <title><![CDATA[docker 时间不同步]]></title>
     <url>%2F2018%2F03%2F17%2Fblog%2Fdocker%20%E6%97%B6%E9%97%B4%E4%B8%8D%E5%90%8C%E6%AD%A5%2F</url>
     <content type="text"><![CDATA[描述有时候会发现，容器中的时间与本地时间没有保持一致。需要修改配置解决，下面提供三种方法：1、Dockerfile1RUN echo "Asia/Shanghai" &gt; /etc/timezone 2、Sync the host time zone12345678 docker run -v /etc/localtime:/etc/localtime &lt;IMAGE:TAG&gt; ``` 3、container ```shell docker exec -it &lt;CONTAINER NAME&gt; bash echo "Asia/Shanghai" &gt; /etc/timezone`]]></content>
-      <categories>
-        <category>技术文章</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[docker network namespace]]></title>
-    <url>%2F2018%2F03%2F17%2Fblog%2Fdocker%20network%20namespace%20%2F</url>
-    <content type="text"><![CDATA[描述默认情况下，当 docker 实例被创建出来后，使用 ip netns 命令无法看到容器实例对应的 network namespace。这是因为 ip netns 命令是从 /var/run/netns 文件夹中读取内容的。步骤： 1、找到容器的主进程ID123docker run -it --name=wx tomcat:6 bashdocker inspect --format '&#123;&#123;.State.Pid&#125;&#125;' wx90818 2、创建 /var/run/netns 目录以及符号连接12mkdir /var/run/netnsln -s /proc/90818/ns/net /var/run/netns/wx 3、此时可以使用 ip netns 命令了12345678910111213141516171819说明：可以使用ip netns list查看命名空间ip netnsip netns exec wx ip addr1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo valid_lft forever preferred_lft forever inet6 ::1/128 scope host valid_lft forever preferred_lft forever2: tunl0@NONE: &lt;NOARP&gt; mtu 1480 qdisc noop state DOWN link/ipip 0.0.0.0 brd 0.0.0.0336: eth0@if337: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP link/ether 02:42:ac:11:00:05 brd ff:ff:ff:ff:ff:ff link-netnsid 0 inet 172.17.0.5/24 scope global eth0 valid_lft forever preferred_lft forever inet6 fe80::42:acff:fe11:5/64 scope link valid_lft forever preferred_lft forever ip netns exec [后边可以执行容器中的命令]]]></content>
       <categories>
         <category>技术文章</category>
       </categories>
@@ -897,9 +909,9 @@
       <tags>
         <tag>虚拟化</tag>
         <tag>云计算</tag>
+        <tag>shell</tag>
         <tag>hadoop</tag>
         <tag>hdfs</tag>
-        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
@@ -958,9 +970,9 @@
       <tags>
         <tag>虚拟化</tag>
         <tag>云计算</tag>
+        <tag>shell</tag>
         <tag>hadoop</tag>
         <tag>hdfs</tag>
-        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
