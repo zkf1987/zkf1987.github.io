@@ -318,6 +318,332 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/27/blog/k8s集群master节点Reset后恢复操作说明/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/27/blog/k8s集群master节点Reset后恢复操作说明/" itemprop="url">
+                  k8s集群master节点Reset后恢复操作说明
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-27T17:04:38+08:00">
+                2019-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/27/blog/k8s集群master节点Reset后恢复操作说明/" class="leancloud_visitors" data-flag-title="k8s集群master节点Reset后恢复操作说明">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>运维人员在Master节点意外被reset后恢复操作指导说明：</p>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><p>集群中Master节点为3个，采用高可用的部署方式。如果一个Master节点故障后仍然可以进行恢复。</p>
+<h3 id="拷贝其他Master节点的证书"><a href="#拷贝其他Master节点的证书" class="headerlink" title="拷贝其他Master节点的证书"></a>拷贝其他Master节点的证书</h3><p>三个Master节点使用的证书是一致的，先将其他节点kubernetes证书拷贝到出问题的Master节点上。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /opt/software/`date`/kubernetes/pki/ca* /etc/kubernetes/pki/</span><br><span class="line">cp /opt/software/`date`/kubernetes/pki/sa* /etc/kubernetes/pki/</span><br><span class="line">cp /opt/software/`date`/kubernetes/pki/webhook_config  /etc/kubernetes/pki/</span><br></pre></td></tr></table></figure></p>
+<h3 id="确认问题Master节点etcd运行情况"><a href="#确认问题Master节点etcd运行情况" class="headerlink" title="确认问题Master节点etcd运行情况"></a>确认问题Master节点etcd运行情况</h3><p>确认问题Master节点etcd已经停止，etcd目录已经删除<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a | grep etcd</span><br><span class="line">ll /var/lib/etcd/</span><br></pre></td></tr></table></figure></p>
+<h3 id="初始化问题Master节点"><a href="#初始化问题Master节点" class="headerlink" title="初始化问题Master节点"></a>初始化问题Master节点</h3><p>在问题Master节点找到部署脚本，确认kubeadm.yaml配置无误后，执行初始化节点命令<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init  --config=kubeadm-config.yaml --ignore-preflight-errors=swap,KubeletVersion,ExternalEtcdVersion</span><br></pre></td></tr></table></figure></p>
+<p>执行后，效果图如下。这时，因为etcd没启动导致会有些错误，先忽略。<br><img src="https://i.loli.net/2019/03/27/5c9b3f2d382c3.png" alt="图片1.png"></p>
+<h3 id="更新etcd集群"><a href="#更新etcd集群" class="headerlink" title="更新etcd集群"></a>更新etcd集群</h3><p>因为每个Master节点上都有一个etcd。问题节点etcd没启动，我们可以通过其他节点的etcd去恢复etcd集群，操作如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">kubectl get po -n kube-system -o wide | grep etcd</span><br><span class="line">kubectl exec -it -n kube-system &lt;etcd_pod_name&gt; sh</span><br><span class="line">etcdctl cluster-health # 查看当前etcd集群状态，可以发现一个节点出现了故障</span><br><span class="line">etcdctl member list # 查看故障的etcd member号，删除掉！！！</span><br><span class="line">etcdctl member remove &lt;etcd_member_num&gt;  # 一定要注意，不要删除错了</span><br><span class="line">etcdctl member add &lt;etcd_name&gt; &lt;etcd_http_port&gt;</span><br><span class="line">etcdctl member list #确认一下是不是有3个etcd member</span><br><span class="line">exit #无问题后退出</span><br></pre></td></tr></table></figure></p>
+<p><strong>以上操作可参考如下过程图：</strong><br><img src="https://i.loli.net/2019/03/27/5c9b3f2d358ae.png" alt="图片2.png"></p>
+<h3 id="问题Master节点上启动etcd"><a href="#问题Master节点上启动etcd" class="headerlink" title="问题Master节点上启动etcd"></a>问题Master节点上启动etcd</h3><p>提前准备好etcd.yaml文件<br><strong>etcd.yaml    initial-cluster-state=existing</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /opt/software/`date`/etcd.yaml /etc/kubernetes/manifests/</span><br></pre></td></tr></table></figure></p>
+<p>查看etcd是否正常启动执行如下命令：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a | grep etcd</span><br></pre></td></tr></table></figure></p>
+<p>确认etcd启动正常后，查看Master节点是否正常，该节点上Pod是否正常启动<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get node | grep &lt;node_name&gt;</span><br><span class="line">kubectl get po -n kube-system -o wide | grep &lt;node_name&gt;</span><br><span class="line">journalctl -eu kubelet</span><br></pre></td></tr></table></figure></p>
+<h2 id="实际操作问题汇总"><a href="#实际操作问题汇总" class="headerlink" title="实际操作问题汇总"></a>实际操作问题汇总</h2><p>生产环境下，步骤2.3 init操作耗时很长，后续步骤都完成了，还没执行完成。最后结果如下图所示：<br><img src="https://i.loli.net/2019/03/27/5c9b3f2d42fe7.png" alt="图片3.png"></p>
+<p>所有操作完成后，kube-apiserver服务没有启动，该服务只启动了自身的pause容器，自身容器没有启动。对比其他Master节点发现kube-apiserver参数存在差异。<br>kubeadm init后自动生成的kube-apiserver.yaml，如下：<br><img src="https://i.loli.net/2019/03/27/5c9b3f2d20879.png" alt="图片4.png"></p>
+<p>其他Master节点的kube-apiserver.yaml，如下：<br><img src="https://i.loli.net/2019/03/27/5c9b3f2c8a37e.png" alt="微信截图_20190327171346.png"></p>
+<p>修改成与其他Master节点一致后，kube-apiserver启动成功，节点恢复正常，Master恢复成功！</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/25/blog/nginx内置变量以及日志格式变量参数详解/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="这家伙真懒">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这家伙真懒">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/25/blog/nginx内置变量以及日志格式变量参数详解/" itemprop="url">
+                  nginx内置变量以及日志格式变量参数详解
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-25T10:37:13+08:00">
+                2019-03-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术文章/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文章</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/25/blog/nginx内置变量以及日志格式变量参数详解/" class="leancloud_visitors" data-flag-title="nginx内置变量以及日志格式变量参数详解">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>nginx服务器日志相关指令主要有两条：一条是log_format，用来设置日志格式；另外一条是access_log，用来指定日志文件的存放路径、格式和缓存大小，可以参加ngx_http_log_module。一般在nginx的配置文件中日记配置(/usr/local/nginx/conf/nginx.conf)。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/03/25/blog/nginx内置变量以及日志格式变量参数详解/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/blog/k8s-service资源理解/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1583,319 +1909,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/blog/格式化输出json文件/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="这家伙真懒">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="这家伙真懒">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/01/22/blog/格式化输出json文件/" itemprop="url">
-                  格式化输出json文件
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T19:29:31+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术文章/" itemprop="url" rel="index">
-                    <span itemprop="name">技术文章</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/22/blog/格式化输出json文件/" class="leancloud_visitors" data-flag-title="格式化输出json文件">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>当json文件没有被格式化时，可以使用如下两个命令进行格式化：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat  re.json |python -m json.tool</span><br><span class="line"></span><br><span class="line">或者</span><br><span class="line"></span><br><span class="line">cat rs.jso | jq .</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="这家伙真懒">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ooj9cf5vc.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170417164723.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="这家伙真懒">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/" itemprop="url">
-                  容器云线程阻塞引起CPU过高问题排查
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T11:14:36+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术文章/" itemprop="url" rel="index">
-                    <span itemprop="name">技术文章</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/" class="leancloud_visitors" data-flag-title="容器云线程阻塞引起CPU过高问题排查">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>解决因线程阻塞导致主机CPU出现IO等待问题。</p>
-<h2 id="情况描述"><a href="#情况描述" class="headerlink" title="情况描述"></a>情况描述</h2><p>主机上出现CPU总体使用率到达约35%，并且wa 持续在18%以上的情况；<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/blog/容器云线程阻塞引起CPU过高问题排查/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </p></div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1943,7 +1956,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1965,7 +1978,7 @@
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-count">64</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
