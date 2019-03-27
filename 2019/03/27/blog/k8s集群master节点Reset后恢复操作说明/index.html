@@ -100,7 +100,10 @@
 <meta property="og:image" content="https://i.loli.net/2019/03/27/5c9b3f2d42fe7.png">
 <meta property="og:image" content="https://i.loli.net/2019/03/27/5c9b3f2d20879.png">
 <meta property="og:image" content="https://i.loli.net/2019/03/27/5c9b3f2c8a37e.png">
-<meta property="og:updated_time" content="2019-03-27T09:50:53.945Z">
+<meta property="og:image" content="https://i.loli.net/2019/03/28/5c9bbb3b2aa46.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/28/5c9bbad998104.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/28/5c9bbad992caf.png">
+<meta property="og:updated_time" content="2019-03-27T18:05:56.421Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s集群master节点Reset后恢复操作说明">
 <meta name="twitter:description" content="描述运维人员在Master节点意外被reset后恢复操作指导说明： 操作步骤集群中Master节点为3个，采用高可用的部署方式。如果一个Master节点故障后仍然可以进行恢复。">
@@ -447,6 +450,10 @@
 <p>所有操作完成后，kube-apiserver服务没有启动，该服务只启动了自身的pause容器，自身容器没有启动。对比其他Master节点发现kube-apiserver参数存在差异。<br>kubeadm init后自动生成的kube-apiserver.yaml，如下：<br><img src="https://i.loli.net/2019/03/27/5c9b3f2d20879.png" alt="图片4.png"></p>
 <p>其他Master节点的kube-apiserver.yaml，如下：<br><img src="https://i.loli.net/2019/03/27/5c9b3f2c8a37e.png" alt="微信截图_20190327171346.png"></p>
 <p>修改成与其他Master节点一致后，kube-apiserver启动成功，节点恢复正常，Master恢复成功！</p>
+<p>对负载均衡节点进行重启，提示连接APIServer失败，如下图所示：<br><img src="https://i.loli.net/2019/03/28/5c9bbb3b2aa46.png" alt="12.png"></p>
+<p>查看被重置的Master节点，发先证书的kubernetes.svc的IP地址写的是默认值，如下图所示：<br>openssl x509 -noout -text -in /etc/Kubernetes/pki/apiserver.crt<br><img src="https://i.loli.net/2019/03/28/5c9bbad998104.png" alt="图片2.png"></p>
+<p>去master2节点上把apiserver.crt和apiserver.key拷贝到被重置的节点上，正确的apiserver.crt如下图所示：<br><img src="https://i.loli.net/2019/03/28/5c9bbad992caf.png" alt="图片3.png"></p>
+<p>重启被重置的master节点的kube-apiserver服务，负载均衡POD启动正常。问题修复。</p>
 
       
     </div>
