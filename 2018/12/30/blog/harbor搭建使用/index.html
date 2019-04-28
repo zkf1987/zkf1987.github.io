@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="这家伙真懒">
 <meta property="og:description" content="描述Docker容器应用的开发和运行离不开可靠的镜像管理，虽然Docker官方也提供了公共的镜像仓库，但是从安全和效率等方面考虑，部署我们私有环境内的Registry也是非常必要的。Harbor是由VMware公司开源的企业级的Docker Registry管理项目，它包括权限管理(RBAC)、LDAP、日志审核、管理界面、自我注册、镜像复制和中文支持等功能。 环境、软件准备123Docker：v">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-22T07:31:26.569Z">
+<meta property="og:updated_time" content="2019-04-04T10:13:28.264Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="harbor搭建使用">
 <meta name="twitter:description" content="描述Docker容器应用的开发和运行离不开可靠的镜像管理，虽然Docker官方也提供了公共的镜像仓库，但是从安全和效率等方面考虑，部署我们私有环境内的Registry也是非常必要的。Harbor是由VMware公司开源的企业级的Docker Registry管理项目，它包括权限管理(RBAC)、LDAP、日志审核、管理界面、自我注册、镜像复制和中文支持等功能。 环境、软件准备123Docker：v">
@@ -437,7 +437,8 @@
 <p>说明：这是主要是修改hostname选项，特别说明，如果要改HARBOR默认的80端口。这个hostname也要改为ip:port</p>
 <p>修改完之后在当前目录执行<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">./prepare</span><br><span class="line">./install</span><br><span class="line">安装完之后执行：</span><br><span class="line">docker images查看镜像</span><br><span class="line">docker-compose ps 查看服务</span><br></pre></td></tr></table></figure></p>
 <h3 id="3、访问harbor控制台即可"><a href="#3、访问harbor控制台即可" class="headerlink" title="3、访问harbor控制台即可"></a>3、访问harbor控制台即可</h3><p><a href="http://ip:port" target="_blank" rel="noopener">http://ip:port</a></p>
-<h3 id="4、修改端口"><a href="#4、修改端口" class="headerlink" title="4、修改端口"></a>4、修改端口</h3><p>harbor 默认的是80端口，现在改为5500<br>只需要修改docker-compose.yml和harbor.cfg 的hostname=ip:port<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">image: vmware/nginx-photon:v1.4.0</span><br><span class="line">container_name: nginx</span><br><span class="line">restart: always</span><br><span class="line">volumes:</span><br><span class="line">- ./common/config/nginx:/etc/nginx:z</span><br><span class="line">networks:</span><br><span class="line">- harbor</span><br><span class="line">ports:</span><br><span class="line">- 5500:80</span><br><span class="line">- 443:443</span><br><span class="line">- 4443:4443</span><br><span class="line">depends_on:</span><br><span class="line">- mysql</span><br><span class="line">- registry</span><br><span class="line">- ui</span><br><span class="line">- log</span><br></pre></td></tr></table></figure></p>
+<h3 id="4、修改端口"><a href="#4、修改端口" class="headerlink" title="4、修改端口"></a>4、修改端口</h3><p>harbor 默认的是80端口，现在改为5500<br>只需要修改docker-compose.yml和harbor.cfg 的hostname=ip:port</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">image: vmware/nginx-photon:v1.4.0</span><br><span class="line">container_name: nginx</span><br><span class="line">restart: always</span><br><span class="line">volumes:</span><br><span class="line">- ./common/config/nginx:/etc/nginx:z</span><br><span class="line">networks:</span><br><span class="line">- harbor</span><br><span class="line">ports:</span><br><span class="line">- 5500:80</span><br><span class="line">- 443:443</span><br><span class="line">- 4443:4443</span><br><span class="line">depends_on:</span><br><span class="line">- mysql</span><br><span class="line">- registry </span><br><span class="line">- ui</span><br><span class="line">- log</span><br></pre></td></tr></table></figure>
 <h3 id="5、启动"><a href="#5、启动" class="headerlink" title="5、启动"></a>5、启动</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> sudo docker-compose down -v</span><br><span class="line"><span class="meta">$</span> vim harbor.cfg</span><br><span class="line"><span class="meta">$</span> sudo prepare</span><br><span class="line"><span class="meta">$</span> sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
 <p>所有配置请参考：<a href="https://github.com/vmware/harbor/blob/v1.4.0/docs/installation_guide.md" target="_blank" rel="noopener">https://github.com/vmware/harbor/blob/v1.4.0/docs/installation_guide.md</a></p>
 
@@ -564,7 +565,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -586,7 +587,7 @@
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-count">65</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
